@@ -1,0 +1,29 @@
+{
+  "name": "wechaty-cqrs",
+  "version": "0.0.1",
+  "description": "A event-driven architecture wrapper for Wechaty that applies the CQS principle by using separate Query and Command messages to retrieve and modify the bot state, respectively.",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wechaty/cqrs.git"
+  },
+  "keywords": [
+    "cqrs",
+    "ddd",
+    "wechaty",
+    "chatbot",
+    "chatie"
+  ],
+  "author": "Huan LI <zixia@zixia.net>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/wechaty/cqrs/issues"
+  },
+  "homepage": "https://github.com/wechaty/cqrs#readme"
+}
