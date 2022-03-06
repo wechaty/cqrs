@@ -16,6 +16,37 @@ A event-driven architecture wrapper for Wechaty that applies the CQS principle b
 
 > Image source: [CQRS (command query responsibility segregation)](https://www.techtarget.com/searchapparchitecture/definition/CQRS-command-query-responsibility-segregation)
 
+## Quick start
+
+Here's the CQRS version of the Wechaty ding/dong bot:
+
+```ts
+import * as WECHATY from 'wechaty'
+import * as PUPPET  from 'wechaty-puppet'
+import * as CQRS    from 'wechaty-cqrs'
+
+import { filter }     from 'rxjs/operators'
+
+const wechaty = WECHATY.WechatyBuilder.build()
+const bus$    = CQRS.cqrsWechaty(wechaty)
+
+bus$.pipe(
+  filter(CQRS.isTypeOf(CQRS.events.messageReceivedEvent)),
+  filter(event => event.payloads.type === PUPPET.types.Sayable.Text),
+  filter(event => event.payloads.payload === 'ding')
+).subscribe(event => bus$.next(
+  CQRS.commands.sendMessage(
+    event.payload.talkerId,
+    PUPPET.payloads.sayable(
+      PUPPET.types.sayable.Text,
+      'dong',
+    ),
+  ),
+))
+
+await wechaty.start()
+```
+
 ## Diagrams
 
 ```mermaid
