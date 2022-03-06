@@ -1,5 +1,3 @@
-#!/usr/bin/env -S node --no-warnings --loader ts-node/esm
-
 /**
  *   Wechaty Open Source Software - https://github.com/wechaty
  *
@@ -19,16 +17,30 @@
  *   limitations under the License.
  *
  */
-import {
-  test,
-}             from 'tstest'
+import { Duck } from 'wechaty-redux'
 
-import {
-  WechatyRedux,
-}                 from '../src/mods/mod.js'
+/**
+ * Huan(202203): reuse Events from Wechaty Redux
+ */
+export const {
+  stateActivatedEvent,
+  stateInactivatedEvent,
 
-test('integration testing', async (t) => {
-  const wechaty = WechatyBuilder.build()
-  const bus$ = cqrsWechaty(wechaty)
-  t.ok(bus$, 'should be set: ' + WechatyRedux.name + ' -> ' + name)
-})
+  startedEvent,
+  stoppedEvent,
+
+  dongReceivedEvent,
+  errorReceivedEvent,
+  friendshipReceivedEvent,
+  heartbeatReceivedEvent,
+  loginReceivedEvent,
+  logoutReceivedEvent,
+  messageReceivedEvent,
+  readyReceivedEvent,
+  resetReceivedEvent,
+  roomInviteReceivedEvent,
+  roomJoinReceivedEvent,
+  roomLeaveReceivedEvent,
+  roomTopicReceivedEvent,
+  scanReceivedEvent,
+}                             = Duck.actions

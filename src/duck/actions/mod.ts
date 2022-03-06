@@ -17,8 +17,6 @@
  *   limitations under the License.
  *
  */
-export * as commands  from './commands.js'
-export * as queries   from './queries.js'
-
 export * from './commands.js'
+export * from './events.js'
 export * from './queries.js'

@@ -1,5 +1,10 @@
 # CQRS Wechaty
 
+[![NPM Version](https://img.shields.io/npm/v/wechaty-cqrs?color=brightgreen)](https://www.npmjs.com/package/wechaty-cqrs)
+[![NPM](https://github.com/wechaty/wechaty-cqrs/workflows/NPM/badge.svg)](https://github.com/wechaty/wechaty-cqrs/actions?query=workflow%3ANPM)
+[![Ducksify Extension](https://img.shields.io/badge/Redux-Ducksify-yellowgreen)](https://github.com/huan/ducks#3-ducksify-extension-currying--api-interface)
+[![ES Modules](https://img.shields.io/badge/ES-Modules-brightgreen)](https://github.com/Chatie/tsconfig/issues/16)
+
 A event-driven architecture wrapper for Wechaty that applies the CQS principle by using separate Query and Command messages to retrieve and modify the bot state, respectively.
 
 ![Command Query Responsibility Segregation (CQRS) Wechaty](docs/images/cqrs-wechaty.png)
@@ -16,7 +21,15 @@ A event-driven architecture wrapper for Wechaty that applies the CQS principle b
 
 > Image source: [CQRS (command query responsibility segregation)](https://www.techtarget.com/searchapparchitecture/definition/CQRS-command-query-responsibility-segregation)
 
-## Quick start
+## Usage
+
+### Install
+
+```sh
+npm install wechaty-cqrs wechaty
+```
+
+### Quick start
 
 Here's the CQRS version of the Wechaty ding/dong bot:
 
@@ -33,9 +46,9 @@ bus$.pipe(
   filter(CQRS.isTypeOf(CQRS.events.messageReceivedEvent)),
   filter(event => event.payloads.type === CQRS.types.Sayable.Text),
   filter(event => event.payloads.payload === 'ding')
-).subscribe(event => bus$.next(
+).subscribe(dingMessageEvent => bus$.next(
   CQRS.commands.sendMessage(
-    event.payload.talkerId,
+    dingMessageEvent.payload.talkerId,
     CQRS.payloads.sayable(
       PUPPET.types.sayable.Text,
       'dong',
@@ -115,9 +128,19 @@ sequenceDiagram
     Redux->>Bus: ReceivedEvent
 ```
 
+## API Docs
+
+TBW
+
 ## Resources
 
 - [class-transformer](https://github.com/typestack/class-transformer) - Decorator-based transformation, serialization, and deserialization between objects and classes.
+
+## History
+
+### main v0.1 (Mar 6, 2022)
+
+Init README & Draft design.
 
 ## Author
 

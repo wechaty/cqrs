@@ -23,7 +23,6 @@
 import {
   createAction,
 }                         from 'typesafe-actions'
-import type * as PUPPET   from 'wechaty-puppet'
 
 import * as types from '../types.js'
 
@@ -33,11 +32,23 @@ import {
   MetaResponse,
 }                 from './meta.js'
 
-const payloadGetCurrentUserQuery  = (puppetId: string)  => ({ puppetId })
-const payloadCurrentUserGotEvent  = (res: MetaResponse & { contact: PUPPET.payloads.Contact }) => ({ ...res.contact })
+/**
+ * puppet.getCurrentUserId
+ */
+const payloadGetCurrentUserIdQuery  = (puppetId: string)  => ({ puppetId })
+const payloadCurrentUserIdGotEvent  = (res: MetaResponse & { contactId?: string }) => res.contactId
 
-export const getCurrentUserQuery  = createAction(types.GET_CURRENT_USER_QUERY, payloadGetCurrentUserQuery, metaRequest)()
-export const currentUserGotEvent  = createAction(types.CURRENT_USER_GOT_EVENT, payloadCurrentUserGotEvent, metaResponse)()
+export const getCurrentUserIdQuery  = createAction(types.GET_CURRENT_USER_ID_QUERY, payloadGetCurrentUserIdQuery, metaRequest)()
+export const currentUserIdGotEvent  = createAction(types.CURRENT_USER_ID_GOT_EVENT, payloadCurrentUserIdGotEvent, metaResponse)()
+
+/**
+ * puppet.isLoggedIn
+ */
+const payloadGetIsLoggedInQuery   = (puppetId: string)  => ({ puppetId })
+const payloadIsLoggedInGotEvent   = (res: MetaResponse & { isLoggedIn: boolean }) => res.isLoggedIn
+
+export const getIsLoggedInQuery  = createAction(types.GET_IS_LOGGED_IN_QUERY, payloadGetIsLoggedInQuery, metaRequest)()
+export const isLoggedInGotEvent  = createAction(types.IS_LOGGED_IN_GOT_EVENT, payloadIsLoggedInGotEvent, metaResponse)()
 
 /**
  * Bug compatible & workaround for Ducks API

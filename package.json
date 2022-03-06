@@ -5,11 +5,11 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/esm/src/mod.js",
-      "require": "./dist/cjs/src/mod.js"
+      "import": "./dist/esm/src/mods/mod.js",
+      "require": "./dist/cjs/src/mods/mod.js"
     }
   },
-  "typings": "./dist/esm/src/mod.d.ts",
+  "typings": "./dist/esm/src/mods/mod.d.ts",
   "engines": {
     "node": ">=16",
     "npm": ">=7"
@@ -47,6 +47,13 @@
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/wechaty/cqrs/issues"
+  },
+  "dependencies": {
+    "redux": "^4.1.2",
+    "rxjs": "^7.5.4",
+    "typesafe-actions": "^5.1.0",
+    "utility-types": "^3.10.0",
+    "wechaty-redux": "^1.15.4"
   },
   "devDependencies": {
     "@chatie/eslint-config": "^1.0.4",
