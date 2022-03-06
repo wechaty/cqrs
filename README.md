@@ -2,11 +2,19 @@
 
 A event-driven architecture wrapper for Wechaty that applies the CQS principle by using separate Query and Command messages to retrieve and modify the bot state, respectively.
 
-![Command Query Responsibility Segeragation (CQRS) Wechaty](docs/images/cqrs-wechaty.png)
+![Command Query Responsibility Segregation (CQRS) Wechaty](docs/images/cqrs-wechaty.png)
+
+> Image source: [Introducing Derivative Event Sourcing](https://www.confluent.io/blog/event-sourcing-vs-derivative-event-sourcing-explained/)
+
+## Command Query Responsibility Separation (CQRS)
 
 > Command query responsibility separation (CQRS) generalises CQS to message-driven and event-driven architectures: it applies the CQS principle by using separate Query and Command messages to retrieve and modify data, respectively.
 >
 > &mdash; [Wikipedia: Command–query separation](https://en.wikipedia.org/wiki/Command%E2%80%93query_separation)
+
+![Command Query Responsibility Segregation (CQRS) Pattern](docs/images/cqrs-pattern.png)
+
+> Image source: [CQRS (command query responsibility segregation)](https://www.techtarget.com/searchapparchitecture/definition/CQRS-command-query-responsibility-segregation)
 
 ## Diagrams
 
@@ -16,7 +24,9 @@ graph LR
   classDef command fill:blue
   classDef query fill:green
 
+  subgraph Command
     C(VerbNounCommand):::command
+  end
 
   subgraph Event
     ER(ReceivedEvent):::event
@@ -24,7 +34,9 @@ graph LR
     EQ(GetNounResponseEvent):::event
   end
 
-  Q(GetNounQuery):::query
+  subgraph Query
+    Q(GetNounQuery):::query
+  end
 
   C-->EC
 
