@@ -1,7 +1,7 @@
 # CQRS Wechaty
 
 [![NPM Version](https://img.shields.io/npm/v/wechaty-cqrs?color=brightgreen)](https://www.npmjs.com/package/wechaty-cqrs)
-[![NPM](https://github.com/wechaty/wechaty-cqrs/workflows/NPM/badge.svg)](https://github.com/wechaty/wechaty-cqrs/actions?query=workflow%3ANPM)
+[![NPM](https://github.com/wechaty/cqrs/workflows/NPM/badge.svg)](https://github.com/wechaty/cqrs/actions?query=workflow%3ANPM)
 [![Ducksify Extension](https://img.shields.io/badge/Redux-Ducksify-yellowgreen)](https://github.com/huan/ducks#3-ducksify-extension-currying--api-interface)
 [![ES Modules](https://img.shields.io/badge/ES-Modules-brightgreen)](https://github.com/Chatie/tsconfig/issues/16)
 
