@@ -1,0 +1,56 @@
+#!/usr/bin/env -S node --no-warnings --loader ts-node/esm
+/**
+ *   Wechaty Open Source Software - https://github.com/wechaty
+ *
+ *   @copyright 2022 Huan LI (李卓桓) <https://github.com/huan>, and
+ *                   Wechaty Contributors <https://github.com/wechaty>.
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License")
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
+ */
+import { test } from 'tstest'
+
+import * as actions from './actions/mod.js'
+import type { ActionCreator } from 'typesafe-actions/dist/is-action-of.js'
+
+const typeEndWith = <T extends string>(suffix: T) =>
+  (actionCreator: ActionCreator<{ type: string }>) =>
+    RegExp(`${suffix}$`).test(actionCreator.getType!())
+
+const isCommand = typeEndWith('_COMMAND')
+const isEvent   = typeEndWith('_EVENT')
+const isQuery   = typeEndWith('_QUERY')
+
+test('actions smoke testing', async t => {
+  const actionList = Object.values(actions)
+
+  const commandList = actionList.filter(isCommand)
+  const eventList   =  actionList.filter(isEvent)
+  const queryList   =  actionList.filter(isQuery)
+
+  // console.info('commandList', commandList.map(c => (c as any).getType()))
+  // console.info('eventList', eventList.map(e => (e as any).getType()))
+  // console.info('queryList', queryList.map(q => (q as any).getType()))
+
+  const ceq = [
+    ...commandList,
+    ...eventList,
+    ...queryList,
+  ]
+
+  t.ok(commandList.length,  `should have ${commandList.length} commands`)
+  t.ok(eventList.length,    `should have ${eventList.length} events`)
+  t.ok(queryList.length,    `should have ${queryList.length} queries`)
+
+  t.equal(ceq.length, actionList.length, 'should all actions be command/event/query')
+})
