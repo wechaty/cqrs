@@ -37,22 +37,19 @@ Here's the CQRS version of the Wechaty ding/dong bot:
 import * as WECHATY from 'wechaty'
 import * as CQRS    from 'wechaty-cqrs'
 
-import { filter }     from 'rxjs/operators'
+import { filter }   from 'rxjs/operators'
 
 const wechaty = WECHATY.WechatyBuilder.build()
-const bus$    = CQRS.cqrsWechaty(wechaty)
+const bus$    = CQRS.bus(wechaty)
 
 bus$.pipe(
   filter(CQRS.isTypeOf(CQRS.events.messageReceivedEvent)),
-  filter(event => event.payloads.type === CQRS.types.Sayable.Text),
+  filter(event => event.payloads.type === CQRS.sayable.type.Text),
   filter(event => event.payloads.payload === 'ding')
-).subscribe(dingMessageEvent => bus$.next(
+).subscribe(ding => bus$.next(
   CQRS.commands.sendMessage(
-    dingMessageEvent.payload.talkerId,
-    CQRS.payloads.sayable(
-      PUPPET.types.sayable.Text,
-      'dong',
-    ),
+    ding.payload.talkerId,
+    CQRS.sayable.text('dong'),
   ),
 ))
 
@@ -74,7 +71,7 @@ graph LR
   subgraph Event
     ER(ReceivedEvent):::event
     EC(NounVerbedEvent):::event
-    EQ(GetNounResponseEvent):::event
+    EQ(NounGotEvent):::event
   end
 
   subgraph Query
@@ -113,7 +110,7 @@ sequenceDiagram
     Bus->>Redux: GetQuery
     Redux->>Wechaty: Call
     Wechaty->>Redux: Call Return (value)
-    Redux->>Bus: GetResponseEvent
+    Redux->>Bus: GotEvent
 ```
 
 ### Event
