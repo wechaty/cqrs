@@ -2,7 +2,7 @@
 /**
  *   Wechaty Open Source Software - https://github.com/wechaty
  *
- *   @copyright 2016 Huan LI (李卓桓) <https://github.com/huan>, and
+ *   @copyright 2022 Huan LI (李卓桓) <https://github.com/huan>, and
  *                   Wechaty Contributors <https://github.com/wechaty>.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,26 +18,21 @@
  *   limitations under the License.
  *
  */
-import * as WECHATY from 'wechaty'
-import * as PUPPET  from 'wechaty-puppet'
-import * as CQRS    from 'wechaty-cqrs'
-import { filter }   from 'rxjs/operators'
+import {
+  cqrsWechaty,
+  VERSION,
+}                 from 'wechaty-cqrs'
+import { WechatyBuilder } from 'wechaty'
 
-const wechaty = WECHATY.WechatyBuilder.build()
-const bus$    = CQRS.cqrsWechaty(wechaty)
+const ducks = new Ducks({ wechaty: Duck })
+const store = ducks.configureStore()
 
-bus$.pipe(
-  filter(CQRS.isTypeOf(CQRS.events.messageReceivedEvent)),
-  filter(event => event.payloads.type === PUPPET.types.Sayable.Text),
-  filter(event => event.payloads.payload === 'ding')
-).subscribe(event => bus$.next(
-  CQRS.commands.sendMessage(
-    event.payload.talkerId,
-    PUPPET.payloads.sayable(
-      PUPPET.types.sayable.Text,
-      'dong',
-    ),
-  ),
-))
+const wechaty = WechatyBuilder.build({ puppet: 'wechaty-puppet-mock' })
 
-await wechaty.start()
+wechaty.use(
+  WechatyRedux({ store })
+)
+
+if (VERSION === '0.0.0') {
+  throw new Error('version should be set before publishing')
+}

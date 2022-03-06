@@ -22,7 +22,6 @@ Here's the CQRS version of the Wechaty ding/dong bot:
 
 ```ts
 import * as WECHATY from 'wechaty'
-import * as PUPPET  from 'wechaty-puppet'
 import * as CQRS    from 'wechaty-cqrs'
 
 import { filter }     from 'rxjs/operators'
@@ -32,12 +31,12 @@ const bus$    = CQRS.cqrsWechaty(wechaty)
 
 bus$.pipe(
   filter(CQRS.isTypeOf(CQRS.events.messageReceivedEvent)),
-  filter(event => event.payloads.type === PUPPET.types.Sayable.Text),
+  filter(event => event.payloads.type === CQRS.types.Sayable.Text),
   filter(event => event.payloads.payload === 'ding')
 ).subscribe(event => bus$.next(
   CQRS.commands.sendMessage(
     event.payload.talkerId,
-    PUPPET.payloads.sayable(
+    CQRS.payloads.sayable(
       PUPPET.types.sayable.Text,
       'dong',
     ),

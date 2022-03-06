@@ -2,12 +2,35 @@
   "name": "wechaty-cqrs",
   "version": "0.0.1",
   "description": "A event-driven architecture wrapper for Wechaty that applies the CQS principle by using separate Query and Command messages to retrieve and modify the bot state, respectively.",
-  "main": "index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/src/mod.js",
+      "require": "./dist/cjs/src/mod.js"
+    }
+  },
+  "typings": "./dist/esm/src/mod.d.ts",
+  "engines": {
+    "node": ">=16",
+    "npm": ">=7"
+  },
   "directories": {
     "example": "examples"
   },
   "scripts": {
-    "test": "echo test"
+    "build": "tsc && tsc -p tsconfig.cjs.json",
+    "clean": "shx rm -fr dist/*",
+    "dist": "npm-run-all clean build dist:commonjs",
+    "dist:commonjs": "jq -n \"{ type: \\\"commonjs\\\" }\" > dist/cjs/package.json",
+    "lint": "npm-run-all lint:es lint:ts lint:md",
+    "lint:md": "markdownlint README.md",
+    "lint:ts": "tsc --isolatedModules --noEmit",
+    "redux-devtools": "redux-devtools --hostname=localhost --port=8000",
+    "start": "cross-env NODE_OPTIONS=\"--no-warnings --loader=ts-node/esm\" node examples/ding-dong-bot.ts",
+    "test": "npm-run-all lint test:unit",
+    "test:pack": "bash -x scripts/npm-pack-testing.sh",
+    "test:unit": "tap --node-arg=--loader=ts-node/esm --node-arg=--no-warnings \"src/**/*.spec.ts\" \"tests/**/*.spec.ts\"",
+    "lint:es": "eslint --ignore-pattern tests/fixtures/ '{bin,examples,scripts,src,tests}/**/*.ts'"
   },
   "repository": {
     "type": "git",
@@ -24,6 +47,30 @@
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/wechaty/cqrs/issues"
+  },
+  "devDependencies": {
+    "@chatie/eslint-config": "^1.0.4",
+    "@chatie/git-scripts": "^0.6.2",
+    "@chatie/semver": "^0.4.7",
+    "@chatie/tsconfig": "^4.6.2",
+    "@types/glob": "^7.2.0",
+    "@types/uuid": "^8.3.4",
+    "glob": "^7.2.0",
+    "wechaty": "^1.13.2",
+    "wechaty-puppet-mock": "^1.13.4"
+  },
+  "files": [
+    "bin/",
+    "dist/",
+    "src/"
+  ],
+  "publishConfig": {
+    "tag": "next"
+  },
+  "git": {
+    "scripts": {
+      "pre-push": "npx git-scripts-pre-push"
+    }
   },
   "homepage": "https://github.com/wechaty/cqrs#readme"
 }

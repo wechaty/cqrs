@@ -1,4 +1,5 @@
 #!/usr/bin/env -S node --no-warnings --loader ts-node/esm
+
 /**
  *   Wechaty Open Source Software - https://github.com/wechaty
  *
@@ -18,26 +19,16 @@
  *   limitations under the License.
  *
  */
-import * as WECHATY from 'wechaty'
-import * as PUPPET  from 'wechaty-puppet'
-import * as CQRS    from 'wechaty-cqrs'
-import { filter }   from 'rxjs/operators'
+import {
+  test,
+}             from 'tstest'
 
-const wechaty = WECHATY.WechatyBuilder.build()
-const bus$    = CQRS.cqrsWechaty(wechaty)
+import {
+  WechatyRedux,
+}                 from '../src/mod.js'
 
-bus$.pipe(
-  filter(CQRS.isTypeOf(CQRS.events.messageReceivedEvent)),
-  filter(event => event.payloads.type === PUPPET.types.Sayable.Text),
-  filter(event => event.payloads.payload === 'ding')
-).subscribe(event => bus$.next(
-  CQRS.commands.sendMessage(
-    event.payload.talkerId,
-    PUPPET.payloads.sayable(
-      PUPPET.types.sayable.Text,
-      'dong',
-    ),
-  ),
-))
-
-await wechaty.start()
+test('integration testing', async (t) => {
+  const wechaty = WechatyBuilder.build()
+  const bus$ = cqrsWechaty(wechaty)
+  t.ok(bus$, 'should be set: ' + WechatyRedux.name + ' -> ' + name)
+})
