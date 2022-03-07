@@ -58,6 +58,8 @@ await wechaty.start()
 
 ## Diagrams
 
+![CQRS Events Structure](docs/images/cqrs-events-diagram.svg)
+
 ```mermaid
 graph LR
   classDef event fill:DarkGoldenRod
@@ -68,21 +70,24 @@ graph LR
     C(VerbNounCommand):::command
   end
 
-  subgraph Event
-    ER(ReceivedEvent):::event
-    EC(NounVerbedEvent):::event
-    EQ(NounGotEvent):::event
+  subgraph Message
+    MC(NounVerbedMessage)
+    MQ(NounGotMessage)
   end
-
+    
   subgraph Query
     Q(GetNounQuery):::query
   end
 
-  C-->EC
+  subgraph Event
+    ER(ReceivedEvent):::event
+  end
+
+  C-->MC
 
   ER-->ER
 
-  Q-->EQ
+  Q-->MQ
 ```
 
 ### Command
@@ -96,7 +101,7 @@ sequenceDiagram
     Bus->>Redux: ExecuteCommand
     Redux->>Wechaty: Call
     Wechaty->>Redux: Call Return (void)
-    Redux->>Bus: CommandExecutedEvent
+    Redux->>Bus: CommandExecutedMessage
 ```
 
 ### Query
@@ -107,10 +112,10 @@ sequenceDiagram
     participant Redux
     participant Wechaty
 
-    Bus->>Redux: GetQuery
+    Bus->>Redux: GetNounQuery
     Redux->>Wechaty: Call
     Wechaty->>Redux: Call Return (value)
-    Redux->>Bus: GotEvent
+    Redux->>Bus: NounGotMessage
 ```
 
 ### Event
