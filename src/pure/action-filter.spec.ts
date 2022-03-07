@@ -30,7 +30,11 @@ test('action filter smoke testing', async t => {
 
   const COMMAND = Duck.actions.sendMessageCommand(PUPPET_ID, CONVERSATION_ID, {} as any)
   const EVENT   = Duck.actions.dongReceivedEvent(PUPPET_ID, { data: 'data' })
-  const MESSAGE = Duck.actions.messageReceivedEvent(PUPPET_ID, { messageId: 'message-id' })
+  const MESSAGE = Duck.actions.isLoggedInGotMessage({
+    id: 'id',
+    isLoggedIn: false,
+    puppetId: PUPPET_ID,
+  })
   const QUERY   = Duck.actions.getIsLoggedInQuery(PUPPET_ID)
   const DUMMY   = { type: 'fadsfadsfasdfasd' }
 

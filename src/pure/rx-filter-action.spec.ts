@@ -24,7 +24,7 @@ import {
   firstValueFrom,
 }                   from 'rxjs'
 import {
-  toArray,
+  count,
 }                   from 'rxjs/operators'
 
 import * as Duck from '../duck/mod.js'
@@ -37,7 +37,10 @@ test('rx filter action smoke testing', async t => {
 
   const COMMAND = Duck.actions.sendMessageCommand(PUPPET_ID, CONVERSATION_ID, {} as any)
   const EVENT   = Duck.actions.dongReceivedEvent(PUPPET_ID, { data: 'data' })
-  const MESSAGE = Duck.actions.messageReceivedEvent(PUPPET_ID, { messageId: 'message-id' })
+  const MESSAGE = Duck.actions.dingedMessage({
+    id: 'uuid',
+    puppetId: PUPPET_ID,
+  })
   const QUERY   = Duck.actions.getIsLoggedInQuery(PUPPET_ID)
   const DUMMY   = { type: 'fadsfadsfasdfasd' }
 
@@ -52,10 +55,10 @@ test('rx filter action smoke testing', async t => {
   for (const [e, ...expected] of fixtures) {
     const $ = of(e)
 
-    const isCommand = await firstValueFrom($.pipe(rxFilterAction.filterCommand(), toArray()))
-    const isEvent   = await firstValueFrom($.pipe(rxFilterAction.filterEvent(),   toArray()))
-    const isMessage = await firstValueFrom($.pipe(rxFilterAction.filterMessage(), toArray()))
-    const isQuery   = await firstValueFrom($.pipe(rxFilterAction.filterQuery(),   toArray()))
+    const isCommand = await firstValueFrom($.pipe(rxFilterAction.filterCommand(), count()))
+    const isEvent   = await firstValueFrom($.pipe(rxFilterAction.filterEvent(),   count()))
+    const isMessage = await firstValueFrom($.pipe(rxFilterAction.filterMessage(), count()))
+    const isQuery   = await firstValueFrom($.pipe(rxFilterAction.filterQuery(),   count()))
 
     t.same([isCommand, isEvent, isMessage, isQuery], expected, `should match ${e.type} to ${expected}`)
   }
