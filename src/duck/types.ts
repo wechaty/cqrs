@@ -33,8 +33,8 @@ export const DINGED_MESSAGE = 'cqrs-wechaty/DINGED_MESSAGE'
 /**
  * puppet.reset()
  */
-export const RESET_COMMAND    = 'cqrs-wechaty/RESET_COMMAND'
-export const RESETED_MESSAGE  = 'cqrs-wechaty/RESETED_MESSAGE'
+export const RESET_COMMAND  = 'cqrs-wechaty/RESET_COMMAND'
+export const RESET_MESSAGE  = 'cqrs-wechaty/RESET_MESSAGE'
 
 /**
  * puppet.messageSend()

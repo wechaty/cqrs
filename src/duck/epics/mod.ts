@@ -45,7 +45,7 @@ const resetEpic: Epic = actions$ => actions$.pipe(
   mergeMap(reset$),
 )
 
-const sendMessageEpci: Epic = actions$ => actions$.pipe(
+const sendMessageEpic: Epic = actions$ => actions$.pipe(
   filter(isActionOf(actions.sendMessageCommand)),
   mergeMap(sendMessage$),
 )
@@ -53,5 +53,5 @@ const sendMessageEpci: Epic = actions$ => actions$.pipe(
 export {
   dingEpic,
   resetEpic,
-  sendMessageEpci,
+  sendMessageEpic,
 }
