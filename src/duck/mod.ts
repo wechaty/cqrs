@@ -23,15 +23,8 @@ export default reducer
 export { reducer }
 
 export * as actions     from './actions/mod.js'
-export * as epics       from './epics.js'
+export * as epics       from './epics/mod.js'
 export * as operations  from './operations.js'
 export * as selectors   from './selectors.js'
 export * as types       from './types.js'
 export * as utils       from './utils.js'
-
-/**
- * Addition exports for CQRS (Not required by the Ducks protocol)
- */
-export * as commands    from './actions/commands.js'
-export * as events      from './actions/events.js'
-export * as queries     from './actions/queries.js'

@@ -28,15 +28,14 @@ test('queries smoke testing', async t => {
   const CONTACT_ID = 'contact-id'
 
   const q = queries.getCurrentUserIdQuery(PUPPET_ID)
+  t.ok(q.meta.id, 'should set id to meta')
+  t.equal(q.meta.puppetId, PUPPET_ID, 'should set puppetId to meta')
+
   const e = queries.currentUserIdGotMessage({
     contactId: CONTACT_ID,
     id: ID,
     puppetId: PUPPET_ID,
   })
-
-  t.ok(q.meta.id, 'should set id to meta')
-  t.equal(q.meta.puppetId, PUPPET_ID, 'should set puppetId to meta')
-
   t.equal(e.meta.gerror, undefined, 'should has no gerror')
   t.equal(e.meta.id, ID, 'should set id to meta')
   t.equal(e.meta.puppetId, PUPPET_ID, 'should set puppetId to meta')

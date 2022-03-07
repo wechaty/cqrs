@@ -32,16 +32,15 @@ test('commands smoke testing', async t => {
   const SAYABLE = sayable.text('test')
 
   const c = commands.sendMessageCommand(PUPPET_ID, CONVERSATION_ID, SAYABLE)
+  t.ok(c.meta.id, 'should set id to meta')
+  t.equal(c.meta.puppetId, PUPPET_ID, 'should set puppetId to meta')
+  t.same(c.payload.sayable, SAYABLE, 'should set sayable to payload')
+
   const e = commands.messageSentMessage({
     id: ID,
     messageId: MESSAGE_ID,
     puppetId: PUPPET_ID,
   })
-
-  t.ok(c.meta.id, 'should set id to meta')
-  t.equal(c.meta.puppetId, PUPPET_ID, 'should set puppetId to meta')
-  t.same(c.payload.sayable, SAYABLE, 'should set sayable to payload')
-
   t.equal(e.meta.gerror, undefined, 'should has no gerror')
   t.equal(e.meta.puppetId, PUPPET_ID, 'should set puppetId to meta')
   t.equal(e.meta.id, ID, 'should set id to meta')

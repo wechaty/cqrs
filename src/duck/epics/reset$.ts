@@ -17,26 +17,40 @@
  *   limitations under the License.
  *
  */
-import type { Dispatch }  from 'redux'
-import type * as PUPPET   from 'wechaty-puppet'
+import {
+  EMPTY,
+  of,
+}                 from 'rxjs'
+import {
+  catchError,
+  mapTo,
+  mergeMap,
+  // tap,
+}                 from 'rxjs/operators'
+import { GError } from 'gerror'
 
-import * as actions from './actions/mod.js'
+import {
+  getPuppet,
+}             from 'wechaty-redux'
 
-const ding  = (dispatch: Dispatch) => (puppetId: string, data: string)  => dispatch(actions.dingCommand(puppetId, data))
-const reset = (dispatch: Dispatch) => (puppetId: string, data: string)  => dispatch(actions.resetCommand(puppetId, data))
+import * as actions from '../actions/mod.js'
 
-const sendMessage = (dispatch: Dispatch) => (
-  puppetId       : string,
-  conversationId : string,
-  sayable        : PUPPET.payloads.Sayable,
-) => dispatch(actions.sendMessageCommand(puppetId, conversationId, sayable))
-
-const nop = (dispatch: Dispatch) => (puppetId: string) => dispatch(actions.nopCommand(puppetId))
-
-export {
-  ding,
-  reset,
-  sendMessage,
-
-  nop,
-}
+export const reset$ = (action: ReturnType<typeof actions.resetCommand>) => of(
+  getPuppet(action.meta.puppetId),
+).pipe(
+  mergeMap(puppet => puppet
+    ? of(puppet.reset())
+    : EMPTY,
+  ),
+  mapTo(actions.resetMessage({
+    id       : action.meta.id,
+    puppetId : action.meta.puppetId,
+  })),
+  catchError((e: Error) => of(
+    actions.resetMessage({
+      gerror   : GError.stringify(e),
+      id       : action.meta.id,
+      puppetId : action.meta.puppetId,
+    }),
+  )),
+)

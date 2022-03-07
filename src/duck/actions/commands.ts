@@ -66,5 +66,5 @@ export const dingedMessage  = createAction(types.DINGED_MESSAGE,  payloadDingedM
 const payloadResetCommand    = (_puppetId: string, data?: string)  => ({ data })
 const payloadResetedMessage  = (_res: MetaResponse)                => ({})
 
-export const resetCommand    = createAction(types.RESET_COMMAND,    payloadResetCommand,   metaRequest)()
-export const resetedMessage  = createAction(types.RESETED_MESSAGE,  payloadResetedMessage, metaResponse)()
+export const resetCommand = createAction(types.RESET_COMMAND, payloadResetCommand,   metaRequest)()
+export const resetMessage = createAction(types.RESET_MESSAGE, payloadResetedMessage, metaResponse)()

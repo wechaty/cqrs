@@ -27,6 +27,7 @@ import {
 test('metaRequest smoke testing', async t => {
   const PUPPET_ID = 'puppet-id'
   const req = metaRequest(PUPPET_ID)
+
   t.ok(req.id, 'should set id to meta')
   t.equal(req.puppetId, PUPPET_ID, 'should set puppetId')
 })

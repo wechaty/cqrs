@@ -23,40 +23,35 @@ import {
 import {
   filter,
   mergeMap,
-  map,
 }               from 'rxjs/operators'
 import type {
   Epic,
 }               from 'redux-observable'
 
-import * as actions from './actions/mod.js'
-import * as rxAsync from './rx-async.js'
-import * as utils   from './utils.js'
+import * as actions from '../actions/mod.js'
+// import * as utils   from './utils.js'
+
+import { ding$ }        from './ding$.js'
+import { reset$ }       from './reset$.js'
+import { sendMessage$ } from './send-message$.js'
 
 const dingEpic: Epic = actions$ => actions$.pipe(
   filter(isActionOf(actions.dingCommand)),
-  mergeMap(rxAsync.ding$),
+  mergeMap(ding$),
 )
 
 const resetEpic: Epic = actions$ => actions$.pipe(
   filter(isActionOf(actions.resetCommand)),
-  mergeMap(rxAsync.reset$),
+  mergeMap(reset$),
 )
 
-const sayEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.sayAsync.request)),
-  mergeMap(rxAsync.say$),
-)
-
-const loginEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.loginReceivedEvent)),
-  mergeMap(utils.toContact$),
-  map(payload => actions.loginContactEvent(payload)),
+const sendMessageEpci: Epic = actions$ => actions$.pipe(
+  filter(isActionOf(actions.sendMessageCommand)),
+  mergeMap(sendMessage$),
 )
 
 export {
   dingEpic,
   resetEpic,
-  sayEpic,
-  loginEpic,
+  sendMessageEpci,
 }

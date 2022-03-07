@@ -19,10 +19,20 @@
  */
 import type { State } from './reducers.js'
 
-const getTotalCounter   = (state: State) => ()                  => state.counter.total
-const getPuppetCounter  = (state: State) => (puppetId: string)  => state.counter[puppetId]
+/**
+ * Get counter for `puppetId`,
+ *  or return the total counter if there's no `puppetId` specified
+ */
+const getCounter = (state: State) => (puppetId?: string)  => puppetId
+  ? ({
+      commands : 0,
+      events   : 0,
+      messages : 0,
+      queries  : 0,
+      ...state.counter[puppetId],
+    })
+  : state.counter.total
 
 export {
-  getTotalCounter,
-  getPuppetCounter,
+  getCounter,
 }

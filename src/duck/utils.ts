@@ -34,9 +34,9 @@ import {
 /**
  * TODO: use `dependencies` injection for Ducks dependencies, Huan(202111)
  */
-import { getPuppet } from '../registry/registry.js'
+import { getPuppet } from 'wechaty-redux'
 
-import type * as actions from './actions.js'
+import type * as actions from './actions/mod.js'
 
 const throwUndefined = <T> (value?: T): T => {
   if (value) return value
@@ -58,19 +58,19 @@ const extendPayloadWithPuppetId = (puppetId: string) => <T> (payload: T): T & { 
  * Example: `pipe(mergeMap(toMessage$))`
  */
 const toMessage$ = (action: ReturnType<typeof actions.messageReceivedEvent>) => from(
-  getPuppet(action.payload.puppetId)
+  getPuppet(action.meta.puppetId)
     ?.messagePayload(action.payload.messageId) || EMPTY,
 ).pipe(
   map(throwUndefined),
-  map(extendPayloadWithPuppetId(action.payload.puppetId)),
+  map(extendPayloadWithPuppetId(action.meta.puppetId)),
 )
 
 const toContact$ = (action: ReturnType<typeof actions.loginReceivedEvent>) => from(
-  getPuppet(action.payload.puppetId)
+  getPuppet(action.meta.puppetId)
     ?.contactPayload(action.payload.contactId) || EMPTY,
 ).pipe(
   map(throwUndefined),
-  map(extendPayloadWithPuppetId(action.payload.puppetId)),
+  map(extendPayloadWithPuppetId(action.meta.puppetId)),
 )
 
 const isTextMessage = (text?: string) => (message: PUPPET.payloads.Message) => (
@@ -80,7 +80,7 @@ const isTextMessage = (text?: string) => (message: PUPPET.payloads.Message) => (
     ? text === message.text
     : true
 )
-const isWechaty = (puppetId: string) => (action: ReturnType<typeof actions.messageReceivedEvent>) => action.payload.puppetId === puppetId
+const isWechaty = (puppetId: string) => (action: ReturnType<typeof actions.messageReceivedEvent>) => action.meta.puppetId === puppetId
 
 const isSelfMessage = (puppet: PUPPET.impls.PuppetInterface) =>
   (message: PUPPET.payloads.Message) =>
@@ -95,7 +95,7 @@ const isNotSelfMessage = (puppet: PUPPET.impls.PuppetInterface) =>
     : true
 
 const skipSelfMessage$ = (action: ReturnType<typeof actions.messageReceivedEvent>) => of(
-  getPuppet(action.payload.puppetId),
+  getPuppet(action.meta.puppetId),
 ).pipe(
   mergeMap(puppet => puppet
     ? from(puppet.messagePayload(action.payload.messageId)).pipe(

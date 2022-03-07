@@ -23,54 +23,20 @@ import {
   of,
 }                 from 'rxjs'
 import {
-  ignoreElements,
   catchError,
   mapTo,
   mergeMap,
-  // tap,
 }                 from 'rxjs/operators'
 import { GError } from 'gerror'
 
 import {
   getPuppet,
-}             from '../registry/mod.js'
+}             from 'wechaty-redux'
 
-import * as actions from './actions.js'
+import * as actions from '../actions/mod.js'
 
-const ding$ = (action: ReturnType<typeof actions.dingCommand>) => of(
-  getPuppet(action.payload.puppetId),
-).pipe(
-  mergeMap(puppet => puppet
-    ? of(puppet.ding(action.payload.data))
-    : EMPTY,
-  ),
-  ignoreElements(),
-  catchError(e => of(
-    actions.errorReceivedEvent(
-      action.payload.puppetId,
-      { gerror: GError.stringify(e) },
-    ),
-  )),
-)
-
-const reset$ = (action: ReturnType<typeof actions.resetCommand>) => of(
-  getPuppet(action.payload.puppetId),
-).pipe(
-  mergeMap(puppet => puppet
-    ? of(puppet.reset())
-    : EMPTY,
-  ),
-  ignoreElements(),
-  catchError((e: Error) => of(
-    actions.errorReceivedEvent(
-      action.payload.puppetId,
-      { gerror: GError.stringify(e) },
-    ),
-  )),
-)
-
-const say$ = (action: ReturnType<typeof actions.sayAsync.request>) => of(
-  getPuppet(action.payload.puppetId),
+export const sendMessage$ = (action: ReturnType<typeof actions.sendMessageCommand>) => of(
+  getPuppet(action.meta.puppetId),
 ).pipe(
   mergeMap(puppet => puppet
     ? from(puppet.messageSend(
@@ -79,21 +45,15 @@ const say$ = (action: ReturnType<typeof actions.sayAsync.request>) => of(
     ))
     : EMPTY,
   ),
-  mapTo(actions.sayAsync.success({
-    id       : action.payload.id,
-    puppetId : action.payload.puppetId,
+  mapTo(actions.messageSentMessage({
+    id       : action.meta.id,
+    puppetId : action.meta.puppetId,
   })),
   catchError(e => of(
-    actions.sayAsync.failure({
+    actions.messageSentMessage({
       gerror   : GError.stringify(e),
-      id       : action.payload.id,
-      puppetId : action.payload.puppetId,
+      id       : action.meta.id,
+      puppetId : action.meta.puppetId,
     }),
   )),
 )
-
-export {
-  ding$,
-  reset$,
-  say$,
-}
