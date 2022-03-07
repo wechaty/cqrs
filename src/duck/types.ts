@@ -19,22 +19,49 @@
  */
 
 /**
-* Commands & paired-Events
-*/
-export const DING_COMMAND  = 'cqrs-wechaty/DING_COMMAND'
-export const DINGED_EVENT  = 'cqrs-wechaty/DINGED_EVENT'
-
-export const RESET_COMMAND = 'cqrs-wechaty/RESET_COMMAND'
-export const RESETED_EVENT = 'cqrs-wechaty/RESETED_EVENT'
-
-export const SEND_MESSAGE_COMMAND = 'cqrs-wechaty/SEND_MESSAGE_COMMAND'
-export const MESSAGE_SENT_EVENT   = 'cqrs-wechaty/MESSAGE_SENT_EVENT'
+ *
+ * Commands & paired-Messages
+ *
+ */
 
 /**
- * Queries & paired-Events
+ * puppet.ding()
  */
-export const GET_CURRENT_USER_ID_QUERY = 'cqrs-wechaty/GET_CURRENT_USER_ID_QUERY'
-export const CURRENT_USER_ID_GOT_EVENT = 'cqrs-wechaty/CURRENT_USER_ID_GOT_EVENT'
+export const DING_COMMAND   = 'cqrs-wechaty/DING_COMMAND'
+export const DINGED_MESSAGE = 'cqrs-wechaty/DINGED_MESSAGE'
 
-export const GET_IS_LOGGED_IN_QUERY = 'cqrs-wechaty/GET_IS_LOGGED_IN_QUERY'
-export const IS_LOGGED_IN_GOT_EVENT = 'cqrs-wechaty/IS_LOGGED_IN_GOT_EVENT'
+/**
+ * puppet.reset()
+ */
+export const RESET_COMMAND    = 'cqrs-wechaty/RESET_COMMAND'
+export const RESETED_MESSAGE  = 'cqrs-wechaty/RESETED_MESSAGE'
+
+/**
+ * puppet.messageSend()
+ */
+export const SEND_MESSAGE_COMMAND = 'cqrs-wechaty/SEND_MESSAGE_COMMAND'
+export const MESSAGE_SENT_MESSAGE = 'cqrs-wechaty/MESSAGE_SENT_MESSAGE'
+
+/**
+ *
+ * Queries & paired-Messages
+ *
+ */
+
+/**
+ * puppet.currentUserId
+ */
+export const GET_CURRENT_USER_ID_QUERY    = 'cqrs-wechaty/GET_CURRENT_USER_ID_QUERY'
+export const CURRENT_USER_ID_GOT_MESSAGE  = 'cqrs-wechaty/CURRENT_USER_ID_GOT_MESSAGE'
+
+/**
+ * puppet.isLoggedIn
+ */
+export const GET_IS_LOGGED_IN_QUERY   = 'cqrs-wechaty/GET_IS_LOGGED_IN_QUERY'
+export const IS_LOGGED_IN_GOT_MESSAGE = 'cqrs-wechaty/IS_LOGGED_IN_GOT_MESSAGE'
+
+/**
+ * Internal
+ */
+export const NOP_COMMAND = 'cqrs-wechaty/NOP_COMMAND'
+export const NOP_MESSAGE = 'cqrs-wechaty/NOP_MESSAGE'

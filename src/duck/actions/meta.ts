@@ -9,7 +9,8 @@ import UUID from 'uuid'
 export interface MetaResponse {
   gerror?  : string
   id       : string
+  puppetId : string
 }
 
-export const metaRequest   = (..._: any)         => ({ id: UUID.v4() })
-export const metaResponse  = (res: MetaResponse) => ({ id: res.id, gerror: res.gerror })
+export const metaRequest   = (puppetId: string, ..._: any)  => ({ id: UUID.v4(), puppetId })
+export const metaResponse  = (res: MetaResponse)            => ({ id: res.id, puppetId: res.puppetId, gerror: res.gerror })

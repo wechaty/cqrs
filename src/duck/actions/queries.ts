@@ -35,20 +35,20 @@ import {
 /**
  * puppet.getCurrentUserId
  */
-const payloadGetCurrentUserIdQuery  = (puppetId: string)  => ({ puppetId })
-const payloadCurrentUserIdGotEvent  = (res: MetaResponse & { contactId?: string }) => res.contactId
+const payloadGetCurrentUserIdQuery    = (_puppetId: string)                           => ({})
+const payloadCurrentUserIdGotMessage  = (res: MetaResponse & { contactId?: string })  => ({ contactId: res.contactId })
 
-export const getCurrentUserIdQuery  = createAction(types.GET_CURRENT_USER_ID_QUERY, payloadGetCurrentUserIdQuery, metaRequest)()
-export const currentUserIdGotEvent  = createAction(types.CURRENT_USER_ID_GOT_EVENT, payloadCurrentUserIdGotEvent, metaResponse)()
+export const getCurrentUserIdQuery    = createAction(types.GET_CURRENT_USER_ID_QUERY,   payloadGetCurrentUserIdQuery,   metaRequest)()
+export const currentUserIdGotMessage  = createAction(types.CURRENT_USER_ID_GOT_MESSAGE, payloadCurrentUserIdGotMessage, metaResponse)()
 
 /**
  * puppet.isLoggedIn
  */
-const payloadGetIsLoggedInQuery   = (puppetId: string)  => ({ puppetId })
-const payloadIsLoggedInGotEvent   = (res: MetaResponse & { isLoggedIn: boolean }) => res.isLoggedIn
+const payloadGetIsLoggedInQuery   = (_puppetId: string)                           => ({})
+const payloadIsLoggedInGotMessage = (res: MetaResponse & { isLoggedIn: boolean }) => ({ isLoggedIn: res.isLoggedIn })
 
-export const getIsLoggedInQuery  = createAction(types.GET_IS_LOGGED_IN_QUERY, payloadGetIsLoggedInQuery, metaRequest)()
-export const isLoggedInGotEvent  = createAction(types.IS_LOGGED_IN_GOT_EVENT, payloadIsLoggedInGotEvent, metaResponse)()
+export const getIsLoggedInQuery   = createAction(types.GET_IS_LOGGED_IN_QUERY,    payloadGetIsLoggedInQuery,    metaRequest)()
+export const isLoggedInGotMessage = createAction(types.IS_LOGGED_IN_GOT_MESSAGE,  payloadIsLoggedInGotMessage,  metaResponse)()
 
 /**
  * Bug compatible & workaround for Ducks API

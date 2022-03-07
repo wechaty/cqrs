@@ -33,8 +33,38 @@ import {
   metaResponse,
 }                     from './meta.js'
 
-const payloadSendMessageCommand = (puppetId: string, conversationId: string, sayable: PUPPET.payloads.Sayable)  => ({ puppetId, conversationId, sayable })
-const payloadMessageSentEvent   = (res: MetaResponse & { messageId?: string })                                  => ({ messageId: res.messageId })
+/**
+ * Internal
+ */
+const payloadNopCommand = (_puppetId: string)   => ({})
+const payloadNopMessage = (_res: MetaResponse)  => ({})
+
+export const nopCommand = createAction(types.NOP_COMMAND, payloadNopCommand,  metaRequest)()
+export const nopMessage = createAction(types.NOP_MESSAGE, payloadNopMessage,  metaResponse)()
+
+/**
+ * puppet.messageSend()
+ */
+const payloadSendMessageCommand = (_puppetId: string, conversationId: string, sayable: PUPPET.payloads.Sayable) => ({ conversationId, sayable })
+const payloadMessageSentMessage = (res: MetaResponse & { messageId?: string })                                  => ({ messageId: res.messageId })
 
 export const sendMessageCommand = createAction(types.SEND_MESSAGE_COMMAND,  payloadSendMessageCommand,  metaRequest)()
-export const messageSentEvent   = createAction(types.MESSAGE_SENT_EVENT,    payloadMessageSentEvent,    metaResponse)()
+export const messageSentMessage = createAction(types.MESSAGE_SENT_MESSAGE,  payloadMessageSentMessage,  metaResponse)()
+
+/**
+ * puppet.ding()
+ */
+const payloadDingCommand    = (_puppetId: string, data?: string)  => ({ data })
+const payloadDingedMessage  = (_res: MetaResponse)                => ({})
+
+export const dingCommand    = createAction(types.DING_COMMAND,    payloadDingCommand,   metaRequest)()
+export const dingedMessage  = createAction(types.DINGED_MESSAGE,  payloadDingedMessage, metaResponse)()
+
+/**
+ * puppet.reset()
+ */
+const payloadResetCommand    = (_puppetId: string, data?: string)  => ({ data })
+const payloadResetedMessage  = (_res: MetaResponse)                => ({})
+
+export const resetCommand    = createAction(types.RESET_COMMAND,    payloadResetCommand,   metaRequest)()
+export const resetedMessage  = createAction(types.RESETED_MESSAGE,  payloadResetedMessage, metaResponse)()

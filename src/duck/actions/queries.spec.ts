@@ -25,18 +25,20 @@ import * as queries from './queries.js'
 test('queries smoke testing', async t => {
   const ID = 'uuidv4'
   const PUPPET_ID = 'puppet-id'
-  const CONTACT = { name: 'contact-name' } as any
+  const CONTACT_ID = 'contact-id'
 
-  const q = queries.getCurrentUserQuery(PUPPET_ID)
-  const e = queries.currentUserGotEvent({
-    contact: CONTACT,
+  const q = queries.getCurrentUserIdQuery(PUPPET_ID)
+  const e = queries.currentUserIdGotMessage({
+    contactId: CONTACT_ID,
     id: ID,
+    puppetId: PUPPET_ID,
   })
 
   t.ok(q.meta.id, 'should set id to meta')
-  t.equal(q.payload.puppetId, PUPPET_ID, 'should set puppetId to payload')
+  t.equal(q.meta.puppetId, PUPPET_ID, 'should set puppetId to meta')
 
   t.equal(e.meta.gerror, undefined, 'should has no gerror')
   t.equal(e.meta.id, ID, 'should set id to meta')
-  t.equal(e.payload.name, CONTACT.name, 'should set contact payload name')
+  t.equal(e.meta.puppetId, PUPPET_ID, 'should set puppetId to meta')
+  t.equal(e.payload, CONTACT_ID, 'should set contact id to payload')
 })

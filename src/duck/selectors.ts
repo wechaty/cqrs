@@ -1,11 +1,10 @@
-#!/usr/bin/env -S node --no-warnings --loader ts-node/esm
 /**
  *   Wechaty Open Source Software - https://github.com/wechaty
  *
- *   @copyright 2022 Huan LI (李卓桓) <https://github.com/huan>, and
+ *   @copyright 2016 Huan LI (李卓桓) <https://github.com/huan>, and
  *                   Wechaty Contributors <https://github.com/wechaty>.
  *
- *   Licensed under the Apache License, Version 2.0 (the "License")
+ *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
  *   You may obtain a copy of the License at
  *
@@ -18,15 +17,12 @@
  *   limitations under the License.
  *
  */
-import { test } from 'tstest'
+import type { State } from './reducers.js'
 
-import {
-  metaRequest,
-}                 from './meta.js'
+const getTotalCounter   = (state: State) => ()                  => state.counter.total
+const getPuppetCounter  = (state: State) => (puppetId: string)  => state.counter[puppetId]
 
-test('metaRequest smoke testing', async t => {
-  const PUPPET_ID = 'puppet-id'
-  const req = metaRequest(PUPPET_ID)
-  t.ok(req.id, 'should set id to meta')
-  t.equal(req.puppetId, PUPPET_ID, 'should set puppetId')
-})
+export {
+  getTotalCounter,
+  getPuppetCounter,
+}
