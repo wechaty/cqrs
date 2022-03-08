@@ -37,7 +37,6 @@ import {
   tap,
   timeout,
 }                         from 'rxjs/operators'
-import PuppetMock         from 'wechaty-puppet-mock'
 import * as TimeConstants from 'time-constants'
 
 import * as CQRS    from '../src/mods/mod.js'
@@ -85,17 +84,27 @@ const mapGetMessagePayloadQueryToMessage: (
 function isTextSayable (sayable: PUPPET.payloads.Sayable): sayable is ReturnType<typeof PUPPET.payloads.sayable.text> { return sayable.type === PUPPET.types.Sayable.Text }
 
 async function main () {
-  const puppet  = new PuppetMock()
-  const wechaty = WECHATY.WechatyBuilder.build({ puppet })
-  const bus$    = CQRS.cqrsWechaty(wechaty)
+  const wechaty = WECHATY.WechatyBuilder.build()
+
+  /**
+   * Warmup puppet: the `wechaty.puppet` will not exist before the first time of wechaty start
+   *  because it is designed with lazy instanciation.
+   *
+   *  we need to start wechaty instance for once before we can use `wechaty.puppet.id`
+   *
+   * (an exception is that if we pass a `puppet` instance when build wechaty then it will be set out-of-the-box)
+   *
+   * Huan(202203): maybe a `await wechaty.init()` should be implemented for this use case.
+   */
+  await wechaty.start()
+  await wechaty.stop()
+
+  const bus$ = CQRS.cqrsWechaty(wechaty)
 
   const startedEvent$         = (source$: typeof bus$) => source$.pipe(filter(CQRS.helpers.isActionOf(CQRS.Duck.actions.startedEvent)))
   const stoppedEvent$         = (source$: typeof bus$) => source$.pipe(filter(CQRS.helpers.isActionOf(CQRS.Duck.actions.stoppedEvent)))
   const messageReceivedEvent$ = (source$: typeof bus$) => source$.pipe(filter(CQRS.helpers.isActionOf(CQRS.Duck.actions.messageReceivedEvent)))
 
-  /**
-   * wechaty.start()
-   */
   const main$ = startedEvent$(bus$).pipe(
     /**
      * start -> message
@@ -146,11 +155,24 @@ async function main () {
     ignoreElements(),
   )
 
+  /**
+   * Enable logging all bus events to console
+   */
   bus$.subscribe(event => console.info('bus$ event:', event))
+
+  /**
+   * Bootstrap the main system
+   */
   main$.subscribe()
 
+  /**
+   * wechaty.start()
+   */
   bus$.next(CQRS.Duck.actions.startCommand(wechaty.puppet.id))
 }
 
+/**
+ * No top-level await here: for CJS compatible when building Dual-ESM-CJS module
+ */
 main()
   .catch(console.error)
