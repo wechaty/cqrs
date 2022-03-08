@@ -20,7 +20,7 @@
  */
 import { test } from 'tstest'
 
-import * as sayable from '../../mods/sayable.js'
+import * as sayables from '../../mods/sayables.js'
 
 import * as commands from './commands.js'
 
@@ -29,7 +29,7 @@ test('commands smoke testing', async t => {
   const PUPPET_ID = 'puppet-id'
   const CONVERSATION_ID = 'conversation-id'
   const MESSAGE_ID = 'message-id'
-  const SAYABLE = sayable.text('test')
+  const SAYABLE = sayables.text('test')
 
   const c = commands.sendMessageCommand(PUPPET_ID, CONVERSATION_ID, SAYABLE)
   t.ok(c.meta.id, 'should set id to meta')

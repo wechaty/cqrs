@@ -44,14 +44,14 @@ import * as CQRS    from '../src/mods/mod.js'
 const mapGetSayablePayloadQueryToMessage: (
   bus$: Observable<any>,
 ) => (
-  source$: Observable<ReturnType<typeof CQRS.Duck.actions.getSayablePayloadQuery>>,
-) => Observable<ReturnType<typeof CQRS.Duck.actions.sayablePayloadGotMessage>> = bus$ => source$ => source$.pipe(
+  source$: Observable<ReturnType<typeof CQRS.duck.actions.getSayablePayloadQuery>>,
+) => Observable<ReturnType<typeof CQRS.duck.actions.sayablePayloadGotMessage>> = bus$ => source$ => source$.pipe(
   mergeMap(query => bus$.pipe(
-    filter(CQRS.helpers.isActionOf(CQRS.Duck.actions.sayablePayloadGotMessage)),
+    filter(CQRS.helpers.isActionOf(CQRS.duck.actions.sayablePayloadGotMessage)),
     filter(message => message.meta.id === query.meta.id),
     timeout(5 * TimeConstants.SECOND),
     catchError(err => of(
-      CQRS.Duck.actions.sayablePayloadGotMessage({
+      CQRS.duck.actions.sayablePayloadGotMessage({
         gerror   : JSON.stringify(err),
         id       : query.meta.id,
         puppetId : query.meta.puppetId,
@@ -64,14 +64,14 @@ const mapGetSayablePayloadQueryToMessage: (
 const mapGetMessagePayloadQueryToMessage: (
   bus$: Observable<any>
 ) => (
-  source$: Observable<ReturnType<typeof CQRS.Duck.actions.getMessagePayloadQuery>>,
-) => Observable<ReturnType<typeof CQRS.Duck.actions.messagePayloadGotMessage>> = bus$ => source$ => source$.pipe(
+  source$: Observable<ReturnType<typeof CQRS.duck.actions.getMessagePayloadQuery>>,
+) => Observable<ReturnType<typeof CQRS.duck.actions.messagePayloadGotMessage>> = bus$ => source$ => source$.pipe(
   mergeMap(query => bus$.pipe(
-    filter(CQRS.helpers.isActionOf(CQRS.Duck.actions.messagePayloadGotMessage)),
+    filter(CQRS.helpers.isActionOf(CQRS.duck.actions.messagePayloadGotMessage)),
     filter(message => message.meta.id === query.meta.id),
     timeout(5 * TimeConstants.SECOND),
     catchError(err => of(
-      CQRS.Duck.actions.messagePayloadGotMessage({
+      CQRS.duck.actions.messagePayloadGotMessage({
         gerror   : JSON.stringify(err),
         id       : query.meta.id,
         puppetId : query.meta.puppetId,
@@ -87,7 +87,7 @@ async function main () {
   const wechaty = WECHATY.WechatyBuilder.build()
 
   /**
-   * Warmup puppet: the `wechaty.puppet` will not exist before the first time of wechaty start
+   * Warm-up puppet: the `wechaty.puppet` will not exist before the first time of wechaty start
    *  because it is designed with lazy instanciation.
    *
    *  we need to start wechaty instance for once before we can use `wechaty.puppet.id`
@@ -101,9 +101,9 @@ async function main () {
 
   const bus$ = CQRS.cqrsWechaty(wechaty)
 
-  const startedEvent$         = (source$: typeof bus$) => source$.pipe(filter(CQRS.helpers.isActionOf(CQRS.Duck.actions.startedEvent)))
-  const stoppedEvent$         = (source$: typeof bus$) => source$.pipe(filter(CQRS.helpers.isActionOf(CQRS.Duck.actions.stoppedEvent)))
-  const messageReceivedEvent$ = (source$: typeof bus$) => source$.pipe(filter(CQRS.helpers.isActionOf(CQRS.Duck.actions.messageReceivedEvent)))
+  const startedEvent$         = (source$: typeof bus$) => source$.pipe(filter(CQRS.helpers.isActionOf(CQRS.duck.actions.startedEvent)))
+  const stoppedEvent$         = (source$: typeof bus$) => source$.pipe(filter(CQRS.helpers.isActionOf(CQRS.duck.actions.stoppedEvent)))
+  const messageReceivedEvent$ = (source$: typeof bus$) => source$.pipe(filter(CQRS.helpers.isActionOf(CQRS.duck.actions.messageReceivedEvent)))
 
   const main$ = startedEvent$(bus$).pipe(
     /**
@@ -114,7 +114,7 @@ async function main () {
         /**
          * message -> sayable
          */
-        map(event => CQRS.Duck.actions.getSayablePayloadQuery(event.meta.puppetId, event.payload.messageId)),
+        map(event => CQRS.duck.actions.getSayablePayloadQuery(event.meta.puppetId, event.payload.messageId)),
         mapGetSayablePayloadQueryToMessage(bus$),
         map(message => message.payload),
         filter(Boolean),
@@ -129,7 +129,7 @@ async function main () {
           /**
            * ding -> talkerId
            */
-          mapTo(CQRS.Duck.actions.getMessagePayloadQuery(messageReceivedEvent.meta.puppetId, messageReceivedEvent.payload.messageId)),
+          mapTo(CQRS.duck.actions.getMessagePayloadQuery(messageReceivedEvent.meta.puppetId, messageReceivedEvent.payload.messageId)),
           mapGetMessagePayloadQueryToMessage(bus$),
           map(message => message.payload?.fromId),
           filter(Boolean),
@@ -137,7 +137,7 @@ async function main () {
           /**
            * talkerId -> command
            */
-          map(talkerId => CQRS.Duck.actions.sendMessageCommand(
+          map(talkerId => CQRS.duck.actions.sendMessageCommand(
             messageReceivedEvent.meta.puppetId,
             talkerId,
             CQRS.sayable.text('dong'),
@@ -168,7 +168,7 @@ async function main () {
   /**
    * wechaty.start()
    */
-  bus$.next(CQRS.Duck.actions.startCommand(wechaty.puppet.id))
+  bus$.next(CQRS.duck.actions.startCommand(wechaty.puppet.id))
 }
 
 /**
