@@ -140,7 +140,7 @@ async function main () {
           map(talkerId => CQRS.duck.actions.sendMessageCommand(
             messageReceivedEvent.meta.puppetId,
             talkerId,
-            CQRS.sayable.text('dong'),
+            CQRS.sayables.text('dong'),
           )),
         )),
 
