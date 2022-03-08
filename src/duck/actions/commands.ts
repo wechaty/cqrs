@@ -63,8 +63,26 @@ export const dingedMessage  = createAction(types.DINGED_MESSAGE,  payloadDingedM
 /**
  * puppet.reset()
  */
-const payloadResetCommand    = (_puppetId: string, data?: string)  => ({ data })
-const payloadResetedMessage  = (_res: MetaResponse)                => ({})
+const payloadResetCommand = (_puppetId: string, data?: string)  => ({ data })
+const payloadResetMessage = (_res: MetaResponse)                => ({})
 
-export const resetCommand = createAction(types.RESET_COMMAND, payloadResetCommand,   metaRequest)()
-export const resetMessage = createAction(types.RESET_MESSAGE, payloadResetedMessage, metaResponse)()
+export const resetCommand = createAction(types.RESET_COMMAND, payloadResetCommand, metaRequest)()
+export const resetMessage = createAction(types.RESET_MESSAGE, payloadResetMessage, metaResponse)()
+
+/**
+ * puppet.start()
+ */
+const payloadStartCommand    = (_puppetId: string)  => ({})
+const payloadStartedMessage  = (_res: MetaResponse) => ({})
+
+export const startCommand   = createAction(types.START_COMMAND,   payloadStartCommand,   metaRequest)()
+export const startedMessage = createAction(types.STARTED_MESSAGE, payloadStartedMessage, metaResponse)()
+
+/**
+ * puppet.stop()
+ */
+const payloadStopCommand    = (_puppetId: string)   => ({})
+const payloadStoppedMessage = (_res: MetaResponse)  => ({})
+
+export const stopCommand    = createAction(types.STOP_COMMAND,    payloadStopCommand,    metaRequest)()
+export const stoppedMessage = createAction(types.STOPPED_MESSAGE, payloadStoppedMessage, metaResponse)()

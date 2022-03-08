@@ -34,24 +34,30 @@ import * as actions from '../actions/mod.js'
 import { ding$ }        from './ding$.js'
 import { reset$ }       from './reset$.js'
 import { sendMessage$ } from './send-message$.js'
+import { start$ }       from './start$.js'
+import { stop$ }        from './stop$.js'
 
-const dingEpic: Epic = actions$ => actions$.pipe(
+export const dingEpic: Epic = actions$ => actions$.pipe(
   filter(isActionOf(actions.dingCommand)),
   mergeMap(ding$),
 )
 
-const resetEpic: Epic = actions$ => actions$.pipe(
+export const resetEpic: Epic = actions$ => actions$.pipe(
   filter(isActionOf(actions.resetCommand)),
   mergeMap(reset$),
 )
 
-const sendMessageEpic: Epic = actions$ => actions$.pipe(
+export const sendMessageEpic: Epic = actions$ => actions$.pipe(
   filter(isActionOf(actions.sendMessageCommand)),
   mergeMap(sendMessage$),
 )
 
-export {
-  dingEpic,
-  resetEpic,
-  sendMessageEpic,
-}
+export const starEpic: Epic = actions$ => actions$.pipe(
+  filter(isActionOf(actions.startCommand)),
+  mergeMap(start$),
+)
+
+export const stopEpic: Epic = actions$ => actions$.pipe(
+  filter(isActionOf(actions.stopCommand)),
+  mergeMap(stop$),
+)

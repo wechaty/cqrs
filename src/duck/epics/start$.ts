@@ -17,19 +17,39 @@
  *   limitations under the License.
  *
  */
-import type { ActionType } from 'typesafe-actions'
-import reducer from './reducers.js'
+import {
+  EMPTY,
+  of,
+}                 from 'rxjs'
+import {
+  catchError,
+  mapTo,
+  mergeMap,
+}                 from 'rxjs/operators'
+import { GError } from 'gerror'
 
-import type * as actions     from './actions/mod.js'
+import {
+  getPuppet,
+}             from 'wechaty-redux'
 
-export type Action = ActionType<typeof actions>
+import * as actions from '../actions/mod.js'
 
-export default reducer
-export { reducer }
-
-export * as actions     from './actions/mod.js'
-export * as epics       from './epics/mod.js'
-export * as operations  from './operations.js'
-export * as selectors   from './selectors.js'
-export * as types       from './types.js'
-export * as utils       from './utils.js'
+export const start$ = (action: ReturnType<typeof actions.startCommand>) => of(
+  getPuppet(action.meta.puppetId),
+).pipe(
+  mergeMap(puppet => puppet
+    ? of(puppet.start())
+    : EMPTY,
+  ),
+  mapTo(actions.startedMessage({
+    id       : action.meta.id,
+    puppetId : action.meta.puppetId,
+  })),
+  catchError((e: Error) => of(
+    actions.startedMessage({
+      gerror   : GError.stringify(e),
+      id       : action.meta.id,
+      puppetId : action.meta.puppetId,
+    }),
+  )),
+)

@@ -23,6 +23,7 @@
 import {
   createAction,
 }                         from 'typesafe-actions'
+import type * as PUPPET   from 'wechaty-puppet'
 
 import * as types from '../types.js'
 
@@ -31,6 +32,12 @@ import {
   metaResponse,
   MetaResponse,
 }                 from './meta.js'
+
+/**
+ * Bug compatible & workaround for Ducks API
+ *  https://github.com/huan/ducks/issues/2
+ */
+// const nop = createAction(types.NOP)()
 
 /**
  * puppet.getCurrentUserId
@@ -51,7 +58,19 @@ export const getIsLoggedInQuery   = createAction(types.GET_IS_LOGGED_IN_QUERY,  
 export const isLoggedInGotMessage = createAction(types.IS_LOGGED_IN_GOT_MESSAGE,  payloadIsLoggedInGotMessage,  metaResponse)()
 
 /**
- * Bug compatible & workaround for Ducks API
- *  https://github.com/huan/ducks/issues/2
+ * puppet.sayablePayload
  */
-// const nop = createAction(types.NOP)()
+const payloadGetSayablePayloadQuery   = (_puppetId: string, sayableId: string)                      => ({ sayableId })
+const payloadSayablePayloadGotMessage = (res: MetaResponse & { sayable?: PUPPET.payloads.Sayable }) => res.sayable
+
+export const getSayablePayloadQuery   = createAction(types.GET_SAYABLE_PAYLOAD_QUERY,    payloadGetSayablePayloadQuery,    metaRequest)()
+export const sayablePayloadGotMessage = createAction(types.SAYABLE_PAYLOAD_GOT_MESSAGE,  payloadSayablePayloadGotMessage,  metaResponse)()
+
+/**
+ * puppet.messagePayload
+ */
+const payloadGetMessagePayloadQuery   = (_puppetId: string, messageId: string)                      => ({ messageId })
+const payloadMessagePayloadGotMessage = (res: MetaResponse & { message?: PUPPET.payloads.Message }) => res.message
+
+export const getMessagePayloadQuery   = createAction(types.GET_MESSAGE_PAYLOAD_QUERY,    payloadGetMessagePayloadQuery,    metaRequest)()
+export const messagePayloadGotMessage = createAction(types.MESSAGE_PAYLOAD_GOT_MESSAGE,  payloadMessagePayloadGotMessage,  metaResponse)()
