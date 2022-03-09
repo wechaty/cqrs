@@ -22,8 +22,8 @@ import type * as PUPPET   from 'wechaty-puppet'
 
 import * as actions from './actions/mod.js'
 
-const ding  = (dispatch: Dispatch) => (puppetId: string, data: string)  => dispatch(actions.dingCommand(puppetId, data))
-const reset = (dispatch: Dispatch) => (puppetId: string, data: string)  => dispatch(actions.resetCommand(puppetId, data))
+const ding  = (dispatch: Dispatch) => (puppetId: string, data?: string)  => dispatch(actions.dingCommand(puppetId, data))
+const reset = (dispatch: Dispatch) => (puppetId: string, data?: string)  => dispatch(actions.resetCommand(puppetId, data))
 
 const sendMessage = (dispatch: Dispatch) => (
   puppetId       : string,

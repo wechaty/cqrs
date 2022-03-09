@@ -1,44 +1,58 @@
 import type * as WECHATY from 'wechaty'
-import * as PUPPET from 'wechaty-puppet'
-
+import {
+  Ducks,
+  nopReducer,
+}                   from 'ducks'
 import {
   Subject,
 }               from 'rxjs'
-import type {
-  Action,
-}             from 'redux'
+import {
+  createStore,
+  Middleware,
+  compose,
+  applyMiddleware,
+}                   from 'redux'
 
 import {
   WechatyRedux,
 }                   from 'wechaty-redux'
-import * as Duck    from './duck/mod.js'
+import type {
+  ActionType,
+}                   from 'typesafe-actions'
 
-import {
-  filterCommandType,
-  filterEventType,
-  filterQueryType,
-}                     from './pure/filter-type.js'
+import * as CqrsDuck    from './duck/mod.js'
 
-function cqrsWechaty (
+export type CqrsBus = Subject<
+  ActionType<typeof CqrsDuck.actions>
+>
+
+const cqrsMiddleware: (bus$: CqrsBus) => Middleware = bus$ => _store => next => {
+  bus$.subscribe(next)
+  return action => bus$.next(action)
+}
+
+export function from (
   wechaty: WECHATY.impls.WechatyInterface,
-) {
-  const bus$ = new Subject<Action>()
+): CqrsBus {
+  const bus$: CqrsBus = new Subject()
 
-  const command$ = bus$.pipe(filterCommandType)
-  const event$   = bus$.pipe(filterEventType)
-  const query$   = bus$.pipe(filterQueryType)
-
-  const store = {
-    bus$: bus$,
-  } as any
+  const ducks = new Ducks({ cqrs: CqrsDuck })
+  const store = createStore(
+    nopReducer,
+    compose(  // Composes functions from right to left.
+      ducks.enhancer(),
+      applyMiddleware(
+        cqrsMiddleware(bus$),
+      ),
+    ),
+  )
 
   wechaty.use(
     WechatyRedux({ store }),
   )
 
-  return bus$
-}
+  // const cqrsDuck = ducks.ducksify('cqrs')
+  // cqrsDuck.operations.ding(wechaty.puppet.id)
 
-export {
-  cqrsWechaty,
+  return bus$
 }
