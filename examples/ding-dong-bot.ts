@@ -18,68 +18,23 @@
  *   limitations under the License.
  *
  */
-import * as WECHATY   from 'wechaty'
-import * as PUPPET    from 'wechaty-puppet'
+import * as WECHATY             from 'wechaty'
+import * as PUPPET              from 'wechaty-puppet'
 import {
-  Observable,
   of,
   mapTo,
 }                         from 'rxjs'
 import {
-  catchError,
   filter,
   ignoreElements,
   map,
   mergeMap,
   switchMapTo,
-  take,
   takeUntil,
   tap,
-  timeout,
 }                         from 'rxjs/operators'
-import * as TimeConstants from 'time-constants'
 
 import * as CQRS    from '../src/mods/mod.js'
-
-const mapGetSayablePayloadQueryToMessage: (
-  bus$: Observable<any>,
-) => (
-  source$: Observable<ReturnType<typeof CQRS.duck.actions.getSayablePayloadQuery>>,
-) => Observable<ReturnType<typeof CQRS.duck.actions.sayablePayloadGotMessage>> = bus$ => source$ => source$.pipe(
-  mergeMap(query => bus$.pipe(
-    filter(CQRS.helpers.isActionOf(CQRS.duck.actions.sayablePayloadGotMessage)),
-    filter(message => message.meta.id === query.meta.id),
-    timeout(5 * TimeConstants.SECOND),
-    catchError(err => of(
-      CQRS.duck.actions.sayablePayloadGotMessage({
-        gerror   : JSON.stringify(err),
-        id       : query.meta.id,
-        puppetId : query.meta.puppetId,
-      }),
-    )),
-  )),
-  take(1),
-)
-
-const mapGetMessagePayloadQueryToMessage: (
-  bus$: Observable<any>
-) => (
-  source$: Observable<ReturnType<typeof CQRS.duck.actions.getMessagePayloadQuery>>,
-) => Observable<ReturnType<typeof CQRS.duck.actions.messagePayloadGotMessage>> = bus$ => source$ => source$.pipe(
-  mergeMap(query => bus$.pipe(
-    filter(CQRS.helpers.isActionOf(CQRS.duck.actions.messagePayloadGotMessage)),
-    filter(message => message.meta.id === query.meta.id),
-    timeout(5 * TimeConstants.SECOND),
-    catchError(err => of(
-      CQRS.duck.actions.messagePayloadGotMessage({
-        gerror   : JSON.stringify(err),
-        id       : query.meta.id,
-        puppetId : query.meta.puppetId,
-      }),
-    )),
-  )),
-  take(1),
-)
 
 function isTextSayable (sayable: PUPPET.payloads.Sayable): sayable is ReturnType<typeof PUPPET.payloads.sayable.text> { return sayable.type === PUPPET.types.Sayable.Text }
 
@@ -115,7 +70,10 @@ async function main () {
          * message -> sayable
          */
         map(event => CQRS.duck.actions.getSayablePayloadQuery(event.meta.puppetId, event.payload.messageId)),
-        mapGetSayablePayloadQueryToMessage(bus$),
+        CQRS.helpers.mapCommandQueryToMessage(bus$)(
+          CQRS.duck.actions.getSayablePayloadQuery,
+          CQRS.duck.actions.sayablePayloadGotMessage,
+        ),
         map(message => message.payload),
         filter(Boolean),
 
@@ -130,7 +88,10 @@ async function main () {
            * ding -> talkerId
            */
           mapTo(CQRS.duck.actions.getMessagePayloadQuery(messageReceivedEvent.meta.puppetId, messageReceivedEvent.payload.messageId)),
-          mapGetMessagePayloadQueryToMessage(bus$),
+          CQRS.helpers.mapCommandQueryToMessage(bus$)(
+            CQRS.duck.actions.getMessagePayloadQuery,
+            CQRS.duck.actions.messagePayloadGotMessage,
+          ),
           map(message => message.payload?.fromId),
           filter(Boolean),
 
