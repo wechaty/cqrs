@@ -80,8 +80,10 @@
     "time-constants": "^1.0.3",
     "typesafe-actions": "^5.1.0",
     "utility-types": "^3.10.0",
-    "wechaty-puppet": "^1.13.13",
-    "wechaty-redux": "^1.17.2"
+    "wechaty-redux": "^1.19.2"
+  },
+  "peerDependencies": {
+    "wechaty": "^1.15.3"
   },
   "devDependencies": {
     "@chatie/eslint-config": "^1.0.4",
@@ -92,7 +94,6 @@
     "@types/time-constants": "^1.0.0",
     "@types/uuid": "^8.3.4",
     "glob": "^7.2.0",
-    "wechaty": "^1.13.2",
     "wechaty-puppet-mock": "^1.13.4"
   },
   "files": [

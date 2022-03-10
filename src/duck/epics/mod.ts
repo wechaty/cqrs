@@ -31,11 +31,20 @@ import type {
 import * as actions from '../actions/mod.js'
 // import * as utils   from './utils.js'
 
+import { debug$ }       from './debug$.js'
+
 import { ding$ }        from './ding$.js'
 import { reset$ }       from './reset$.js'
 import { sendMessage$ } from './send-message$.js'
 import { start$ }       from './start$.js'
 import { stop$ }        from './stop$.js'
+
+/**
+ * Debug for development
+ */
+export const debugEpic: Epic = actions$ => actions$.pipe(
+  mergeMap(debug$),
+)
 
 export const dingEpic: Epic = actions$ => actions$.pipe(
   filter(isActionOf(actions.dingCommand)),

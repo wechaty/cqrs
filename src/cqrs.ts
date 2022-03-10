@@ -26,23 +26,55 @@ export type CqrsBus = Subject<
   ActionType<typeof CqrsDuck.actions>
 >
 
-const cqrsMiddleware: (bus$: CqrsBus) => Middleware = bus$ => _store => next => {
-  bus$.subscribe(next)
-  return action => bus$.next(action)
+/**
+ * Input: Commands & Queries
+ */
+const cqMiddleware: (cqBus$: CqrsBus) => Middleware = cqBus$ => _store => next => {
+  cqBus$.subscribe(cq => {
+    console.info('bus$.subscribe e:', cq)
+    next(cq)
+    // console.info('bus$.subscribe e: done.')
+  })
+  return action => next(action)
+}
+
+/**
+ * Output: Messages & Events
+ */
+const meMiddleware: (meBus$: CqrsBus) => Middleware = meBus$ => _store => next => action => {
+  meBus$.next(action)
+  console.info('action:', action)
+  next(action)
 }
 
 export function from (
   wechaty: WECHATY.impls.WechatyInterface,
 ): CqrsBus {
-  const bus$: CqrsBus = new Subject()
+  const cqBus$ = new Subject<any>()
+  const meBus$ = new Subject<any>()
 
   const ducks = new Ducks({ cqrs: CqrsDuck })
   const store = createStore(
     nopReducer,
     compose(  // Composes functions from right to left.
+      applyMiddleware(
+        /**
+         * Huan(202203): cq - Commands & Queries
+         *  `cqMiddleware` MUST be the most left one when calling `compose`
+         *
+         * to guarantee: send events to other middlewares
+         */
+        cqMiddleware(cqBus$),
+      ),
       ducks.enhancer(),
       applyMiddleware(
-        cqrsMiddleware(bus$),
+        /**
+         * Huan(202203): me - Messages & Events
+         *  `meMiddleware` MUST be the most right one when calling `compose`
+         *
+         * to guarantee that: receive events generated from other middlewares
+         */
+        meMiddleware(meBus$),
       ),
     ),
   )
@@ -54,5 +86,6 @@ export function from (
   // const cqrsDuck = ducks.ducksify('cqrs')
   // cqrsDuck.operations.ding(wechaty.puppet.id)
 
+  const bus$: CqrsBus = Subject.create(cqBus$, meBus$)
   return bus$
 }

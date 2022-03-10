@@ -27,42 +27,46 @@ import {
   defer,
   of,
   lastValueFrom,
+  firstValueFrom,
 }                   from 'rxjs'
 import {
   tap,
   startWith,
+  filter,
 }                   from 'rxjs/operators'
 import {
   WechatyBuilder,
   Message,
 }                   from 'wechaty'
+import {
+  Duck as ReduxDuck,
+}                   from 'wechaty-redux'
 import * as PUPPET  from 'wechaty-puppet'
 
 import {
   mock,
   PuppetMock,
 }                     from 'wechaty-puppet-mock'
+import {
+  isActionOf,
+}                     from 'typesafe-actions'
+
+import * as CqrsDuck from './duck/mod.js'
 
 import { from } from './cqrs.js'
 
-test('CQRS smoke testing', async t => {
+test('smoke testing', async t => {
   const mocker  = new mock.Mocker()
   const puppet  = new PuppetMock({ mocker })
   const wechaty = WechatyBuilder.build({ puppet })
-  const bus$    = from(wechaty)
+
+  await wechaty.init()
+  const bus$ = from(wechaty)
 
   const eventList: any[] = []
   bus$.subscribe(e => eventList.push(e))
 
   await wechaty.start()
-
-  // t.equal(bundle.selectors.isLoggedIn(bot.puppet.id), false, 'should not logged in at start')
-  // t.notOk(bundle.selectors.getQrCode(bot.puppet.id), 'should no QR Code at start')
-  // t.notOk(bundle.selectors.getCurrentUser(bot.puppet.id), 'should no user payload at start')
-
-  // const QR_CODE = 'qrcode'
-  // mocker.scan(QR_CODE)
-  // t.equal(bundle.selectors.getQrCode(bot.puppet.id), QR_CODE, 'should get QR Code right')
 
   const user = mocker.createContact()
   mocker.login(user)
@@ -70,15 +74,151 @@ test('CQRS smoke testing', async t => {
   // Let the bullets fly
   await new Promise(resolve => setImmediate(resolve))
 
+  await wechaty.logout()
+  await wechaty.stop()
+
+  t.same(eventList, [
+    // ReduxDuck.actions.registerWechatyCommand(wechaty.id),
+    // ReduxDuck.actions.registerPuppetCommand(wechaty.puppet.id),
+    // ReduxDuck.actions.bindWechatyPuppetCommand({ puppetId: wechaty.puppet.id, wechatyId: wechaty.id }),
+    CqrsDuck.actions.stateActivatedEvent(wechaty.puppet.id, 'pending'),
+    CqrsDuck.actions.stateActivatedEvent(wechaty.puppet.id, true),
+    CqrsDuck.actions.startedEvent(wechaty.puppet.id),
+    CqrsDuck.actions.loginReceivedEvent(wechaty.puppet.id, { contactId: user.id }),
+    CqrsDuck.actions.logoutReceivedEvent(wechaty.puppet.id, { contactId: user.id, data: 'logout()' }),
+    CqrsDuck.actions.stateInactivatedEvent(wechaty.puppet.id, 'pending'),
+    CqrsDuck.actions.stateInactivatedEvent(wechaty.puppet.id, true),
+    CqrsDuck.actions.stoppedEvent(wechaty.puppet.id),
+  ], 'should get wechaty event list')
+})
+
+test('Command/Event - ding/dong', async t => {
+  const DING_DATA = 'ding-data'
+
+  const mocker  = new mock.Mocker()
+  const puppet  = new PuppetMock({ mocker })
+  const wechaty = WechatyBuilder.build({ puppet })
+
+  await wechaty.init()
+  const bus$ = from(wechaty)
+
+  await wechaty.start()
+
+  const eventList: any[] = []
+  bus$.subscribe(e => eventList.push(e))
+
+  const futureDong = firstValueFrom(bus$.pipe(
+    filter(isActionOf(CqrsDuck.actions.dongReceivedEvent)),
+  ))
+
+  const dingCommand = CqrsDuck.actions.dingCommand(puppet.id, DING_DATA)
+  bus$.next(dingCommand)
+  await futureDong
+
+  t.same(eventList, [
+    dingCommand,
+    CqrsDuck.actions.dingedMessage({ id: dingCommand.meta.id, puppetId: puppet.id }),
+    CqrsDuck.actions.dongReceivedEvent(puppet.id, { data: DING_DATA }),
+  ], 'should get dong event with data')
+
+  await wechaty.stop()
+})
+
+test('Commands - start/stop', async t => {
+  const mocker  = new mock.Mocker()
+  const puppet  = new PuppetMock({ mocker })
+  const wechaty = WechatyBuilder.build({ puppet })
+
+  await wechaty.init()
+  const bus$ = from(wechaty)
+
+  const eventList: any[] = []
+  bus$.subscribe(e => eventList.push(e))
+
+  const startFuture = firstValueFrom(bus$.pipe(
+    filter(isActionOf(CqrsDuck.actions.startedEvent)),
+  ))
+
+  const startCommand = CqrsDuck.actions.startCommand(puppet.id)
+  bus$.next(startCommand)
+
+  await startFuture
+  t.same(eventList, [
+    CqrsDuck.actions.stateActivatedEvent(puppet.id, 'pending'),
+    startCommand,
+    CqrsDuck.actions.stateActivatedEvent(puppet.id, true),
+    CqrsDuck.actions.startedEvent(puppet.id),
+  ], 'should get start events')
+
+  const stopFuture = firstValueFrom(bus$.pipe(
+    filter(isActionOf(CqrsDuck.actions.stoppedEvent)),
+  ))
+  const stopCommand = CqrsDuck.actions.stopCommand(puppet.id)
+  eventList.length = 0
+  bus$.next(stopCommand)
+
+  await stopFuture
+  t.same(eventList, [
+    CqrsDuck.actions.stateInactivatedEvent(puppet.id, 'pending'),
+    stopCommand,
+    CqrsDuck.actions.stateInactivatedEvent(puppet.id, true),
+    CqrsDuck.actions.stoppedEvent(puppet.id),
+
+  ], 'should get stop events')
+})
+
+test.only('Events - login', async t => {
+  const mocker  = new mock.Mocker()
+  const puppet  = new PuppetMock({ mocker })
+  const wechaty = WechatyBuilder.build({ puppet })
+
+  await wechaty.init()
+  const bus$ = from(wechaty)
+
+  await wechaty.start()
+
+  const eventList: any[] = []
+  bus$.subscribe(e => eventList.push(e))
+
+  t.equal(bundle.selectors.isLoggedIn(bot.puppet.id), false, 'should not logged in at start')
+  t.notOk(bundle.selectors.getQrCode(bot.puppet.id), 'should no QR Code at start')
+  t.notOk(bundle.selectors.getCurrentUser(bot.puppet.id), 'should no user payload at start')
+
+  // const QR_CODE = 'qrcode'
+  // mocker.scan(QR_CODE)
+  // t.equal(bundle.selectors.getQrCode(bot.puppet.id), QR_CODE, 'should get QR Code right')
+
+  // const user = mocker.createContact()
+  // mocker.login(user)
+
+  // Let the bullets fly
+  // await new Promise(resolve => setImmediate(resolve))
+
   // t.ok(bundle.selectors.isLoggedIn(bot.puppet.id), 'should logged in after login(user)')
   // t.notOk(bundle.selectors.getQrCode(bot.puppet.id), 'should no QR Code after user login')
   // t.same(bundle.selectors.getCurrentUser(bot.puppet.id), { ...user.payload, puppetId: bot.puppet.id }, 'should login user with payload')
 
-  await wechaty.logout()
-  // t.notOk(bundle.selectors.isLoggedIn(bot.puppet.id), 'should logged out after call bot.logout')
-  t.same(eventList, [], 'should get wechaty event list')
-})
+  // await wechaty.logout()
+  // await wechaty.stop()
 
+  // t.notOk(bundle.selectors.isLoggedIn(bot.puppet.id), 'should logged out after call bot.logout')
+
+  const EXPECTED_EVENT_LIST = [
+    ReduxDuck.actions.registerWechatyCommand(wechaty.id),
+    ReduxDuck.actions.registerPuppetCommand(wechaty.puppet.id),
+    ReduxDuck.actions.bindWechatyPuppetCommand({ puppetId: wechaty.puppet.id, wechatyId: wechaty.id }),
+    CqrsDuck.actions.stateActivatedEvent(wechaty.puppet.id, 'pending'),
+    CqrsDuck.actions.stateActivatedEvent(wechaty.puppet.id, true),
+    CqrsDuck.actions.startedEvent(wechaty.puppet.id),
+    CqrsDuck.actions.loginReceivedEvent(wechaty.puppet.id, { contactId: user.id }),
+    CqrsDuck.actions.logoutReceivedEvent(wechaty.puppet.id, { contactId: user.id, data: 'logout()' }),
+    CqrsDuck.actions.stateInactivatedEvent(wechaty.puppet.id, 'pending'),
+    CqrsDuck.actions.stateInactivatedEvent(wechaty.puppet.id, true),
+    CqrsDuck.actions.stoppedEvent(wechaty.puppet.id),
+  ]
+
+  t.same(eventList, EXPECTED_EVENT_LIST, 'should get wechaty event list')
+})
 // test('WechatyRedux: operations.ding()', async t => {
 //   for await (const {
 //     bot,

@@ -31,7 +31,7 @@ import {
   ignoreElements,
   map,
   mergeMap,
-  mergeMapTo,
+  switchMapTo,
   take,
   takeUntil,
   tap,
@@ -99,7 +99,7 @@ async function main () {
   await wechaty.start()
   await wechaty.stop()
 
-  const bus$ = CQRS.cqrsWechaty(wechaty)
+  const bus$ = CQRS.from(wechaty)
 
   const startedEvent$         = (source$: typeof bus$) => source$.pipe(filter(CQRS.helpers.isActionOf(CQRS.duck.actions.startedEvent)))
   const stoppedEvent$         = (source$: typeof bus$) => source$.pipe(filter(CQRS.helpers.isActionOf(CQRS.duck.actions.stoppedEvent)))
@@ -109,7 +109,7 @@ async function main () {
     /**
      * start -> message
      */
-    mergeMapTo(messageReceivedEvent$(bus$).pipe(
+    switchMapTo(messageReceivedEvent$(bus$).pipe(
       mergeMap(messageReceivedEvent => of(messageReceivedEvent).pipe(
         /**
          * message -> sayable
