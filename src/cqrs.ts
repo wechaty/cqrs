@@ -5,7 +5,7 @@ import {
 }                   from 'ducks'
 import {
   Subject,
-}               from 'rxjs'
+}                   from 'rxjs'
 import {
   createStore,
   Middleware,
@@ -87,5 +87,6 @@ export function from (
   // cqrsDuck.operations.ding(wechaty.puppet.id)
 
   const bus$: CqrsBus = Subject.create(cqBus$, meBus$)
+
   return bus$
 }

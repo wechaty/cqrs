@@ -1,16 +1,18 @@
 /* eslint-disable sort-keys */
 import UUID from 'uuid'
 
+export interface MetaRequest {
+  id       : string
+  puppetId : string
+}
 /**
  * All commands/queries share this response
  *  It only shows that whether the function call has been put successfully
  *  it's nothing related to the state change of the bot
  */
-export interface MetaResponse {
+export type MetaResponse = MetaRequest & {
   gerror?  : string
-  id       : string
-  puppetId : string
 }
 
-export const metaRequest   = (puppetId: string, ..._: any)  => ({ id: UUID.v4(), puppetId })
-export const metaResponse  = (res: MetaResponse)            => ({ id: res.id, puppetId: res.puppetId, gerror: res.gerror })
+export const metaRequest:   (puppetId: string, ..._: any) => MetaRequest  = puppetId  => ({ id: UUID.v4(), puppetId })
+export const metaResponse:  (res: MetaResponse)           => MetaResponse = res       => ({ id: res.id, puppetId: res.puppetId, gerror: res.gerror })
