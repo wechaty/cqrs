@@ -45,8 +45,9 @@ import {
 import * as CqrsDuck  from './duck/mod.js'
 import * as sayables  from './mods/sayables.js'
 
+import { mapCommandQueryToMessage } from './maps/mod.js'
+
 import { from }                     from './cqrs.js'
-import { mapCommandQueryToMessage } from './map-command-query-to-message.js'
 
 test('smoke testing', async t => {
   const mocker  = new mock.Mocker()
