@@ -18,8 +18,11 @@
  *   limitations under the License.
  *
  */
+import { test }         from 'tstest'
 import { validateDuck } from 'ducks'
 
 import * as Duck from './mod.js'
 
-validateDuck(Duck)
+test('validateDuck', async t => {
+  t.doesNotThrow(() => validateDuck(Duck), 'should be a valid duck')
+})
