@@ -18,21 +18,27 @@
  *   limitations under the License.
  *
  */
-import {
-  cqrsWechaty,
-  VERSION,
-}                 from 'wechaty-cqrs'
+import * as CQRS          from 'wechaty-cqrs'
 import { WechatyBuilder } from 'wechaty'
+import assert from 'assert'
 
-const ducks = new Ducks({ wechaty: Duck })
-const store = ducks.configureStore()
+async function main () {
+  const wechaty = WechatyBuilder.build({ puppet: 'wechaty-puppet-mock' })
 
-const wechaty = WechatyBuilder.build({ puppet: 'wechaty-puppet-mock' })
+  await wechaty.init()
+  const bus$ = CQRS.from(wechaty)
 
-wechaty.use(
-  WechatyRedux({ store })
-)
+  const eventList: any[] = []
+  bus$.subscribe(e => eventList.push(e))
 
-if (VERSION === '0.0.0') {
-  throw new Error('version should be set before publishing')
+  bus$.next(CQRS.duck.actions.dingCommand(wechaty.puppet.id))
+  await new Promise(setImmediate)
+
+  console.info(eventList)
+
+  assert(eventList.length > 0, 'should emit events via bus$')
+  assert(CQRS.VERSION !== '0.0.0', 'version should be set before publishing')
 }
+
+main()
+  .catch(console.error)

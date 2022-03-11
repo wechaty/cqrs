@@ -54,3 +54,25 @@ test('integration testing', async t => {
   bus$.next(CQRS.duck.actions.stopCommand(puppet.id))
   await t.resolves(stoppedEventFuture, 'should get stopped after the stopp command')
 })
+
+test('ding/dong', async t => {
+  const wechaty = WechatyBuilder.build({ puppet: 'wechaty-puppet-mock' })
+  await wechaty.init()
+  const bus$ = CQRS.from(wechaty)
+
+  await wechaty.start()
+
+  const eventList: any[] = []
+  bus$.subscribe(e => eventList.push(e))
+
+  const command = CQRS.duck.actions.dingCommand(wechaty.puppet.id)
+  bus$.next(command)
+
+  await new Promise(setImmediate)
+  t.same(eventList, [
+    command,
+    CQRS.duck.actions.dingedMessage(command.meta),
+  ], 'should get ding/dong events')
+
+  await wechaty.stop()
+})

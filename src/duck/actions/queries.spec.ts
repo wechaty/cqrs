@@ -39,5 +39,5 @@ test('queries smoke testing', async t => {
   t.equal(e.meta.gerror, undefined, 'should has no gerror')
   t.equal(e.meta.id, ID, 'should set id to meta')
   t.equal(e.meta.puppetId, PUPPET_ID, 'should set puppetId to meta')
-  t.equal(e.payload, CONTACT_ID, 'should set contact id to payload')
+  t.equal(e.payload.contactId, CONTACT_ID, 'should set contact id to payload')
 })

@@ -24,6 +24,7 @@ npm install --production *-*.*.*.tgz \
   @types/node \
   @chatie/tsconfig@$NPM_TAG \
   "wechaty@$NPM_TAG" \
+  "wechaty-puppet-mock@$NPM_TAG" \
 
 #
 # CommonJS
