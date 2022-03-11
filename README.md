@@ -5,7 +5,11 @@
 [![Ducksify Extension](https://img.shields.io/badge/Redux-Ducksify-yellowgreen)](https://github.com/huan/ducks#3-ducksify-extension-currying--api-interface)
 [![ES Modules](https://img.shields.io/badge/ES-Modules-brightgreen)](https://github.com/Chatie/tsconfig/issues/16)
 
-A event-driven architecture wrapper for Wechaty that applies the CQS principle by using separate Query and Command messages to retrieve and modify the bot state, respectively.
+A event-driven architecture wrapper for Wechaty
+that applies the CQS principle
+by using separate Query and Command messages
+to retrieve and modify the bot state,
+respectively.
 
 ![Command Query Responsibility Segregation (CQRS) Wechaty](docs/images/cqrs-wechaty.png)
 
@@ -13,7 +17,10 @@ A event-driven architecture wrapper for Wechaty that applies the CQS principle b
 
 ## Command Query Responsibility Separation (CQRS)
 
-> Command query responsibility separation (CQRS) generalises CQS to message-driven and event-driven architectures: it applies the CQS principle by using separate Query and Command messages to retrieve and modify data, respectively.
+> Command query responsibility separation (CQRS) generalises CQS
+  to message-driven and event-driven architectures:
+  it applies the CQS principle by using separate Query and Command messages
+  to retrieve and modify data, respectively.
 >
 > &mdash; [Wikipedia: Command–query separation](https://en.wikipedia.org/wiki/Command%E2%80%93query_separation)
 
@@ -43,7 +50,7 @@ const wechaty = WECHATY.WechatyBuilder.build()
 const bus$    = CQRS.bus(wechaty)
 
 bus$.pipe(
-  filter(CQRS.isTypeOf(CQRS.events.messageReceivedEvent)),
+  filter(CQRS.isActionOf(CQRS.events.messageReceivedEvent)),
   filter(event => event.payloads.type === CQRS.sayable.type.Text),
   filter(event => event.payloads.payload === 'ding')
 ).subscribe(ding => bus$.next(
@@ -136,17 +143,26 @@ TBW
 
 ## Resources
 
-- [class-transformer](https://github.com/typestack/class-transformer) - Decorator-based transformation, serialization, and deserialization between objects and classes.
+- [class-transformer](https://github.com/typestack/class-transformer) -
+  Decorator-based transformation, serialization, and deserialization
+  between objects and classes.
 
 ## History
 
-### main v0.1 (Mar 6, 2022)
+### main v0.1 (Mar 11, 2022)
+
+Unit tests all passed, DevOps enabled.
+
+### v0.0.1 (Mar 6, 2022)
 
 Init README & Draft design.
 
 ## Author
 
-[Huan LI](https://github.com/huan) ([李卓桓](http://linkedin.com/in/zixia)), [Microsoft Regional Director](https://rd.microsoft.com/en-us/huan-li), <zixia@zixia.net>
+[Huan LI](https://github.com/huan)
+([李卓桓](http://linkedin.com/in/zixia)),
+[Microsoft Regional Director](https://rd.microsoft.com/en-us/huan-li),
+<zixia@zixia.net>
 
 [![Profile of Huan LI (李卓桓) on StackOverflow](https://stackexchange.com/users/flair/265499.png)](https://stackexchange.com/users/265499)
 

@@ -8,7 +8,7 @@ export interface MetaRequest {
 /**
  * All commands/queries share this response
  *  It only shows that whether the function call has been put successfully
- *  it's nothing related to the state change of the bot
+ *  There will be nothing related to the state change of the bot
  */
 export type MetaResponse = MetaRequest & {
   gerror?  : string

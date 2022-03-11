@@ -25,7 +25,7 @@ import {
 }                         from 'typesafe-actions'
 import type * as PUPPET   from 'wechaty-puppet'
 
-import * as types from '../types.js'
+import * as types from '../types/mod.js'
 
 import {
   metaRequest,
@@ -51,8 +51,8 @@ export const currentUserIdGotMessage  = createAction(types.CURRENT_USER_ID_GOT_M
 /**
  * puppet.isLoggedIn
  */
-const payloadGetIsLoggedInQuery   = (_puppetId: string)                           => ({})
-const payloadIsLoggedInGotMessage = (res: MetaResponse & { isLoggedIn: boolean }) => ({ isLoggedIn: res.isLoggedIn })
+const payloadGetIsLoggedInQuery   = (_puppetId: string)                             => ({})
+const payloadIsLoggedInGotMessage = (res: MetaResponse & { isLoggedIn?: boolean })  => ({ isLoggedIn: res.isLoggedIn })
 
 export const getIsLoggedInQuery   = createAction(types.GET_IS_LOGGED_IN_QUERY,    payloadGetIsLoggedInQuery,    metaRequest)()
 export const isLoggedInGotMessage = createAction(types.IS_LOGGED_IN_GOT_MESSAGE,  payloadIsLoggedInGotMessage,  metaResponse)()
@@ -74,3 +74,12 @@ const payloadMessagePayloadGotMessage = (res: MetaResponse & { message?: PUPPET.
 
 export const getMessagePayloadQuery   = createAction(types.GET_MESSAGE_PAYLOAD_QUERY,    payloadGetMessagePayloadQuery,    metaRequest)()
 export const messagePayloadGotMessage = createAction(types.MESSAGE_PAYLOAD_GOT_MESSAGE,  payloadMessagePayloadGotMessage,  metaResponse)()
+
+/**
+ * puppet.qrCode
+ */
+const payloadGetAuthQrCodeQuery   = (_puppetId: string)                       => ({})
+const payloadAuthQrCodeGotMessage = (res: MetaResponse & { qrcode?: string }) => ({ qrcode: res.qrcode })
+
+export const getAuthQrCodeQuery   = createAction(types.GET_AUTH_QR_CODE_QUERY,    payloadGetAuthQrCodeQuery,    metaRequest)()
+export const authQrCodeGotMessage = createAction(types.AUTH_QR_CODE_GOT_MESSAGE,  payloadAuthQrCodeGotMessage,  metaResponse)()

@@ -17,19 +17,11 @@
  *   limitations under the License.
  *
  */
-import type { ActionType } from 'typesafe-actions'
-import reducer from './reducers.js'
 
-import type * as actions     from './actions/mod.js'
-
-export type Action = ActionType<typeof actions>
-
-export default reducer
-export { reducer }
-
-export * as actions     from './actions/mod.js'
-export * as epics       from './epics/mod.js'
-export * as operations  from './operations.js'
-export * as selectors   from './selectors.js'
-export * as types       from './types/mod.js'
-export * as utils       from './utils.js'
+/**
+ *
+ * Internal
+ *
+ */
+export const NOP_COMMAND = 'cqrs-wechaty/NOP_COMMAND'
+export const NOP_MESSAGE = 'cqrs-wechaty/NOP_MESSAGE'

@@ -31,7 +31,7 @@ export type CqrsBus = Subject<
  */
 const cqMiddleware: (cqBus$: CqrsBus) => Middleware = cqBus$ => _store => next => {
   cqBus$.subscribe(cq => {
-    console.info('bus$.subscribe e:', cq)
+    // console.info('bus$.subscribe e:', cq)
     next(cq)
     // console.info('bus$.subscribe e: done.')
   })
@@ -43,7 +43,7 @@ const cqMiddleware: (cqBus$: CqrsBus) => Middleware = cqBus$ => _store => next =
  */
 const meMiddleware: (meBus$: CqrsBus) => Middleware = meBus$ => _store => next => action => {
   meBus$.next(action)
-  console.info('action:', action)
+  // console.info('action:', action)
   next(action)
 }
 

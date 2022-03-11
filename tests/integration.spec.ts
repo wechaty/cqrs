@@ -21,14 +21,36 @@
  */
 import {
   test,
-}             from 'tstest'
-
+}                     from 'tstest'
 import {
-  WechatyRedux,
-}                 from '../src/mods/mod.js'
+  firstValueFrom,
+}                     from 'rxjs'
+import {
+  filter,
+}                     from 'rxjs/operators'
+import {
+  WechatyBuilder,
+}                     from 'wechaty'
+import { PuppetMock } from 'wechaty-puppet-mock'
 
-test('integration testing', async (t) => {
-  const wechaty = WechatyBuilder.build()
-  const bus$ = cqrsWechaty(wechaty)
-  t.ok(bus$, 'should be set: ' + WechatyRedux.name + ' -> ' + name)
+import * as CQRS from '../src/mods/mod.js'
+
+test('integration testing', async t => {
+  const puppet = new PuppetMock()
+  const wechaty = WechatyBuilder.build({ puppet })
+
+  await wechaty.init()
+  const bus$ = CQRS.from(wechaty)
+
+  const startedEventFuture = firstValueFrom(bus$.pipe(
+    filter(CQRS.helpers.isActionOf(CQRS.duck.actions.startedEvent)),
+  ))
+  bus$.next(CQRS.duck.actions.startCommand(puppet.id))
+  await t.resolves(startedEventFuture, 'should get started after the start command')
+
+  const stoppedEventFuture = firstValueFrom(bus$.pipe(
+    filter(CQRS.helpers.isActionOf(CQRS.duck.actions.stoppedEvent)),
+  ))
+  bus$.next(CQRS.duck.actions.stopCommand(puppet.id))
+  await t.resolves(stoppedEventFuture, 'should get stopped after the stopp command')
 })

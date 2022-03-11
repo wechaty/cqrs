@@ -31,21 +31,32 @@ import type {
 import * as actions from '../actions/mod.js'
 // import * as utils   from './utils.js'
 
-import { debug$ }       from './debug$.js'
+import { debug$ }         from './debug$.js'
 
-import { ding$ }        from './ding$.js'
-import { reset$ }       from './reset$.js'
-import { sendMessage$ } from './send-message$.js'
-import { start$ }       from './start$.js'
-import { stop$ }        from './stop$.js'
+import { authQrCode$ }      from './auth-qrcode$.js'
+import { currentUserId$ }   from './current-user-id$.js'
+import { ding$ }            from './ding$.js'
+import { isLoggedIn$ }      from './is-logged-in$.js'
+import { messagePayload$ }  from './message-payload$.js'
+import { reset$ }           from './reset$.js'
+import { sendMessage$ }     from './send-message$.js'
+import { start$ }           from './start$.js'
+import { stop$ }            from './stop$.js'
 
 /**
+ *
  * Debug for development
+ *
  */
 export const debugEpic: Epic = actions$ => actions$.pipe(
   mergeMap(debug$),
 )
 
+/**
+ *
+ * Commands
+ *
+ */
 export const dingEpic: Epic = actions$ => actions$.pipe(
   filter(isActionOf(actions.dingCommand)),
   mergeMap(ding$),
@@ -69,4 +80,29 @@ export const starEpic: Epic = actions$ => actions$.pipe(
 export const stopEpic: Epic = actions$ => actions$.pipe(
   filter(isActionOf(actions.stopCommand)),
   mergeMap(stop$),
+)
+
+/**
+ *
+ * Queries
+ *
+ */
+export const authQrCodeEpic: Epic = actions$ => actions$.pipe(
+  filter(isActionOf(actions.getAuthQrCodeQuery)),
+  mergeMap(authQrCode$),
+)
+
+export const currentUserIdEpic: Epic = actions$ => actions$.pipe(
+  filter(isActionOf(actions.getCurrentUserIdQuery)),
+  mergeMap(currentUserId$),
+)
+
+export const isLoggedInEpic: Epic = actions$ => actions$.pipe(
+  filter(isActionOf(actions.getIsLoggedInQuery)),
+  mergeMap(isLoggedIn$),
+)
+
+export const messagePayloadEpic: Epic = actions$ => actions$.pipe(
+  filter(isActionOf(actions.getMessagePayloadQuery)),
+  mergeMap(messagePayload$),
 )

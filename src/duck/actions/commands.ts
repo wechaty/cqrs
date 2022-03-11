@@ -25,7 +25,7 @@ import {
 }                         from 'typesafe-actions'
 import type * as PUPPET   from 'wechaty-puppet'
 
-import * as types from '../types.js'
+import * as types from '../types/mod.js'
 
 import {
   MetaResponse,

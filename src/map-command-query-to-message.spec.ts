@@ -23,7 +23,6 @@ import {
   test,
   testSchedulerRunner,
 }                         from 'tstest'
-import * as TimeConstants from 'time-constants'
 import { GError }         from 'gerror'
 import {
   map,
