@@ -22,7 +22,8 @@ import * as WECHATY             from 'wechaty'
 import * as PUPPET              from 'wechaty-puppet'
 import {
   of,
-  mapTo,
+  merge,
+  Observable,
 }                         from 'rxjs'
 import {
   filter,
@@ -34,73 +35,126 @@ import {
   tap,
 }                         from 'rxjs/operators'
 
-import * as CQRS    from '../src/mods/mod.js'
+import * as CQRS  from '../src/mods/mod.js'
+
+const startedEvent$ = (source$: CQRS.Bus) => source$.pipe(filter(CQRS.helpers.isActionOf(CQRS.duck.actions.startedEvent)))
+const stoppedEvent$ = (source$: CQRS.Bus) => source$.pipe(filter(CQRS.helpers.isActionOf(CQRS.duck.actions.stoppedEvent)))
+
+const onScan$ = (source$: CQRS.Bus) => source$.pipe(
+  filter(CQRS.helpers.isActionOf(CQRS.duck.actions.scanReceivedEvent)),
+  map(scanReceivedEvent => scanReceivedEvent.payload),
+  tap(({ qrcode, status }) => {
+    const statusList = [
+      PUPPET.types.ScanStatus.Waiting,
+      PUPPET.types.ScanStatus.Timeout,
+    ]
+
+    if (qrcode && statusList.some(s => s === status)) {
+      const qrcodeImageUrl = [
+        'https://wechaty.js.org/qrcode/',
+        encodeURIComponent(qrcode),
+      ].join('')
+
+      console.info('onScan: %s(%s) - %s', PUPPET.types.ScanStatus[status], status, qrcodeImageUrl)
+    } else {
+      console.info('onScan: %s(%s)', PUPPET.types.ScanStatus[status], status)
+    }
+  }),
+)
+
+const mapToTalkerId$ = (messageReceivedEvent: ReturnType<typeof CQRS.duck.actions.messageReceivedEvent>) => (source$: Observable<any>) =>
+  of(
+    CQRS.duck.actions.getMessagePayloadQuery(
+      messageReceivedEvent.meta.puppetId,
+      messageReceivedEvent.payload.messageId,
+    ),
+  ).pipe(
+    CQRS.helpers.mapCommandQueryToMessage(source$)(
+      CQRS.duck.actions.getMessagePayloadQuery,
+      CQRS.duck.actions.messagePayloadGotMessage,
+    ),
+    map(message => message.payload?.fromId),
+    filter(Boolean),
+    tap(e => console.info(e)),
+  )
+
+const mapMessageReceivedEventToSayable$ = () => (source$: Observable<ReturnType<typeof CQRS.duck.actions.messageReceivedEvent>>) => source$.pipe(
+  map(messageReceivedEvent => CQRS.duck.actions.getSayablePayloadQuery(
+    messageReceivedEvent.meta.puppetId,
+    messageReceivedEvent.payload.messageId,
+  )),
+  CQRS.helpers.mapCommandQueryToMessage(source$)(
+    CQRS.duck.actions.getSayablePayloadQuery,
+    CQRS.duck.actions.sayablePayloadGotMessage,
+  ),
+  map(message => message.payload),
+  filter(Boolean),
+)
 
 function isTextSayable (sayable: PUPPET.payloads.Sayable): sayable is ReturnType<typeof PUPPET.payloads.sayable.text> { return sayable.type === PUPPET.types.Sayable.Text }
 
-async function main () {
+const filterTextSayable$ = (text: string) => (source$: Observable<PUPPET.payloads.Sayable>) => source$.pipe(
+  filter(isTextSayable),
+  filter(sayable => sayable.payload.text === text),
+)
+
+const onMessage$ = (source$: CQRS.Bus) => source$.pipe(
+  filter(CQRS.helpers.isActionOf(CQRS.duck.actions.messageReceivedEvent)),
+  mergeMap(messageReceivedEvent => of(messageReceivedEvent).pipe(
+    /**
+     * message -> sayable
+     */
+    mapMessageReceivedEventToSayable$(),
+    /**
+     * sayable -> ding
+     */
+    filterTextSayable$('ding'),
+    /**
+     * ding -> talkerId
+     */
+    mapToTalkerId$(messageReceivedEvent),
+    /**
+     * talkerId -> command
+     */
+    map(talkerId => CQRS.duck.actions.sendMessageCommand(
+      messageReceivedEvent.meta.puppetId,
+      talkerId,
+      CQRS.sayables.text('dong'),
+    )),
+    /**
+     * command -> bus$
+     */
+    tap(command => source$.next(command)),
+  )),
+)
+
+async function cqrsWechaty () {
   const wechaty = WECHATY.WechatyBuilder.build()
   await wechaty.init()
 
   const bus$ = CQRS.from(wechaty)
 
-  const startedEvent$         = (source$: typeof bus$) => source$.pipe(filter(CQRS.helpers.isActionOf(CQRS.duck.actions.startedEvent)))
-  const stoppedEvent$         = (source$: typeof bus$) => source$.pipe(filter(CQRS.helpers.isActionOf(CQRS.duck.actions.stoppedEvent)))
-  const messageReceivedEvent$ = (source$: typeof bus$) => source$.pipe(filter(CQRS.helpers.isActionOf(CQRS.duck.actions.messageReceivedEvent)))
+  return {
+    bus$,
+    puppetId: wechaty.puppet.id,
+  }
+}
+
+async function main () {
+  const {
+    bus$,
+    puppetId,
+  }             = await cqrsWechaty()
 
   const main$ = startedEvent$(bus$).pipe(
-    /**
-     * start -> message
-     */
-    switchMapTo(messageReceivedEvent$(bus$).pipe(
-      mergeMap(messageReceivedEvent => of(messageReceivedEvent).pipe(
-        /**
-         * message -> sayable
-         */
-        map(event => CQRS.duck.actions.getSayablePayloadQuery(event.meta.puppetId, event.payload.messageId)),
-        CQRS.helpers.mapCommandQueryToMessage(bus$)(
-          CQRS.duck.actions.getSayablePayloadQuery,
-          CQRS.duck.actions.sayablePayloadGotMessage,
-        ),
-        map(message => message.payload),
-        filter(Boolean),
-
-        /**
-         * sayable -> ding
-         */
-        filter(isTextSayable),
-        filter(sayable => sayable.payload.text === 'ding'),
-
-        mergeMap(sayable => of(sayable).pipe(
-          /**
-           * ding -> talkerId
-           */
-          mapTo(CQRS.duck.actions.getMessagePayloadQuery(messageReceivedEvent.meta.puppetId, messageReceivedEvent.payload.messageId)),
-          CQRS.helpers.mapCommandQueryToMessage(bus$)(
-            CQRS.duck.actions.getMessagePayloadQuery,
-            CQRS.duck.actions.messagePayloadGotMessage,
-          ),
-          map(message => message.payload?.fromId),
-          filter(Boolean),
-
-          /**
-           * talkerId -> command
-           */
-          map(talkerId => CQRS.duck.actions.sendMessageCommand(
-            messageReceivedEvent.meta.puppetId,
-            talkerId,
-            CQRS.sayables.text('dong'),
-          )),
-        )),
-
-        /**
-         * command -> bus$
-         */
-        tap(command => bus$.next(command)),
-      )),
-
-      takeUntil(stoppedEvent$(bus$)),
-    )),
+    switchMapTo(
+      merge(
+        onScan$(bus$),
+        onMessage$(bus$),
+      ).pipe(
+        takeUntil(stoppedEvent$(bus$)),
+      ),
+    ),
     ignoreElements(),
   )
 
@@ -117,7 +171,7 @@ async function main () {
   /**
    * wechaty.start()
    */
-  bus$.next(CQRS.duck.actions.startCommand(wechaty.puppet.id))
+  bus$.next(CQRS.duck.actions.startCommand(puppetId))
 }
 
 /**

@@ -22,14 +22,14 @@ import type {
 
 import * as CqrsDuck    from './duck/mod.js'
 
-export type CqrsBus = Subject<
-  ActionType<typeof CqrsDuck.actions>
+export type Bus<T = typeof CqrsDuck.actions> = Subject<
+  ActionType<T>
 >
 
 /**
  * Input: Commands & Queries
  */
-const cqMiddleware: (cqBus$: CqrsBus) => Middleware = cqBus$ => _store => next => {
+const cqMiddleware: (cqBus$: Bus) => Middleware = cqBus$ => _store => next => {
   cqBus$.subscribe(cq => {
     // console.info('bus$.subscribe e:', cq)
     next(cq)
@@ -41,7 +41,7 @@ const cqMiddleware: (cqBus$: CqrsBus) => Middleware = cqBus$ => _store => next =
 /**
  * Output: Messages & Events
  */
-const meMiddleware: (meBus$: CqrsBus) => Middleware = meBus$ => _store => next => action => {
+const meMiddleware: (meBus$: Bus) => Middleware = meBus$ => _store => next => action => {
   meBus$.next(action)
   // console.info('action:', action)
   next(action)
@@ -49,7 +49,7 @@ const meMiddleware: (meBus$: CqrsBus) => Middleware = meBus$ => _store => next =
 
 export function from (
   wechaty: WECHATY.impls.WechatyInterface,
-): CqrsBus {
+): Bus {
   const cqBus$ = new Subject<any>()
   const meBus$ = new Subject<any>()
 
@@ -86,7 +86,7 @@ export function from (
   // const cqrsDuck = ducks.ducksify('cqrs')
   // cqrsDuck.operations.ding(wechaty.puppet.id)
 
-  const bus$: CqrsBus = Subject.create(cqBus$, meBus$)
+  const bus$: Bus = Subject.create(cqBus$, meBus$)
 
   return bus$
 }

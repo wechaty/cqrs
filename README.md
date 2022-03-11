@@ -151,7 +151,7 @@ TBW
 
 ## History
 
-### main v0.1 (Mar 11, 2022)
+### main v0.2 (Mar 11, 2022)
 
 Unit tests all passed, DevOps enabled.
 
