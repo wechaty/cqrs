@@ -11,6 +11,7 @@ export {
   type BusObs,
   from,
 }                       from '../cqrs.js'
+export { execute$ }     from '../execute$.js'
 
 export const VERSION = packageJson.version || '0.0.0'
 export const NAME    = packageJson.name    || 'NONAME'

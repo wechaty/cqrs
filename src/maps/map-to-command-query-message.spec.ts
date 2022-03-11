@@ -30,7 +30,7 @@ import {
 
 import * as CqrsDuck from '../duck/mod.js'
 
-import { mapCommandQueryToMessage } from './map-command-query-to-message.js'
+import { mapToCommandQueryMessage } from './map-to-command-query-message.js'
 
 test('map successful', testSchedulerRunner(m => {
   const PUPPET_ID   = 'puppet-id'
@@ -54,7 +54,7 @@ test('map successful', testSchedulerRunner(m => {
   const bus$ = m.hot(source, values)
 
   const result$ = bus$.pipe(
-    mapCommandQueryToMessage(bus$)(
+    mapToCommandQueryMessage(bus$)(
       CqrsDuck.actions.getCurrentUserIdQuery,
       CqrsDuck.actions.currentUserIdGotMessage,
     ),
@@ -95,7 +95,7 @@ test('map timeout', testSchedulerRunner(m => {
   })
 
   const result$ = bus$.pipe(
-    mapCommandQueryToMessage(bus$, TIMEOUT_MILLISECONDS)(
+    mapToCommandQueryMessage(bus$, TIMEOUT_MILLISECONDS)(
       CqrsDuck.actions.getCurrentUserIdQuery,
       CqrsDuck.actions.currentUserIdGotMessage,
     ),

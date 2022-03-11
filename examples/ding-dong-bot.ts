@@ -24,6 +24,7 @@ import {
   of,
   merge,
   Observable,
+  defer,
 }                         from 'rxjs'
 import {
   filter,
@@ -33,6 +34,7 @@ import {
   switchMapTo,
   takeUntil,
   tap,
+  finalize,
 }                         from 'rxjs/operators'
 
 import * as CQRS  from '../src/mods/mod.js'
@@ -68,15 +70,19 @@ const onMessage$ = (bus$: CQRS.Bus) => CQRS.events.messageReceivedEvent$(bus$).p
     /**
      * message -> sayable
      */
+    tap(e => console.info('before map', e)),
     CQRS.maps.mapMessageReceivedEventToSayable$(),
+    tap(e => console.info('after map', e)),
     /**
      * sayable -> ding
      */
     filterTextSayable$('ding'),
+    tap(e => console.info(e)),
     /**
      * ding -> talkerId
      */
     CQRS.maps.mapToTalkerId$(messageReceivedEvent),
+    tap(e => console.info(e)),
     /**
      * talkerId -> command
      */
@@ -85,6 +91,7 @@ const onMessage$ = (bus$: CQRS.Bus) => CQRS.events.messageReceivedEvent$(bus$).p
       talkerId,
       CQRS.sayables.text('dong'),
     )),
+    tap(e => console.info(e)),
     /**
      * command -> bus$
      */
@@ -110,7 +117,7 @@ async function main () {
     puppetId,
   }             = await cqrsWechaty()
 
-  const main$ = CQRS.events.startedEvent$(bus$).pipe(
+  const onStartedEvent$ = (bus$: CQRS.Bus) => CQRS.events.startedEvent$(bus$).pipe(
     switchMapTo(
       merge(
         onScan$(bus$),
@@ -119,23 +126,26 @@ async function main () {
         takeUntil(CQRS.events.stoppedEvent$(bus$)),
       ),
     ),
+  )
+
+  const main$ = defer(() => of(CQRS.duck.actions.startCommand(puppetId))).pipe(
+    mergeMap(startCommand => merge(
+      CQRS.execute$(bus$)(startCommand),
+      onStartedEvent$(bus$),
+    )),
     ignoreElements(),
+    finalize(() => bus$.next(CQRS.duck.actions.stopCommand(puppetId))),
   )
 
   /**
    * Enable logging all bus events to console
    */
-  bus$.subscribe(event => console.info('bus$ event:', event))
+  // bus$.subscribe(event => console.info('bus$ event:', event))
 
   /**
    * Bootstrap the main system
    */
   main$.subscribe()
-
-  /**
-   * wechaty.start()
-   */
-  bus$.next(CQRS.duck.actions.startCommand(puppetId))
 }
 
 /**
