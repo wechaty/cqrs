@@ -27,6 +27,7 @@ import {
 }                     from 'rxjs'
 import {
   filter,
+  take,
 }                     from 'rxjs/operators'
 import {
   WechatyBuilder,
@@ -56,23 +57,26 @@ test('integration testing', async t => {
 })
 
 test('ding/dong', async t => {
+  const DING_DATA = 'ding-data'
+
   const wechaty = WechatyBuilder.build({ puppet: 'wechaty-puppet-mock' })
   await wechaty.init()
   const bus$ = CQRS.from(wechaty)
 
-  await wechaty.start()
-
   const eventList: any[] = []
   bus$.subscribe(e => eventList.push(e))
 
-  const command = CQRS.duck.actions.dingCommand(wechaty.puppet.id)
+  const command = CQRS.duck.actions.dingCommand(wechaty.puppet.id, DING_DATA)
   bus$.next(command)
 
-  await new Promise(setImmediate)
+  await firstValueFrom(bus$.pipe(
+    filter(CQRS.helpers.isActionOf(CQRS.duck.actions.dongReceivedEvent)),
+    take(1),
+  ))
+
   t.same(eventList, [
     command,
     CQRS.duck.actions.dingedMessage(command.meta),
-  ], 'should get ding/dong events')
-
-  await wechaty.stop()
+    CQRS.duck.actions.dongReceivedEvent(command.meta.puppetId, { data: DING_DATA }),
+  ], 'should get dingCommand & dingedMessage & dingReceivedEvent')
 })

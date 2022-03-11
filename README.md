@@ -47,7 +47,9 @@ import * as CQRS    from 'wechaty-cqrs'
 import { filter }   from 'rxjs/operators'
 
 const wechaty = WECHATY.WechatyBuilder.build()
-const bus$    = CQRS.bus(wechaty)
+await wechaty.init()
+
+const bus$ = CQRS.bus(wechaty)
 
 bus$.pipe(
   filter(CQRS.isActionOf(CQRS.events.messageReceivedEvent)),

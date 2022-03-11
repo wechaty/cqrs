@@ -40,19 +40,7 @@ function isTextSayable (sayable: PUPPET.payloads.Sayable): sayable is ReturnType
 
 async function main () {
   const wechaty = WECHATY.WechatyBuilder.build()
-
-  /**
-   * Warm-up puppet: the `wechaty.puppet` will not exist before the first time of wechaty start
-   *  because it is designed with lazy instanciation.
-   *
-   *  we need to start wechaty instance for once before we can use `wechaty.puppet.id`
-   *
-   * (an exception is that if we pass a `puppet` instance when build wechaty then it will be set out-of-the-box)
-   *
-   * Huan(202203): maybe a `await wechaty.init()` should be implemented for this use case.
-   */
-  await wechaty.start()
-  await wechaty.stop()
+  await wechaty.init()
 
   const bus$ = CQRS.from(wechaty)
 

@@ -20,7 +20,14 @@
  */
 import * as CQRS          from 'wechaty-cqrs'
 import { WechatyBuilder } from 'wechaty'
-import assert from 'assert'
+import {
+  firstValueFrom,
+}                         from 'rxjs'
+import {
+  filter,
+  take,
+}                         from 'rxjs/operators'
+import assert             from 'assert'
 
 async function main () {
   const wechaty = WechatyBuilder.build({ puppet: 'wechaty-puppet-mock' })
@@ -31,14 +38,33 @@ async function main () {
   const eventList: any[] = []
   bus$.subscribe(e => eventList.push(e))
 
-  bus$.next(CQRS.duck.actions.dingCommand(wechaty.puppet.id))
-  await new Promise(setImmediate)
+  const command = CQRS.duck.actions.dingCommand(wechaty.puppet.id, 'ding-data')
+  bus$.next(command)
 
-  console.info(eventList)
+  await firstValueFrom(bus$.pipe(
+    filter(CQRS.helpers.isActionOf(CQRS.duck.actions.dongReceivedEvent)),
+    take(1),
+  ))
 
-  assert(eventList.length > 0, 'should emit events via bus$')
-  assert(CQRS.VERSION !== '0.0.0', 'version should be set before publishing')
+  assert.deepEqual(eventList, [
+    command,
+    CQRS.duck.actions.dingedMessage(command.meta),
+    CQRS.duck.actions.dongReceivedEvent(command.meta.puppetId, { data: command.payload.data }),
+  ], 'should get dingCommand & dingedMessage & dingReceivedEvent')
+
+  assert.notEqual(CQRS.VERSION, '0.0.0', 'version should be set before publishing')
+
+  // if (eventList.length <= 0) {
+  //   throw new Error('should emit events via bus$')
+  // }
+
+  // if (CQRS.VERSION === '0.0.0') {
+  //   throw new Error('version should be set before publishing')
+  // }
 }
 
 main()
-  .catch(console.error)
+  .catch(e => {
+    console.error(e)
+    process.exit(1)
+  })
