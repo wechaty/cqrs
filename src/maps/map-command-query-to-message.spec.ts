@@ -28,7 +28,7 @@ import {
   map,
 }                         from 'rxjs/operators'
 
-import * as CqrsDuck from './duck/mod.js'
+import * as CqrsDuck from '../duck/mod.js'
 
 import { mapCommandQueryToMessage } from './map-command-query-to-message.js'
 

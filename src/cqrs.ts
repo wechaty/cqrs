@@ -4,6 +4,7 @@ import {
   nopReducer,
 }                   from 'ducks'
 import {
+  Observable,
   Subject,
 }                   from 'rxjs'
 import {
@@ -25,6 +26,8 @@ import * as CqrsDuck    from './duck/mod.js'
 export type Bus<T = typeof CqrsDuck.actions> = Subject<
   ActionType<T>
 >
+
+export type BusObs<T = Bus> = Observable<T extends Subject<infer P> ? P : never>
 
 /**
  * Input: Commands & Queries

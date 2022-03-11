@@ -37,11 +37,7 @@ import {
 
 import * as CQRS  from '../src/mods/mod.js'
 
-const startedEvent$ = (source$: CQRS.Bus) => source$.pipe(filter(CQRS.helpers.isActionOf(CQRS.duck.actions.startedEvent)))
-const stoppedEvent$ = (source$: CQRS.Bus) => source$.pipe(filter(CQRS.helpers.isActionOf(CQRS.duck.actions.stoppedEvent)))
-
-const onScan$ = (source$: CQRS.Bus) => source$.pipe(
-  filter(CQRS.helpers.isActionOf(CQRS.duck.actions.scanReceivedEvent)),
+const onScan$ = (source$: CQRS.BusObs) => CQRS.events.scanReceivedEvent$(source$).pipe(
   map(scanReceivedEvent => scanReceivedEvent.payload),
   tap(({ qrcode, status }) => {
     const statusList = [
@@ -62,49 +58,17 @@ const onScan$ = (source$: CQRS.Bus) => source$.pipe(
   }),
 )
 
-const mapToTalkerId$ = (messageReceivedEvent: ReturnType<typeof CQRS.duck.actions.messageReceivedEvent>) => (source$: Observable<any>) =>
-  of(
-    CQRS.duck.actions.getMessagePayloadQuery(
-      messageReceivedEvent.meta.puppetId,
-      messageReceivedEvent.payload.messageId,
-    ),
-  ).pipe(
-    CQRS.helpers.mapCommandQueryToMessage(source$)(
-      CQRS.duck.actions.getMessagePayloadQuery,
-      CQRS.duck.actions.messagePayloadGotMessage,
-    ),
-    map(message => message.payload?.fromId),
-    filter(Boolean),
-    tap(e => console.info(e)),
-  )
-
-const mapMessageReceivedEventToSayable$ = () => (source$: Observable<ReturnType<typeof CQRS.duck.actions.messageReceivedEvent>>) => source$.pipe(
-  map(messageReceivedEvent => CQRS.duck.actions.getSayablePayloadQuery(
-    messageReceivedEvent.meta.puppetId,
-    messageReceivedEvent.payload.messageId,
-  )),
-  CQRS.helpers.mapCommandQueryToMessage(source$)(
-    CQRS.duck.actions.getSayablePayloadQuery,
-    CQRS.duck.actions.sayablePayloadGotMessage,
-  ),
-  map(message => message.payload),
-  filter(Boolean),
-)
-
-function isTextSayable (sayable: PUPPET.payloads.Sayable): sayable is ReturnType<typeof PUPPET.payloads.sayable.text> { return sayable.type === PUPPET.types.Sayable.Text }
-
 const filterTextSayable$ = (text: string) => (source$: Observable<PUPPET.payloads.Sayable>) => source$.pipe(
-  filter(isTextSayable),
+  filter(CQRS.sayables.isText),
   filter(sayable => sayable.payload.text === text),
 )
 
-const onMessage$ = (source$: CQRS.Bus) => source$.pipe(
-  filter(CQRS.helpers.isActionOf(CQRS.duck.actions.messageReceivedEvent)),
+const onMessage$ = (bus$: CQRS.Bus) => CQRS.events.messageReceivedEvent$(bus$).pipe(
   mergeMap(messageReceivedEvent => of(messageReceivedEvent).pipe(
     /**
      * message -> sayable
      */
-    mapMessageReceivedEventToSayable$(),
+    CQRS.maps.mapMessageReceivedEventToSayable$(),
     /**
      * sayable -> ding
      */
@@ -112,7 +76,7 @@ const onMessage$ = (source$: CQRS.Bus) => source$.pipe(
     /**
      * ding -> talkerId
      */
-    mapToTalkerId$(messageReceivedEvent),
+    CQRS.maps.mapToTalkerId$(messageReceivedEvent),
     /**
      * talkerId -> command
      */
@@ -124,12 +88,12 @@ const onMessage$ = (source$: CQRS.Bus) => source$.pipe(
     /**
      * command -> bus$
      */
-    tap(command => source$.next(command)),
+    tap(command => bus$.next(command)),
   )),
 )
 
 async function cqrsWechaty () {
-  const wechaty = WECHATY.WechatyBuilder.build()
+  const wechaty = WECHATY.WechatyBuilder.build({ name: 'ding-dong-bot' })
   await wechaty.init()
 
   const bus$ = CQRS.from(wechaty)
@@ -146,13 +110,13 @@ async function main () {
     puppetId,
   }             = await cqrsWechaty()
 
-  const main$ = startedEvent$(bus$).pipe(
+  const main$ = CQRS.events.startedEvent$(bus$).pipe(
     switchMapTo(
       merge(
         onScan$(bus$),
         onMessage$(bus$),
       ).pipe(
-        takeUntil(stoppedEvent$(bus$)),
+        takeUntil(CQRS.events.stoppedEvent$(bus$)),
       ),
     ),
     ignoreElements(),

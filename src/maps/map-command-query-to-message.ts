@@ -38,8 +38,16 @@ import {
 import type {
   MetaRequest,
   MetaResponse,
-}                   from './duck/actions/meta.js'
+}                   from '../duck/actions/meta.js'
 
+/**
+ * Huan(202203)
+ *
+ * Wait for the XXXMessage response for a Command/Query
+ *  and return it.
+ *
+ * Return a XXXMessage with `gerror` in meta when timeout
+ */
 export const mapCommandQueryToMessage: (
   bus$: Observable<any>,
   timeoutMilliseconds?: number,
