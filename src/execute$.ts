@@ -32,7 +32,6 @@ export const execute$ = (bus$: Bus) =>
 
     return defer(() => of(commandQuery)).pipe(
       mapCommandQueryToMessage(bus$)(
-        commandQuery,
         messageBuilder,
       ),
     )

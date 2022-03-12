@@ -184,7 +184,6 @@ test('Events - not logged in', async t => {
   const currentUserIdFuture = firstValueFrom(bus$.pipe(
     filter(isActionOf(CqrsDuck.actions.getCurrentUserIdQuery)),
     mapCommandQueryToMessage(bus$)(
-      CqrsDuck.actions.getCurrentUserIdQuery,
       CqrsDuck.actions.currentUserIdGotMessage,
     ),
   ))
@@ -200,7 +199,6 @@ test('Events - not logged in', async t => {
   const isLoggedInFuture = firstValueFrom(bus$.pipe(
     filter(isActionOf(CqrsDuck.actions.getIsLoggedInQuery)),
     mapCommandQueryToMessage(bus$)(
-      CqrsDuck.actions.getIsLoggedInQuery,
       CqrsDuck.actions.isLoggedInGotMessage,
     ),
   ))
@@ -216,7 +214,6 @@ test('Events - not logged in', async t => {
   const qrCodeFuture = firstValueFrom(bus$.pipe(
     filter(isActionOf(CqrsDuck.actions.getAuthQrCodeQuery)),
     mapCommandQueryToMessage(bus$)(
-      CqrsDuck.actions.getAuthQrCodeQuery,
       CqrsDuck.actions.authQrCodeGotMessage,
     ),
   ))
@@ -253,7 +250,6 @@ test('Events - logged in', async t => {
   const qrCodeFuture = firstValueFrom(bus$.pipe(
     filter(isActionOf(CqrsDuck.actions.getAuthQrCodeQuery)),
     mapCommandQueryToMessage(bus$)(
-      CqrsDuck.actions.getAuthQrCodeQuery,
       CqrsDuck.actions.authQrCodeGotMessage,
     ),
   ))
@@ -275,7 +271,6 @@ test('Events - logged in', async t => {
   const currentUserIdFuture = firstValueFrom(bus$.pipe(
     filter(isActionOf(CqrsDuck.actions.getCurrentUserIdQuery)),
     mapCommandQueryToMessage(bus$)(
-      CqrsDuck.actions.getCurrentUserIdQuery,
       CqrsDuck.actions.currentUserIdGotMessage,
     ),
   ))
@@ -291,7 +286,6 @@ test('Events - logged in', async t => {
   const isLoggedInFuture = firstValueFrom(bus$.pipe(
     filter(isActionOf(CqrsDuck.actions.getIsLoggedInQuery)),
     mapCommandQueryToMessage(bus$)(
-      CqrsDuck.actions.getIsLoggedInQuery,
       CqrsDuck.actions.isLoggedInGotMessage,
     ),
   ))
@@ -306,7 +300,6 @@ test('Events - logged in', async t => {
   const qrCodeFutureAfterLoggedIn = firstValueFrom(bus$.pipe(
     filter(isActionOf(CqrsDuck.actions.getAuthQrCodeQuery)),
     mapCommandQueryToMessage(bus$)(
-      CqrsDuck.actions.getAuthQrCodeQuery,
       CqrsDuck.actions.authQrCodeGotMessage,
     ),
   ))
@@ -354,7 +347,6 @@ test('sendMessageCommand', async t => {
   const messageFuture = firstValueFrom(bus$.pipe(
     filter(isActionOf(CqrsDuck.actions.sendMessageCommand)),
     mapCommandQueryToMessage(bus$)(
-      CqrsDuck.actions.sendMessageCommand,
       CqrsDuck.actions.messageSentMessage,
     ),
   ))
@@ -405,7 +397,6 @@ test('MessageReceivedEvent', async t => {
   const messagePayloadMessageFuture = firstValueFrom(bus$.pipe(
     filter(isActionOf(CqrsDuck.actions.getMessagePayloadQuery)),
     mapCommandQueryToMessage(bus$)(
-      CqrsDuck.actions.getMessagePayloadQuery,
       CqrsDuck.actions.messagePayloadGotMessage,
     ),
   ))

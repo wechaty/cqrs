@@ -34,35 +34,33 @@ import {
 import { isActionOf } from 'typesafe-actions'
 
 import * as CqrsDuck from '../duck/mod.js'
-import * as sayables from '../mods/sayables.js'
 
 import {
-  mapMessageReceivedEventToSayable,
-}                                     from './map-message-received-event-to-sayable.js'
+  mapToTalkerId,
+}                     from './map-to-message-received-event-talker-id.js'
 
-test('mapMessageReceivedEventToSayable()', testSchedulerRunner(m => {
+test('mapToTalkerId()', testSchedulerRunner(m => {
   const PUPPET_ID   = 'puppet-id'
   const MESSAGE_ID  = 'message-id'
-  const TEXT        = 'text'
+  const TALKER_ID   = 'talker-id'
 
-  const event   = CqrsDuck.actions.messageReceivedEvent(PUPPET_ID, { messageId: MESSAGE_ID })
-  const sayable = sayables.text(TEXT)
+  const messageReceivedEvent = CqrsDuck.actions.messageReceivedEvent(PUPPET_ID, { messageId: MESSAGE_ID })
 
   const values = {
-    e: event,
-    s: sayable,
+    e: messageReceivedEvent,
+    t: TALKER_ID,
   }
 
   const source    = 'e'
-  const expected  = 's'
+  const expected  = 't'
 
   const bus$ = new Subject<any>()
 
   /**
    * Service Mock: Query -> Message
    */
-  bus$.pipe(
-    filter(isActionOf(CqrsDuck.actions.getSayablePayloadQuery)),
+  const mockBus$ = bus$.pipe(
+    filter(isActionOf(CqrsDuck.actions.getMessagePayloadQuery)),
     /**
      * Huan(202203): important: let the bullet to fly awhile
      *  if no `delay(0)` (next event loop), the event will be fired too fast
@@ -70,17 +68,23 @@ test('mapMessageReceivedEventToSayable()', testSchedulerRunner(m => {
      *  which will caused event lost.
      */
     delay(0),
-    map(query => CqrsDuck.actions.sayablePayloadGotMessage({
+    map(query => CqrsDuck.actions.messagePayloadGotMessage({
       ...query.meta,
-      sayable,
+      message: {
+        fromId: TALKER_ID,
+      } as any,
     })),
-  ).subscribe(bus$)
+  )
 
-  const source$ = m.hot(source, values)
+  mockBus$.subscribe(bus$)
+
+  const source$ = m.hot(source, {
+    e: values.e,
+  })
 
   const result$ = source$.pipe(
     filter(isActionOf(CqrsDuck.actions.messageReceivedEvent)),
-    mapMessageReceivedEventToSayable(bus$),
+    mapToTalkerId(bus$),
   )
 
   m.expectObservable(result$).toBe(expected, values)

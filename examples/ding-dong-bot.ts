@@ -23,7 +23,6 @@ import * as PUPPET              from 'wechaty-puppet'
 import {
   of,
   merge,
-  Observable,
   defer,
 }                         from 'rxjs'
 import {
@@ -31,6 +30,7 @@ import {
   ignoreElements,
   map,
   mergeMap,
+  mergeMapTo,
   switchMapTo,
   takeUntil,
   tap,
@@ -60,42 +60,42 @@ const onScan$ = (source$: CQRS.BusObs) => CQRS.events.scanReceivedEvent$(source$
   }),
 )
 
-const filterTextSayable$ = (text: string) => (source$: Observable<PUPPET.payloads.Sayable>) => source$.pipe(
-  filter(CQRS.sayables.isText),
-  filter(sayable => sayable.payload.text === text),
-)
-
 const onMessage$ = (bus$: CQRS.Bus) => CQRS.events.messageReceivedEvent$(bus$).pipe(
   mergeMap(messageReceivedEvent => of(messageReceivedEvent).pipe(
     /**
      * message -> sayable
      */
     tap(e => console.info('before map', e)),
-    CQRS.maps.mapMessageReceivedEventToSayable(),
+    CQRS.maps.mapMessageReceivedEventToSayable(bus$),
     tap(e => console.info('after map', e)),
+    filter(Boolean),
     /**
      * sayable -> ding
      */
-    filterTextSayable$('ding'),
+    filter(CQRS.sayables.isText),
+    filter(sayable => sayable.payload.text === 'ding'),
     tap(e => console.info(e)),
-    /**
-     * ding -> talkerId
-     */
-    CQRS.maps.mapToTalkerId(messageReceivedEvent),
-    tap(e => console.info(e)),
-    /**
-     * talkerId -> command
-     */
-    map(talkerId => CQRS.duck.actions.sendMessageCommand(
-      messageReceivedEvent.meta.puppetId,
-      talkerId,
-      CQRS.sayables.text('dong'),
+    mergeMapTo(of(messageReceivedEvent).pipe(
+      /**
+       * ding -> talkerId
+       */
+      CQRS.maps.mapToTalkerId(bus$),
+      filter(Boolean),
+      tap(e => console.info(e)),
+      /**
+       * talkerId -> command
+       */
+      map(talkerId => CQRS.duck.actions.sendMessageCommand(
+        messageReceivedEvent.meta.puppetId,
+        talkerId,
+        CQRS.sayables.text('dong'),
+      )),
+      tap(e => console.info(e)),
+      /**
+       * command -> bus$
+       */
+      tap(command => bus$.next(command)),
     )),
-    tap(e => console.info(e)),
-    /**
-     * command -> bus$
-     */
-    tap(command => bus$.next(command)),
   )),
 )
 
