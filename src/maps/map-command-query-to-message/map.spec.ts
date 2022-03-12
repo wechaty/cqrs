@@ -30,6 +30,8 @@ import {
 import {
   map,
   filter,
+  delay,
+  mapTo,
 }                         from 'rxjs/operators'
 import { isActionOf } from 'typesafe-actions'
 
@@ -37,30 +39,41 @@ import * as CqrsDuck from '../../duck/mod.js'
 
 import { mapCommandQueryToMessage } from './map.js'
 
-test.only('map successful', testSchedulerRunner(m => {
+test('map successful (in time)', testSchedulerRunner(m => {
   const PUPPET_ID   = 'puppet-id'
   const CONTACT_ID  = 'contact-id'
 
-  const command = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
+  const query   = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
   const message = CqrsDuck.actions.currentUserIdGotMessage({
     contactId : CONTACT_ID,
-    id        : command.meta.id,
-    puppetId  : command.meta.puppetId,
+    id        : query.meta.id,
+    puppetId  : query.meta.puppetId,
   })
 
   const values = {
-    c: command,
     m: message,
+    q: query,
   }
 
-  const source    = 'c      '
-  const expected  = '---(m|)'
+  const DELAY_MS = 10
+
+  const source    = 'q              '
+  const expected  = `${DELAY_MS}ms m`
 
   const bus$ = new Subject<any>()
 
+  /**
+   * Service Mock: Query -> Message
+   */
+  bus$.pipe(
+    filter(isActionOf(CqrsDuck.actions.getCurrentUserIdQuery)),
+    delay(DELAY_MS),
+    mapTo(message),
+  ).subscribe(bus$)
+
   const source$ = m.hot(source, values)
 
-  const result$ = bus$.pipe(
+  const result$ = source$.pipe(
     filter(isActionOf(CqrsDuck.actions.getCurrentUserIdQuery)),
     mapCommandQueryToMessage(bus$)(
       CqrsDuck.actions.currentUserIdGotMessage,
@@ -86,12 +99,23 @@ test('map timeout', testSchedulerRunner(m => {
     m: message,
   }
 
-  const TIMEOUT_MILLISECONDS = 1000
+  const TIMEOUT_MILLISECONDS = 100
 
-  const source    = `c ${TIMEOUT_MILLISECONDS - 1}ms -`
-  const expected  = `- ${TIMEOUT_MILLISECONDS - 1}ms (m|)`
+  const source    = `c ${TIMEOUT_MILLISECONDS - 1}ms  `
+  const expected  = `- ${TIMEOUT_MILLISECONDS - 1}ms m`
 
-  const bus$ = m.hot(source, values)
+  const bus$ = new Subject<any>()
+
+  /**
+   * Service Mock: Query -> Message
+   */
+  bus$.pipe(
+    filter(isActionOf(CqrsDuck.actions.getCurrentUserIdQuery)),
+    delay(TIMEOUT_MILLISECONDS),
+    mapTo(message),
+  ).subscribe(bus$)
+
+  const source$ = m.hot(source, values)
 
   const normalizeMessage = (message: ReturnType<typeof CqrsDuck.actions.currentUserIdGotMessage>) => ({
     ...message,
@@ -101,7 +125,7 @@ test('map timeout', testSchedulerRunner(m => {
     },
   })
 
-  const result$ = bus$.pipe(
+  const result$ = source$.pipe(
     filter(isActionOf(CqrsDuck.actions.getCurrentUserIdQuery)),
     mapCommandQueryToMessage(bus$, TIMEOUT_MILLISECONDS)(
       CqrsDuck.actions.currentUserIdGotMessage,

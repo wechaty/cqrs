@@ -94,7 +94,7 @@
     "@types/time-constants": "^1.0.0",
     "@types/uuid": "^8.3.4",
     "glob": "^7.2.0",
-    "tstest": "^1.2.5",
+    "tstest": "^1.2.6",
     "wechaty-puppet-mock": "^1.13.4",
     "wechaty-puppet-wechat": "^1.12.2"
   },
