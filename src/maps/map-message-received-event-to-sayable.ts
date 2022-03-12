@@ -10,14 +10,14 @@ import type { BusObs }  from '../cqrs.js'
 
 import * as events      from '../events.js'
 
-import { mapToCommandQueryMessage }   from './map-to-command-query-message.js'
+import { mapCommandQueryToMessage }   from './map-command-query-to-message/mod.js'
 
-export const mapMessageReceivedEventToSayable$ = () => (source$: BusObs) => events.messageReceivedEvent$(source$).pipe(
+export const mapMessageReceivedEventToSayable = () => (source$: ReturnType<typeof events.messageReceivedEvent$>) => source$.pipe(
   map(messageReceivedEvent => actions.getSayablePayloadQuery(
     messageReceivedEvent.meta.puppetId,
     messageReceivedEvent.payload.messageId,
   )),
-  mapToCommandQueryMessage(source$)(
+  mapCommandQueryToMessage(source$)(
     actions.getSayablePayloadQuery,
     actions.sayablePayloadGotMessage,
   ),

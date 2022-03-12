@@ -25,14 +25,19 @@ import {
 }                         from 'tstest'
 import { GError }         from 'gerror'
 import {
+  Subject,
+}                         from 'rxjs'
+import {
   map,
+  filter,
 }                         from 'rxjs/operators'
+import { isActionOf } from 'typesafe-actions'
 
-import * as CqrsDuck from '../duck/mod.js'
+import * as CqrsDuck from '../../duck/mod.js'
 
-import { mapToCommandQueryMessage } from './map-to-command-query-message.js'
+import { mapCommandQueryToMessage } from './map.js'
 
-test('map successful', testSchedulerRunner(m => {
+test.only('map successful', testSchedulerRunner(m => {
   const PUPPET_ID   = 'puppet-id'
   const CONTACT_ID  = 'contact-id'
 
@@ -48,14 +53,16 @@ test('map successful', testSchedulerRunner(m => {
     m: message,
   }
 
-  const source    = 'c---m'
-  const expected  = '----(m|)'
+  const source    = 'c      '
+  const expected  = '---(m|)'
 
-  const bus$ = m.hot(source, values)
+  const bus$ = new Subject<any>()
+
+  const source$ = m.hot(source, values)
 
   const result$ = bus$.pipe(
-    mapToCommandQueryMessage(bus$)(
-      CqrsDuck.actions.getCurrentUserIdQuery,
+    filter(isActionOf(CqrsDuck.actions.getCurrentUserIdQuery)),
+    mapCommandQueryToMessage(bus$)(
       CqrsDuck.actions.currentUserIdGotMessage,
     ),
   )
@@ -95,8 +102,8 @@ test('map timeout', testSchedulerRunner(m => {
   })
 
   const result$ = bus$.pipe(
-    mapToCommandQueryMessage(bus$, TIMEOUT_MILLISECONDS)(
-      CqrsDuck.actions.getCurrentUserIdQuery,
+    filter(isActionOf(CqrsDuck.actions.getCurrentUserIdQuery)),
+    mapCommandQueryToMessage(bus$, TIMEOUT_MILLISECONDS)(
       CqrsDuck.actions.currentUserIdGotMessage,
     ),
     map(normalizeMessage),

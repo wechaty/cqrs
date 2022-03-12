@@ -71,7 +71,7 @@ const onMessage$ = (bus$: CQRS.Bus) => CQRS.events.messageReceivedEvent$(bus$).p
      * message -> sayable
      */
     tap(e => console.info('before map', e)),
-    CQRS.maps.mapMessageReceivedEventToSayable$(),
+    CQRS.maps.mapMessageReceivedEventToSayable(),
     tap(e => console.info('after map', e)),
     /**
      * sayable -> ding
@@ -81,7 +81,7 @@ const onMessage$ = (bus$: CQRS.Bus) => CQRS.events.messageReceivedEvent$(bus$).p
     /**
      * ding -> talkerId
      */
-    CQRS.maps.mapToTalkerId$(messageReceivedEvent),
+    CQRS.maps.mapToTalkerId(messageReceivedEvent),
     tap(e => console.info(e)),
     /**
      * talkerId -> command

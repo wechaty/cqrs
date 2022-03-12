@@ -18,63 +18,41 @@
  *   limitations under the License.
  *
  */
-import * as TimeConstants   from 'time-constants'
 import {
   ActionBuilder,
   isActionOf,
-  ActionType,
 }                           from 'typesafe-actions'
 import {
-  Observable,
   of,
-  merge,
-  defer,
 }                           from 'rxjs'
 import {
   catchError,
   filter,
   take,
   timeout,
-  tap,
-  ignoreElements,
 }                           from 'rxjs/operators'
 
 import type {
   MetaRequest,
   MetaResponse,
-}                   from '../duck/actions/meta.js'
-
-import type { actions } from '../duck/mod.js'
+}                   from '../../duck/actions/meta.js'
 
 import type {
-  Bus,
   BusObs,
-}                   from '../cqrs.js'
-
-/**
- * Send the `commandQuery` to `bus$`
- *
- * @returns `EMPTY` observable
- */
-const send$ = (bus$: Bus) => (
-  commandQuery: ActionType<typeof actions>,
-) => {
-  return defer(() => of(commandQuery)).pipe(
-    tap(command => bus$.next(command)),
-    take(1),
-    ignoreElements(),
-  )
-}
+}                   from '../../cqrs.js'
 
 /**
  * Monitor the `source$` to catch the `message` built by `messageActionBuilder` in response to the `commandQuery`
  *
  * @returns the message build by `messageActionBuilder`
  */
-const recv$ = (timeoutMilliseconds: number) =>
-  <MPayload extends any, MR extends MetaResponse>(
+export const recv = (timeoutMilliseconds: number) =>
+  <
+    MPayload extends any,
+    TMetaResponse extends MetaResponse
+  >(
     commandQuery         : ActionBuilder<any,              any,      MetaRequest>,
-    messageActionBuilder : (res: MR) => ActionBuilder<any, MPayload, MetaResponse>,
+    messageActionBuilder : (res: TMetaResponse) => ActionBuilder<any, MPayload, MetaResponse>,
   ) => (source$: BusObs) => source$.pipe(
     filter(isActionOf(messageActionBuilder)),
     filter(message => message.meta.id === commandQuery.meta.id),
@@ -88,46 +66,3 @@ const recv$ = (timeoutMilliseconds: number) =>
     )),
     take(1),
   )
-
-type MapToCommandQueryMessage = (
-  bus$: Bus,
-  timeoutMilliseconds?: number,
-) => <
-  MPayload extends any,
-  MR extends MetaResponse
-> (
-  commandQuery   : ActionBuilder<any, any, MetaRequest>,
-  messageBuilder : (res: MR) => ActionBuilder<any, MPayload, MetaResponse>,
-) => (
-  source$: BusObs,
-) => Observable<ActionBuilder<any, MPayload, MetaResponse>>
-
-/**
- * Huan(202203)
- *
- * Wait for the XXXMessage response for a Command/Query
- *  and return it.
- *
- * Return a XXXMessage with `gerror` in meta when timeout
- */
-export const mapToCommandQueryMessage: MapToCommandQueryMessage = (
-  bus$,
-  timeoutMilliseconds =  15 * TimeConstants.SECOND,
-) => (
-  commandQuery,
-  messageActionBuilder,
-) => source$ => merge(
-  /**
-   * Send
-   */
-  send$(bus$)(commandQuery),
-  /**
-   * Recv
-   */
-  source$.pipe(
-    recv$(timeoutMilliseconds)(
-      commandQuery,
-      messageActionBuilder,
-    ),
-  ),
-)

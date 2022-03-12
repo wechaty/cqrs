@@ -14,7 +14,7 @@ import type {
   MetaResponse,
 }                                   from './duck/actions/meta.js'
 
-import { mapToCommandQueryMessage } from './maps/mod.js'
+import { mapCommandQueryToMessage } from './maps/mod.js'
 
 export const execute$ = (bus$: Bus) =>
   <
@@ -31,7 +31,7 @@ export const execute$ = (bus$: Bus) =>
     }
 
     return defer(() => of(commandQuery)).pipe(
-      mapToCommandQueryMessage(bus$)(
+      mapCommandQueryToMessage(bus$)(
         commandQuery,
         messageBuilder,
       ),
