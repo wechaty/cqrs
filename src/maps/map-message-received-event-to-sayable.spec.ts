@@ -41,7 +41,7 @@ import {
   mapMessageReceivedEventToSayable,
 }                                     from './map-message-received-event-to-sayable.js'
 
-test('mapMessageReceivedEventToSayable', testSchedulerRunner(m => {
+test('mapMessageReceivedEventToSayable()', testSchedulerRunner(m => {
   const PUPPET_ID   = 'puppet-id'
   const MESSAGE_ID  = 'message-id'
   const TEXT        = 'text'
