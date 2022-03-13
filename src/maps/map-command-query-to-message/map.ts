@@ -28,7 +28,9 @@ import {
 }                           from 'rxjs'
 import {
   mergeMap,
+  tap,
 }                           from 'rxjs/operators'
+import { log }              from 'wechaty-puppet'
 
 import type {
   MetaRequest,
@@ -75,13 +77,14 @@ export const mapCommandQueryToMessage: MapCommandQueryToMessage = (
 ) => (
   messageBuilder,
 ) => source$ => source$.pipe(
+  tap(commandQuery => log.verbose('WechatyCqrs', 'mapCommandQueryToMessage() %s', JSON.stringify(commandQuery))),
   mergeMap(commandQuery => merge(
     /**
-     * Send
-     */
-    send$(bus$)(commandQuery),
-    /**
      * Recv
+     *
+     * Huan(202203):
+     *  `recv` should be put before(at the leftest) the `send$`
+     *  because it need to subscribe the bus before sending any events
      */
     bus$.pipe(
       recv(timeoutMilliseconds)(
@@ -89,5 +92,13 @@ export const mapCommandQueryToMessage: MapCommandQueryToMessage = (
         messageBuilder,
       ),
     ),
+    /**
+     * Send
+     *
+     * Huan(202203):
+     *  The `send$()` must be put after (at the rightest) the `recv()`
+     *  because it must wait the `recv()` to be registered to the stream first.
+     */
+    send$(bus$)(commandQuery),
   )),
 )

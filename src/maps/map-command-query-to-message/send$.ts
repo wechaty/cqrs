@@ -47,7 +47,7 @@ export const send$ = (bus$: Bus) =>
   >(
     commandQuery: ActionBuilder<TMessageType, TMessagePayload, MetaResponse>,
   ) => defer(() => {
-    log.verbose('WechatyCqrs', 'mapCommandQueryTopMessage() send$() defer() bus$.next(%s)', JSON.stringify(commandQuery))
+    log.verbose('WechatyCqrs', 'mapCommandQueryToMessage() send$() defer() bus$.next(%s)', JSON.stringify(commandQuery))
     /**
      * SO: Observable.onSubscribe equivalent in RxJs
      *  @link https://stackoverflow.com/a/48983205/1123955

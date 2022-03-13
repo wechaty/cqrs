@@ -24,6 +24,7 @@ import {
   catchError,
   mergeMap,
   map,
+  tap,
   filter,
 }                 from 'rxjs/operators'
 import { GError } from 'gerror'
@@ -33,6 +34,7 @@ import type {
 import {
   getPuppet,
 }                 from 'wechaty-redux'
+import { log }    from 'wechaty-puppet'
 import {
   isActionOf,
 }                 from 'typesafe-actions'
@@ -41,7 +43,8 @@ import * as actions from '../../actions/mod.js'
 
 export const currentUserIdEpic: Epic = actions$ => actions$.pipe(
   filter(isActionOf(actions.getCurrentUserIdQuery)),
-  mergeMap(action => of(action.meta.puppetId).pipe(
+  tap(query => log.verbose('WechatyCqrs', 'currentUserIdEpic() %s', JSON.stringify(query))),
+  mergeMap(query => of(query.meta.puppetId).pipe(
     map(getPuppet),
     map(puppet => puppet?.isLoggedIn
       ? puppet.currentUserId
@@ -49,14 +52,14 @@ export const currentUserIdEpic: Epic = actions$ => actions$.pipe(
     ),
     map(contactId => actions.currentUserIdGotMessage({
       contactId,
-      id       : action.meta.id,
-      puppetId : action.meta.puppetId,
+      id       : query.meta.id,
+      puppetId : query.meta.puppetId,
     })),
     catchError(e => of(
       actions.currentUserIdGotMessage({
         gerror   : GError.stringify(e),
-        id       : action.meta.id,
-        puppetId : action.meta.puppetId,
+        id       : query.meta.id,
+        puppetId : query.meta.puppetId,
       }),
     )),
   )),

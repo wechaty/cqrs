@@ -29,8 +29,11 @@ import {
   catchError,
   filter,
   take,
+  tap,
   timeout,
 }                           from 'rxjs/operators'
+import { log }              from 'wechaty-puppet'
+import { GError }           from 'gerror'
 
 import type {
   MetaRequest,
@@ -55,11 +58,12 @@ export const recv = (timeoutMilliseconds: number) =>
     messageActionBuilder : (res: TMetaResponse) => ActionBuilder<any, MPayload, MetaResponse>,
   ) => (source$: BusObs) => source$.pipe(
     filter(isActionOf(messageActionBuilder)),
+    tap(message => log.verbose('WechatyCqrs', 'mapCommandQueryToMessage() recv() %s', JSON.stringify(message))),
     filter(message => message.meta.id === commandQuery.meta.id),
     timeout(timeoutMilliseconds),
     catchError(err => of(
       messageActionBuilder({
-        gerror   : JSON.stringify(err),
+        gerror   : GError.stringify(err),
         id       : commandQuery.meta.id,
         puppetId : commandQuery.meta.puppetId,
       } as MetaResponse as any),  // Huan(202203): FIXME: remove any

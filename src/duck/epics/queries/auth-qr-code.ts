@@ -18,38 +18,48 @@
  *
  */
 import {
+  EMPTY,
   of,
 }                 from 'rxjs'
 import {
   catchError,
   mergeMap,
   map,
+  filter,
+  tap,
 }                 from 'rxjs/operators'
 import { GError } from 'gerror'
 
 import {
   getPuppet,
-}             from 'wechaty-redux'
+}                 from 'wechaty-redux'
+import { log }    from 'wechaty-puppet'
+import {
+  isActionOf,
+}                 from 'typesafe-actions'
+import type {
+  Epic,
+}                 from 'redux-observable'
 
-import * as actions from '../actions/mod.js'
+import * as actions from '../../actions/mod.js'
 
-export const isLoggedIn$ = (action: ReturnType<typeof actions.getIsLoggedInQuery>) => of(
-  getPuppet(action.meta.puppetId),
-).pipe(
-  mergeMap(puppet => puppet?.isLoggedIn
-    ? of(puppet.isLoggedIn)
-    : of(false),
-  ),
-  map(isLoggedIn => actions.isLoggedInGotMessage({
-    id       : action.meta.id,
-    isLoggedIn,
-    puppetId : action.meta.puppetId,
-  })),
-  catchError(e => of(
-    actions.isLoggedInGotMessage({
-      gerror   : GError.stringify(e),
-      id       : action.meta.id,
-      puppetId : action.meta.puppetId,
-    }),
+export const authQrCodeEpic: Epic = actions$ => actions$.pipe(
+  filter(isActionOf(actions.getAuthQrCodeQuery)),
+  tap(query => log.verbose('WechatyCqrs', 'authQrCodeEpic() %s', JSON.stringify(query))),
+  mergeMap(query => of(query.meta.puppetId).pipe(
+    map(getPuppet),
+    map(puppet => puppet?.authQrCode),
+    map(qrcode => actions.authQrCodeGotMessage({
+      id       : query.meta.id,
+      puppetId : query.meta.puppetId,
+      qrcode,
+    })),
+    catchError(e => of(
+      actions.authQrCodeGotMessage({
+        gerror   : GError.stringify(e),
+        id       : query.meta.id,
+        puppetId : query.meta.puppetId,
+      }),
+    )),
   )),
 )

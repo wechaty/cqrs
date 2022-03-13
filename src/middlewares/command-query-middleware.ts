@@ -31,7 +31,7 @@ import type {
  */
 export const commandQueryMiddleware: (cqBus$: Bus) => Middleware = cqBus$ => _store => next => {
   cqBus$.subscribe(cq => {
-    log.verbose('WechatyCqrs', 'commandQueryMiddleware() cqBus$.subscribe() -> %s', JSON.stringify(cq))
+    log.verbose('WechatyCqrs', 'commandQueryMiddleware() cqBus$.subscribe(%s)', JSON.stringify(cq))
     next(cq)
   })
   return action => next(action)

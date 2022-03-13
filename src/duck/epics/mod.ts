@@ -33,9 +33,7 @@ import * as actions from '../actions/mod.js'
 
 import { debug$ }         from './debug$.js'
 
-import { authQrCode$ }      from './auth-qrcode$.js'
 import { ding$ }            from './ding$.js'
-import { isLoggedIn$ }      from './is-logged-in$.js'
 import { messagePayload$ }  from './message-payload$.js'
 import { reset$ }           from './reset$.js'
 import { sendMessage$ }     from './send-message$.js'
@@ -88,16 +86,6 @@ export const stopEpic: Epic = actions$ => actions$.pipe(
  * Queries
  *
  */
-export const authQrCodeEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.getAuthQrCodeQuery)),
-  mergeMap(authQrCode$),
-)
-
-export const isLoggedInEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.getIsLoggedInQuery)),
-  mergeMap(isLoggedIn$),
-)
-
 export const messagePayloadEpic: Epic = actions$ => actions$.pipe(
   filter(isActionOf(actions.getMessagePayloadQuery)),
   mergeMap(messagePayload$),
