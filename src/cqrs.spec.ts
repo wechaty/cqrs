@@ -405,12 +405,11 @@ test('MessageReceivedEvent', async t => {
   const EXPECTED_PAYLOAD: PUPPET.payloads.Message = {
     fromId        : mary.id,
     id            : messagePayloadMessage.payload?.id ?? 'ERROR_NO_ID',
-    // mentionIdList : [],
+    listenerId    : mary.id,
+    talkerId      : user.id,
     text          : TEXT,
     timestamp     : messagePayloadMessage.payload?.timestamp ?? -1,
-    toId          : user.id,
     type          : PUPPET.types.Message.Text,
-
   }
 
   // Huan(202006) Workaround for puppet payload mismatch
