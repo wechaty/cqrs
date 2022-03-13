@@ -25,6 +25,7 @@ import {
   defer,
   EMPTY,
 }                           from 'rxjs'
+import { log }              from 'wechaty-puppet'
 
 import type {
   MetaResponse,
@@ -32,7 +33,7 @@ import type {
 
 import type {
   Bus,
-}                   from '../../cqrs.js'
+}                   from '../../bus.js'
 
 /**
  * Send the `commandQuery` to `bus$`
@@ -46,6 +47,7 @@ export const send$ = (bus$: Bus) =>
   >(
     commandQuery: ActionBuilder<TMessageType, TMessagePayload, MetaResponse>,
   ) => defer(() => {
+    log.verbose('WechatyCqrs', 'mapCommandQueryTopMessage() send$() defer() bus$.next(%s)', JSON.stringify(commandQuery))
     /**
      * SO: Observable.onSubscribe equivalent in RxJs
      *  @link https://stackoverflow.com/a/48983205/1123955

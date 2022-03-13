@@ -24,32 +24,40 @@ import {
   catchError,
   mergeMap,
   map,
+  filter,
 }                 from 'rxjs/operators'
 import { GError } from 'gerror'
-
+import type {
+  Epic,
+}                 from 'redux-observable'
 import {
   getPuppet,
-}             from 'wechaty-redux'
+}                 from 'wechaty-redux'
+import {
+  isActionOf,
+}                 from 'typesafe-actions'
 
-import * as actions from '../actions/mod.js'
+import * as actions from '../../actions/mod.js'
 
-export const currentUserId$ = (action: ReturnType<typeof actions.getCurrentUserIdQuery>) => of(
-  getPuppet(action.meta.puppetId),
-).pipe(
-  mergeMap(puppet => puppet?.isLoggedIn
-    ? of(puppet.currentUserId)
-    : of(undefined),
-  ),
-  map(contactId => actions.currentUserIdGotMessage({
-    contactId,
-    id       : action.meta.id,
-    puppetId : action.meta.puppetId,
-  })),
-  catchError(e => of(
-    actions.currentUserIdGotMessage({
-      gerror   : GError.stringify(e),
+export const currentUserIdEpic: Epic = actions$ => actions$.pipe(
+  filter(isActionOf(actions.getCurrentUserIdQuery)),
+  mergeMap(action => of(action.meta.puppetId).pipe(
+    map(getPuppet),
+    map(puppet => puppet?.isLoggedIn
+      ? puppet.currentUserId
+      : undefined,
+    ),
+    map(contactId => actions.currentUserIdGotMessage({
+      contactId,
       id       : action.meta.id,
       puppetId : action.meta.puppetId,
-    }),
+    })),
+    catchError(e => of(
+      actions.currentUserIdGotMessage({
+        gerror   : GError.stringify(e),
+        id       : action.meta.id,
+        puppetId : action.meta.puppetId,
+      }),
+    )),
   )),
 )

@@ -24,7 +24,6 @@ import type {
 }                           from 'typesafe-actions'
 import {
   Observable,
-  Subject,
   merge,
 }                           from 'rxjs'
 import {
@@ -36,11 +35,13 @@ import type {
   MetaResponse,
 }                   from '../../duck/actions/meta.js'
 
+import type { Bus } from '../../bus.js'
+
 import { send$ } from './send$.js'
 import { recv } from './recv.js'
 
 type MapCommandQueryToMessage = (
-  bus$                 : Subject<any>,
+  bus$                 : Bus<any>,
   timeoutMilliseconds? : number,
 ) => <
   TCommandQueryPayload  extends any,

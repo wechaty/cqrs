@@ -26,7 +26,7 @@ import {
 import {
   Subject,
   merge,
-  mergeMapTo,
+  mergeMap,
 }                         from 'rxjs'
 
 import * as CqrsDuck from '../../duck/mod.js'
@@ -56,7 +56,7 @@ test('send$()', testSchedulerRunner(m => {
   const source$ = m.hot(source)
 
   const result$ = source$.pipe(
-    mergeMapTo(merge(
+    mergeMap(() => merge(
       /**
        * `bus$` need to be put to the left (before) of the `send$`
        *  so that it will not miss the events which sent inside the `send$` function

@@ -31,7 +31,6 @@ import {
   map,
   filter,
   delay,
-  mapTo,
 }                         from 'rxjs/operators'
 import { isActionOf } from 'typesafe-actions'
 
@@ -65,11 +64,12 @@ test('map successful (in time)', testSchedulerRunner(m => {
   /**
    * Service Mock: Query -> Message
    */
-  bus$.pipe(
+  const mockService$ = bus$.pipe(
     filter(isActionOf(CqrsDuck.actions.getCurrentUserIdQuery)),
     delay(DELAY_MS),
-    mapTo(message),
-  ).subscribe(bus$)
+    map(() => message),
+  )
+  mockService$.subscribe(bus$)
 
   const source$ = m.hot(source, values)
 
@@ -109,11 +109,12 @@ test('map timeout', testSchedulerRunner(m => {
   /**
    * Service Mock: Query -> Message
    */
-  bus$.pipe(
+  const mockService$ = bus$.pipe(
     filter(isActionOf(CqrsDuck.actions.getCurrentUserIdQuery)),
     delay(TIMEOUT_MILLISECONDS),
-    mapTo(message),
-  ).subscribe(bus$)
+    map(() => message),
+  )
+  mockService$.subscribe(bus$)
 
   const source$ = m.hot(source, values)
 

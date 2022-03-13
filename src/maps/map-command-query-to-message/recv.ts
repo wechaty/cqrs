@@ -39,7 +39,7 @@ import type {
 
 import type {
   BusObs,
-}                   from '../../cqrs.js'
+}                   from '../../bus.js'
 
 /**
  * Monitor the `source$` to catch the `message` built by `messageActionBuilder` in response to the `commandQuery`

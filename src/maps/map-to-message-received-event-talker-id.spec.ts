@@ -59,7 +59,7 @@ test('mapToTalkerId()', testSchedulerRunner(m => {
   /**
    * Service Mock: Query -> Message
    */
-  const mockBus$ = bus$.pipe(
+  const mockService$ = bus$.pipe(
     filter(isActionOf(CqrsDuck.actions.getMessagePayloadQuery)),
     /**
      * Huan(202203): important: let the bullet to fly awhile
@@ -76,7 +76,7 @@ test('mapToTalkerId()', testSchedulerRunner(m => {
     })),
   )
 
-  mockBus$.subscribe(bus$)
+  mockService$.subscribe(bus$)
 
   const source$ = m.hot(source, {
     e: values.e,
