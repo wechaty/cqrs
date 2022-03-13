@@ -87,7 +87,10 @@ const onMessage$ = (bus$: CQRS.Bus) => CQRS.events$.messageReceivedEvent$(bus$).
        */
       map(messageReceivedEvent => CQRS.duck.actions.getMessagePayloadQuery(messageReceivedEvent.meta.puppetId, messageReceivedEvent.payload.messageId)),
       mergeMap(CQRS.execute$(bus$)(CQRS.duck.actions.messagePayloadGotMessage)),
-      map(messagePayloadGotMmessage => messagePayloadGotMmessage.payload?.fromId),
+      /**
+       * Huan(202203): `.fromId` deprecated, will be removed after v2.0
+       */
+      map(messagePayloadGotMmessage => messagePayloadGotMmessage.payload?.talkerId || messagePayloadGotMmessage.payload?.fromId),
       filter(Boolean),
       tap(talkerId => console.info('talkerId:', talkerId)),
 

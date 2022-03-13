@@ -71,7 +71,7 @@ test('mapToTalkerId()', testSchedulerRunner(m => {
     map(query => CqrsDuck.actions.messagePayloadGotMessage({
       ...query.meta,
       message: {
-        fromId: TALKER_ID,
+        talkerId: TALKER_ID,
       } as any,
     })),
   )

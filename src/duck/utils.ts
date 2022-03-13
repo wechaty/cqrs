@@ -84,14 +84,20 @@ const isWechaty = (puppetId: string) => (action: ReturnType<typeof actions.messa
 
 const isSelfMessage = (puppet: PUPPET.impls.PuppetInterface) =>
   (message: PUPPET.payloads.Message) =>
-    puppet.isLoggedIn && message.fromId
-      ? message.fromId === puppet.currentUserId
+    /**
+     * Huan(202203): `.fromId` deprecated, will be removed after v2.0
+     */
+    puppet.isLoggedIn && (message.talkerId || message.fromId)
+      ? (message.talkerId || message.fromId) === puppet.currentUserId
       : false
 void isSelfMessage
 
 const isNotSelfMessage = (puppet: PUPPET.impls.PuppetInterface) =>
   (message: PUPPET.payloads.Message) => puppet.isLoggedIn
-    ? message.fromId !== puppet.currentUserId
+    /**
+     * Huan(202203): `.fromId` deprecated, will be removed after v2.0
+     */
+    ? (message.talkerId || message.fromId) !== puppet.currentUserId
     : true
 
 const skipSelfMessage$ = (action: ReturnType<typeof actions.messageReceivedEvent>) => of(
