@@ -29,6 +29,7 @@ import {
 }                   from 'rxjs'
 import {
   filter,
+  mergeMap,
 }                   from 'rxjs/operators'
 import {
   WechatyBuilder,
@@ -45,10 +46,9 @@ import {
 
 import * as CqrsDuck  from './duck/mod.js'
 import * as sayables  from './mods/sayables.js'
+import { execute$ }   from './execute$/mod.js'
 
-import { mapCommandQueryToMessage } from './maps/mod.js'
-
-import { from }                     from './cqrs.js'
+import { from }       from './cqrs.js'
 
 test('smoke testing', async t => {
   const mocker  = new mock.Mocker()
@@ -200,37 +200,33 @@ test('Events - not logged in', async t => {
   /**
    * getCurrentUserIdQuery
    */
-  const currentUserIdMessage = await firstValueFrom(of(
-    CqrsDuck.actions.getCurrentUserIdQuery(puppet.id),
-  ).pipe(
-    mapCommandQueryToMessage(bus$)(
-      CqrsDuck.actions.currentUserIdGotMessage,
+  const currentUserIdMessage = await firstValueFrom(
+    of(CqrsDuck.actions.getCurrentUserIdQuery(puppet.id)).pipe(
+      mergeMap(execute$(bus$)(CqrsDuck.actions.currentUserIdGotMessage)),
     ),
-  ))
+  )
   t.notOk(currentUserIdMessage.payload.contactId, 'should have no currentUserId right after start')
 
   /**
    * getIsLoggedInQuery
    */
-  const isLoggedIn = await firstValueFrom(of(
-    CqrsDuck.actions.getIsLoggedInQuery(puppet.id),
-  ).pipe(
-    mapCommandQueryToMessage(bus$)(
-      CqrsDuck.actions.isLoggedInGotMessage,
+  const isLoggedIn = await firstValueFrom(
+    of(CqrsDuck.actions.getIsLoggedInQuery(puppet.id)).pipe(
+      mergeMap(execute$(bus$)(CqrsDuck.actions.isLoggedInGotMessage)),
     ),
-  ))
+  )
   t.equal(isLoggedIn.payload.isLoggedIn, false, 'should have not logged in right after start')
 
   /**
    * getAuthQrCodeQuery
    */
-  const qrCodeMessage = await firstValueFrom(of(
-    CqrsDuck.actions.getAuthQrCodeQuery(puppet.id),
-  ).pipe(
-    mapCommandQueryToMessage(bus$)(
-      CqrsDuck.actions.authQrCodeGotMessage,
+  const qrCodeMessage = await firstValueFrom(
+    of(
+      CqrsDuck.actions.getAuthQrCodeQuery(puppet.id),
+    ).pipe(
+      mergeMap(execute$(bus$)(CqrsDuck.actions.authQrCodeGotMessage)),
     ),
-  ))
+  )
   t.notOk(qrCodeMessage.payload.qrcode, 'should have no qrcode right after start')
 
   const stopCommand = CqrsDuck.actions.stopCommand(puppet.id)
@@ -251,14 +247,13 @@ test('Events - logged in', async t => {
   const eventList: any[] = []
   bus$.subscribe(e => eventList.push(e))
 
-  const authQrCodeGotMessage0 = await firstValueFrom(of(
-    CqrsDuck.actions.getAuthQrCodeQuery(puppet.id),
-  ).pipe(
-    filter(isActionOf(CqrsDuck.actions.getAuthQrCodeQuery)),
-    mapCommandQueryToMessage(bus$)(
-      CqrsDuck.actions.authQrCodeGotMessage,
+  const authQrCodeGotMessage0 = await firstValueFrom(
+    of(
+      CqrsDuck.actions.getAuthQrCodeQuery(puppet.id),
+    ).pipe(
+      mergeMap(execute$(bus$)(CqrsDuck.actions.authQrCodeGotMessage)),
     ),
-  ))
+  )
   t.notOk(authQrCodeGotMessage0.payload.qrcode, 'should have no qr code right after start')
 
   /**
@@ -267,14 +262,13 @@ test('Events - logged in', async t => {
   const QR_CODE = 'qrcode'
   mocker.scan(QR_CODE)
 
-  const authQrCodeGotMessage = await firstValueFrom(of(
-    CqrsDuck.actions.getAuthQrCodeQuery(puppet.id),
-  ).pipe(
-    filter(isActionOf(CqrsDuck.actions.getAuthQrCodeQuery)),
-    mapCommandQueryToMessage(bus$)(
-      CqrsDuck.actions.authQrCodeGotMessage,
+  const authQrCodeGotMessage = await firstValueFrom(
+    of(
+      CqrsDuck.actions.getAuthQrCodeQuery(puppet.id),
+    ).pipe(
+      mergeMap(execute$(bus$)(CqrsDuck.actions.authQrCodeGotMessage)),
     ),
-  ))
+  )
   t.equal(authQrCodeGotMessage.payload.qrcode, QR_CODE, 'should get qr code')
 
   /**
@@ -286,40 +280,37 @@ test('Events - logged in', async t => {
   // Let the bullets fly
   await new Promise(resolve => setImmediate(resolve))
 
-  const currentUserIdMessage = await firstValueFrom(of(
-    CqrsDuck.actions.getCurrentUserIdQuery(puppet.id),
-  ).pipe(
-    filter(isActionOf(CqrsDuck.actions.getCurrentUserIdQuery)),
-    mapCommandQueryToMessage(bus$)(
-      CqrsDuck.actions.currentUserIdGotMessage,
+  const currentUserIdMessage = await firstValueFrom(
+    of(
+      CqrsDuck.actions.getCurrentUserIdQuery(puppet.id),
+    ).pipe(
+      mergeMap(execute$(bus$)(CqrsDuck.actions.currentUserIdGotMessage)),
     ),
-  ))
+  )
   t.equal(currentUserIdMessage.payload.contactId, user.id, 'should get the logged in user')
 
   /**
    * getIsLoggedInQuery
    */
-  const isLoggedIn = await firstValueFrom(of(
-    CqrsDuck.actions.getIsLoggedInQuery(puppet.id),
-  ).pipe(
-    filter(isActionOf(CqrsDuck.actions.getIsLoggedInQuery)),
-    mapCommandQueryToMessage(bus$)(
-      CqrsDuck.actions.isLoggedInGotMessage,
+  const isLoggedIn = await firstValueFrom(
+    of(
+      CqrsDuck.actions.getIsLoggedInQuery(puppet.id),
+    ).pipe(
+      mergeMap(execute$(bus$)(CqrsDuck.actions.isLoggedInGotMessage)),
     ),
-  ))
+  )
   t.ok(isLoggedIn.payload.isLoggedIn, 'should logged in')
 
   /**
    * QR Code cleaned after login
    */
-  const authQrCodeGotMessage2 = await firstValueFrom(of(
-    CqrsDuck.actions.getAuthQrCodeQuery(puppet.id),
-  ).pipe(
-    filter(isActionOf(CqrsDuck.actions.getAuthQrCodeQuery)),
-    mapCommandQueryToMessage(bus$)(
-      CqrsDuck.actions.authQrCodeGotMessage,
+  const authQrCodeGotMessage2 = await firstValueFrom(
+    of(
+      CqrsDuck.actions.getAuthQrCodeQuery(puppet.id),
+    ).pipe(
+      mergeMap(execute$(bus$)(CqrsDuck.actions.authQrCodeGotMessage)),
     ),
-  ))
+  )
   t.notOk(authQrCodeGotMessage2.payload.qrcode, 'should clean qrcode after logged in')
 
   const stopCommand = CqrsDuck.actions.stopCommand(puppet.id)
@@ -356,14 +347,13 @@ test('sendMessageCommand', async t => {
     TEXT,
   ]
 
-  const message = await firstValueFrom(of(
-    CqrsDuck.actions.sendMessageCommand(puppet.id, mary.id, sayables.text(TEXT)),
-  ).pipe(
-    filter(isActionOf(CqrsDuck.actions.sendMessageCommand)),
-    mapCommandQueryToMessage(bus$)(
-      CqrsDuck.actions.messageSentMessage,
+  const message = await firstValueFrom(
+    of(
+      CqrsDuck.actions.sendMessageCommand(puppet.id, mary.id, sayables.text(TEXT)),
+    ).pipe(
+      mergeMap(execute$(bus$)(CqrsDuck.actions.messageSentMessage)),
     ),
-  ))
+  )
   t.notOk(message.meta.gerror, 'should get no error')
 
   t.ok(spy.calledOnce, 'should call messageSentText()')
@@ -404,13 +394,13 @@ test('MessageReceivedEvent', async t => {
   const messageReceivedEvent = await messageReceivedEventFuture
   t.ok(messageReceivedEvent.payload.messageId, 'should get message event with valid messageId')
 
-  const messagePayloadMessage = await firstValueFrom(of(
-    CqrsDuck.actions.getMessagePayloadQuery(puppet.id, messageReceivedEvent.payload.messageId),
-  ).pipe(
-    mapCommandQueryToMessage(bus$)(
-      CqrsDuck.actions.messagePayloadGotMessage,
+  const messagePayloadMessage = await firstValueFrom(
+    of(
+      CqrsDuck.actions.getMessagePayloadQuery(puppet.id, messageReceivedEvent.payload.messageId),
+    ).pipe(
+      mergeMap(execute$(bus$)(CqrsDuck.actions.messagePayloadGotMessage)),
     ),
-  ))
+  )
 
   const EXPECTED_PAYLOAD: PUPPET.payloads.Message = {
     fromId        : mary.id,

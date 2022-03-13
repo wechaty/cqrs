@@ -35,12 +35,12 @@ import { log }              from 'wechaty-puppet'
 import type {
   MetaRequest,
   MetaResponse,
-}                   from '../../duck/actions/meta.js'
+}                   from '../duck/actions/meta.js'
 
-import type { Bus } from '../../bus.js'
+import type { Bus } from '../bus.js'
 
-import { send$ } from './send$.js'
-import { recv } from './recv.js'
+import { send$ }  from './send$.js'
+import { recv }   from './recv.js'
 
 type MapCommandQueryToMessage = (
   bus$                 : Bus<any>,

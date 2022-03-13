@@ -29,7 +29,7 @@ import {
   mergeMap,
 }                         from 'rxjs'
 
-import * as CqrsDuck from '../../duck/mod.js'
+import * as CqrsDuck from '../duck/mod.js'
 
 import { send$ } from './send$.js'
 

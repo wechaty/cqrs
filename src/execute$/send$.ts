@@ -20,20 +20,20 @@
  */
 import type {
   ActionBuilder,
-}                           from 'typesafe-actions'
+}                   from 'typesafe-actions'
 import {
   defer,
   EMPTY,
-}                           from 'rxjs'
-import { log }              from 'wechaty-puppet'
+}                   from 'rxjs'
+import { log }      from 'wechaty-puppet'
 
 import type {
   MetaResponse,
-}                   from '../../duck/actions/meta.js'
+}                   from '../duck/actions/meta.js'
 
 import type {
   Bus,
-}                   from '../../bus.js'
+}                   from '../bus.js'
 
 /**
  * Send the `commandQuery` to `bus$`

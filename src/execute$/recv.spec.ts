@@ -28,9 +28,9 @@ import {
   map,
   filter,
 }                         from 'rxjs/operators'
-import { isActionOf } from 'typesafe-actions'
+import { isActionOf }     from 'typesafe-actions'
 
-import * as CqrsDuck from '../../duck/mod.js'
+import * as CqrsDuck from '../duck/mod.js'
 
 import { recv } from './recv.js'
 

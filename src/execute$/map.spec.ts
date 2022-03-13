@@ -34,7 +34,7 @@ import {
 }                         from 'rxjs/operators'
 import { isActionOf } from 'typesafe-actions'
 
-import * as CqrsDuck from '../../duck/mod.js'
+import * as CqrsDuck from '../duck/mod.js'
 
 import { mapCommandQueryToMessage } from './map.js'
 

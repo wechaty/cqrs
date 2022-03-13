@@ -5,9 +5,9 @@ import {
   isActionOf,
 }               from 'typesafe-actions'
 
-import { actions } from './duck/mod.js'
+import { actions } from '../duck/mod.js'
 
-import type { BusObs } from './bus.js'
+import type { BusObs } from '../bus.js'
 
 export const startedEvent$         = (source$: BusObs) => source$.pipe(filter(isActionOf(actions.startedEvent)))
 export const stoppedEvent$         = (source$: BusObs) => source$.pipe(filter(isActionOf(actions.stoppedEvent)))

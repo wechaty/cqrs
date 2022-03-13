@@ -21,28 +21,28 @@
 import {
   ActionBuilder,
   isActionOf,
-}                           from 'typesafe-actions'
+}                   from 'typesafe-actions'
 import {
   of,
-}                           from 'rxjs'
+}                   from 'rxjs'
 import {
   catchError,
   filter,
   take,
   tap,
   timeout,
-}                           from 'rxjs/operators'
-import { log }              from 'wechaty-puppet'
-import { GError }           from 'gerror'
+}                   from 'rxjs/operators'
+import { log }      from 'wechaty-puppet'
+import { GError }   from 'gerror'
 
 import type {
   MetaRequest,
   MetaResponse,
-}                   from '../../duck/actions/meta.js'
+}                   from '../duck/actions/meta.js'
 
 import type {
   BusObs,
-}                   from '../../bus.js'
+}                   from '../bus.js'
 
 /**
  * Monitor the `source$` to catch the `message` built by `messageActionBuilder` in response to the `commandQuery`

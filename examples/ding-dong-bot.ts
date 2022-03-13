@@ -18,13 +18,13 @@
  *   limitations under the License.
  *
  */
-import * as WECHATY             from 'wechaty'
-import * as PUPPET              from 'wechaty-puppet'
+import * as WECHATY from 'wechaty'
+import * as PUPPET  from 'wechaty-puppet'
 import {
   of,
   merge,
   defer,
-}                         from 'rxjs'
+}                   from 'rxjs'
 import {
   filter,
   ignoreElements,
@@ -34,19 +34,18 @@ import {
   tap,
   finalize,
   switchMap,
-}                         from 'rxjs/operators'
+}                   from 'rxjs/operators'
 
-import * as CQRS  from '../src/mods/mod.js'
+import * as CQRS    from '../src/mods/mod.js'
 
-const onScan$ = (source$: CQRS.BusObs) => CQRS.events.scanReceivedEvent$(source$).pipe(
+const onScan$ = (source$: CQRS.BusObs) => CQRS.events$.scanReceivedEvent$(source$).pipe(
   map(scanReceivedEvent => scanReceivedEvent.payload),
   tap(({ qrcode, status }) => {
-    const statusList = [
+    const qrStatusList = [
       PUPPET.types.ScanStatus.Waiting,
       PUPPET.types.ScanStatus.Timeout,
     ]
-
-    if (qrcode && statusList.some(s => s === status)) {
+    if (qrcode && qrStatusList.includes(status)) {
       const qrcodeImageUrl = [
         'https://wechaty.js.org/qrcode/',
         encodeURIComponent(qrcode),
@@ -59,13 +58,18 @@ const onScan$ = (source$: CQRS.BusObs) => CQRS.events.scanReceivedEvent$(source$
   }),
 )
 
-const onMessage$ = (bus$: CQRS.Bus) => CQRS.events.messageReceivedEvent$(bus$).pipe(
+const onMessage$ = (bus$: CQRS.Bus) => CQRS.events$.messageReceivedEvent$(bus$).pipe(
   tap(messageReceivedEvent => console.info('messageReceivedEvent', messageReceivedEvent)),
-  mergeMap(messageReceivedEvent => of(messageReceivedEvent).pipe(
+  mergeMap(messageReceivedEvent => of(messageReceivedEvent.payload.messageId).pipe(
     /**
      * message -> sayable
      */
-    CQRS.maps.mapMessageReceivedEventToSayable(bus$),
+    map(messageId => CQRS.duck.actions.getSayablePayloadQuery(
+      messageReceivedEvent.meta.puppetId,
+      messageId,
+    )),
+    mergeMap(CQRS.execute$(bus$)(CQRS.duck.actions.sayablePayloadGotMessage)),
+    map(sayablePayloadGotMessage => sayablePayloadGotMessage.payload),
     filter(Boolean),
     tap(sayable => console.info('sayable:', sayable)),
 
@@ -81,9 +85,12 @@ const onMessage$ = (bus$: CQRS.Bus) => CQRS.events.messageReceivedEvent$(bus$).p
       /**
        * ding -> talkerId
        */
-      CQRS.maps.mapToTalkerId(bus$),
+      map(messageReceivedEvent => CQRS.duck.actions.getMessagePayloadQuery(messageReceivedEvent.meta.puppetId, messageReceivedEvent.payload.messageId)),
+      mergeMap(CQRS.execute$(bus$)(CQRS.duck.actions.messagePayloadGotMessage)),
+      map(messagePayloadGotMmessage => messagePayloadGotMmessage.payload?.fromId),
       filter(Boolean),
       tap(talkerId => console.info('talkerId:', talkerId)),
+
       /**
        * talkerId -> command
        */
@@ -97,10 +104,7 @@ const onMessage$ = (bus$: CQRS.Bus) => CQRS.events.messageReceivedEvent$(bus$).p
       /**
        * execute command (return MessageSentMessage)
        */
-      mergeMap(command => CQRS.execute$(bus$)(
-        command,
-        CQRS.duck.actions.messageSentMessage,
-      )),
+      mergeMap(CQRS.execute$(bus$)(CQRS.duck.actions.messageSentMessage)),
     )),
   )),
 )
@@ -125,19 +129,19 @@ async function main () {
     puppetId,
   }             = await cqrsWechaty()
 
-  const onStartedEvent$ = (bus$: CQRS.Bus) => CQRS.events.startedEvent$(bus$).pipe(
+  const onStartedEvent$ = (bus$: CQRS.Bus) => CQRS.events$.startedEvent$(bus$).pipe(
     switchMap(() => merge(
       onScan$(bus$),
       onMessage$(bus$),
     ).pipe(
-      takeUntil(CQRS.events.stoppedEvent$(bus$)),
+      takeUntil(CQRS.events$.stoppedEvent$(bus$)),
     )),
   )
 
   const main$ = defer(() => of(CQRS.duck.actions.startCommand(puppetId))).pipe(
     mergeMap(startCommand => merge(
       onStartedEvent$(bus$),
-      CQRS.execute$(bus$)(startCommand),
+      CQRS.execute$(bus$)()(startCommand),
     )),
     ignoreElements(),
     finalize(() => bus$.next(CQRS.duck.actions.stopCommand(puppetId))),
