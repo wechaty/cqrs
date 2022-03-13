@@ -43,4 +43,6 @@ export interface Bus<T = ActionType<typeof CqrsDuck.actions>> {
   subscribe    : Subject<T>['subscribe']
 }
 
-export type BusObs<T extends { asObservable: () => Observable<any> } = Bus> = ReturnType<T['asObservable']>
+export interface BusObs<T extends Observable<any>['pipe'] = Bus['pipe']> {
+  pipe: T
+}

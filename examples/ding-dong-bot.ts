@@ -30,14 +30,14 @@ import {
   ignoreElements,
   map,
   mergeMap,
-  mergeMapTo,
-  switchMapTo,
   takeUntil,
   tap,
   finalize,
+  switchMap,
 }                         from 'rxjs/operators'
 
 import * as CQRS  from '../src/mods/mod.js'
+import { mapCommandQueryToMessage } from '../src/maps/mod.js'
 
 const onScan$ = (source$: CQRS.BusObs) => CQRS.events.scanReceivedEvent$(source$).pipe(
   map(scanReceivedEvent => scanReceivedEvent.payload),
@@ -75,7 +75,7 @@ const onMessage$ = (bus$: CQRS.Bus) => CQRS.events.messageReceivedEvent$(bus$).p
     filter(CQRS.sayables.isText),
     filter(sayable => sayable.payload.text === 'ding'),
     tap(e => console.info(e)),
-    mergeMapTo(of(messageReceivedEvent).pipe(
+    mergeMap(() => of(messageReceivedEvent).pipe(
       /**
        * ding -> talkerId
        */
@@ -94,7 +94,10 @@ const onMessage$ = (bus$: CQRS.Bus) => CQRS.events.messageReceivedEvent$(bus$).p
       /**
        * command -> bus$
        */
-      tap(command => bus$.next(command)),
+      mapCommandQueryToMessage(bus$)(
+        CQRS.duck.actions.messageSentMessage,
+      ),
+      tap(e => console.info(e)),
     )),
   )),
 )
@@ -102,6 +105,8 @@ const onMessage$ = (bus$: CQRS.Bus) => CQRS.events.messageReceivedEvent$(bus$).p
 async function cqrsWechaty () {
   const wechaty = WECHATY.WechatyBuilder.build({ name: 'ding-dong-bot' })
   await wechaty.init()
+
+  wechaty.on('message', m => console.info('message:', m))
 
   const bus$ = CQRS.from(wechaty)
 
@@ -118,20 +123,18 @@ async function main () {
   }             = await cqrsWechaty()
 
   const onStartedEvent$ = (bus$: CQRS.Bus) => CQRS.events.startedEvent$(bus$).pipe(
-    switchMapTo(
-      merge(
-        onScan$(bus$),
-        onMessage$(bus$),
-      ).pipe(
-        takeUntil(CQRS.events.stoppedEvent$(bus$)),
-      ),
-    ),
+    switchMap(() => merge(
+      onScan$(bus$),
+      onMessage$(bus$),
+    ).pipe(
+      takeUntil(CQRS.events.stoppedEvent$(bus$)),
+    )),
   )
 
   const main$ = defer(() => of(CQRS.duck.actions.startCommand(puppetId))).pipe(
     mergeMap(startCommand => merge(
-      CQRS.execute$(bus$)(startCommand),
       onStartedEvent$(bus$),
+      CQRS.execute$(bus$)(startCommand),
     )),
     ignoreElements(),
     finalize(() => bus$.next(CQRS.duck.actions.stopCommand(puppetId))),

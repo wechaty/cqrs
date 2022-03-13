@@ -1,13 +1,12 @@
 import {
   map,
 }               from 'rxjs/operators'
+
 import {
   actions,
-}                       from '../duck/mod.js'
-
-import type { Bus }  from '../cqrs.js'
-
-import type * as events$      from '../events$.js'
+}                           from '../duck/mod.js'
+import type { Bus }         from '../bus.js'
+import type * as events$    from '../events$.js'
 
 import { mapCommandQueryToMessage }   from './map-command-query-to-message/mod.js'
 

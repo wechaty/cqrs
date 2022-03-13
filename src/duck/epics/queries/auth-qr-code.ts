@@ -18,7 +18,6 @@
  *
  */
 import {
-  EMPTY,
   of,
 }                 from 'rxjs'
 import {

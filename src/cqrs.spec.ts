@@ -29,7 +29,6 @@ import {
 }                   from 'rxjs'
 import {
   filter,
-  tap,
 }                   from 'rxjs/operators'
 import {
   WechatyBuilder,

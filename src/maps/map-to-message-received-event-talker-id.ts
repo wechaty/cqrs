@@ -2,7 +2,7 @@ import {
   map,
 }               from 'rxjs/operators'
 
-import type { Bus }   from '../cqrs.js'
+import type { Bus }   from '../bus.js'
 import {
   actions,
 }                     from '../duck/mod.js'

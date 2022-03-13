@@ -7,14 +7,13 @@ import type {
   ActionBuilder,
 }                   from 'typesafe-actions'
 
-import type { Bus } from './cqrs.js'
-
 import type {
   MetaRequest,
   MetaResponse,
 }                                   from './duck/actions/meta.js'
-
 import { mapCommandQueryToMessage } from './maps/mod.js'
+
+import type { Bus } from './bus.js'
 
 export const execute$ = (bus$: Bus) =>
   <
