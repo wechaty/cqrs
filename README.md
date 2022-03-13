@@ -151,17 +151,11 @@ TBW
 
 ## History
 
-### main v0.4 (Mar 13, 2022)
+### main v0.5 (Mar 13, 2022)
 
-CQRS Ding/Dong BOT works as expected.
-
-### v0.2 (Mar 11, 2022)
-
-Unit tests all passed, DevOps enabled.
-
-### v0.0.1 (Mar 6, 2022)
-
-Init README & Draft design.
+- v0.4 (Mar 13, 2022): CQRS Ding/Dong BOT works as expected.
+- v0.2 (Mar 11, 2022): Unit tests all passed, DevOps enabled.
+- v0.0.1 (Mar 6, 2022): Init README & Draft design.
 
 ## Author
 
