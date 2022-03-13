@@ -35,22 +35,21 @@ import {
 
 import * as actions from '../actions/mod.js'
 
-export const stop$ = (action: ReturnType<typeof actions.stopCommand>) => of(
-  getPuppet(action.meta.puppetId),
+export const stop$ = (command: ReturnType<typeof actions.stopCommand>) => of(
+  getPuppet(command.meta.puppetId),
 ).pipe(
   mergeMap(puppet => puppet
     ? of(puppet.stop())
     : EMPTY,
   ),
   mapTo(actions.stoppedMessage({
-    id       : action.meta.id,
-    puppetId : action.meta.puppetId,
+    id       : command.meta.id,
+    puppetId : command.meta.puppetId,
   })),
   catchError((e: Error) => of(
     actions.stoppedMessage({
-      gerror   : GError.stringify(e),
-      id       : action.meta.id,
-      puppetId : action.meta.puppetId,
+      ...command.meta,
+      gerror: GError.stringify(e),
     }),
   )),
 )

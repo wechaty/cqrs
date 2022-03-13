@@ -24,7 +24,7 @@ import {
 import {
   catchError,
   mergeMap,
-  mapTo,
+  map,
 }                 from 'rxjs/operators'
 import { GError } from 'gerror'
 
@@ -41,15 +41,14 @@ export const ding$ = (action: ReturnType<typeof actions.dingCommand>) => of(
     ? of(puppet.ding(action.payload.data))
     : EMPTY,
   ),
-  mapTo(actions.dingedMessage({
+  map(() => actions.dingedMessage({
     id       : action.meta.id,
     puppetId : action.meta.puppetId,
   })),
   catchError(e => of(
     actions.dingedMessage({
-      gerror   : GError.stringify(e),
-      id       : action.meta.id,
-      puppetId : action.meta.puppetId,
+      ...action.meta,
+      gerror: GError.stringify(e),
     }),
   )),
 )

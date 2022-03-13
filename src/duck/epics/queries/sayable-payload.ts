@@ -19,16 +19,19 @@
  */
 import {
   of,
+  from,
 }                 from 'rxjs'
 import {
   catchError,
   mergeMap,
   map,
-  filter,
   tap,
+  filter,
 }                 from 'rxjs/operators'
 import { GError } from 'gerror'
-
+import type {
+  Epic,
+}                 from 'redux-observable'
 import {
   getPuppet,
 }                 from 'wechaty-redux'
@@ -36,27 +39,30 @@ import { log }    from 'wechaty-puppet'
 import {
   isActionOf,
 }                 from 'typesafe-actions'
-import type {
-  Epic,
-}                 from 'redux-observable'
 
 import * as actions from '../../actions/mod.js'
 
-export const authQrCodeEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.getAuthQrCodeQuery)),
-  tap(query => log.verbose('WechatyCqrs', 'authQrCodeEpic() %s', JSON.stringify(query))),
+export const sayablePayloadEpic: Epic = actions$ => actions$.pipe(
+  filter(isActionOf(actions.getSayablePayloadQuery)),
+  tap(query => log.verbose('WechatyCqrs', 'sayablePayloadEpic() %s', JSON.stringify(query))),
   mergeMap(query => of(query.meta.puppetId).pipe(
     map(getPuppet),
-    map(puppet => puppet?.authQrCode),
-    map(qrcode => actions.authQrCodeGotMessage({
-      ...query.meta,
-      qrcode,
-    })),
-    catchError(e => of(
-      actions.authQrCodeGotMessage({
-        ...query.meta,
-        gerror: GError.stringify(e),
-      }),
-    )),
+    mergeMap(puppet => !(puppet?.isLoggedIn)
+      ? of(undefined)
+      : from(
+        puppet.sayablePayload(query.payload.sayableId),
+      ).pipe(
+        map(sayable => actions.sayablePayloadGotMessage({
+          ...query.meta,
+          sayable,
+        })),
+        catchError(e => of(
+          actions.sayablePayloadGotMessage({
+            ...query.meta,
+            gerror: GError.stringify(e),
+          }),
+        )),
+      ),
+    ),
   )),
 )

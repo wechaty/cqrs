@@ -35,23 +35,22 @@ import {
 
 import * as actions from '../actions/mod.js'
 
-export const messagePayload$ = (action: ReturnType<typeof actions.getMessagePayloadQuery>) => of(
-  getPuppet(action.meta.puppetId),
+export const messagePayload$ = (query: ReturnType<typeof actions.getMessagePayloadQuery>) => of(
+  getPuppet(query.meta.puppetId),
 ).pipe(
   mergeMap(puppet => puppet
-    ? from(puppet.messagePayload(action.payload.messageId))
+    ? from(puppet.messagePayload(query.payload.messageId))
     : EMPTY,
   ),
   map(payload => actions.messagePayloadGotMessage({
-    id       : action.meta.id,
+    id       : query.meta.id,
     message  : payload,
-    puppetId : action.meta.puppetId,
+    puppetId : query.meta.puppetId,
   })),
   catchError(e => of(
     actions.currentUserIdGotMessage({
-      gerror   : GError.stringify(e),
-      id       : action.meta.id,
-      puppetId : action.meta.puppetId,
+      ...query.meta,
+      gerror: GError.stringify(e),
     }),
   )),
 )

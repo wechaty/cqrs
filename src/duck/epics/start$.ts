@@ -23,7 +23,7 @@ import {
 }                 from 'rxjs'
 import {
   catchError,
-  mapTo,
+  map,
   mergeMap,
 }                 from 'rxjs/operators'
 import { GError } from 'gerror'
@@ -34,22 +34,21 @@ import {
 
 import * as actions from '../actions/mod.js'
 
-export const start$ = (action: ReturnType<typeof actions.startCommand>) => of(
-  getPuppet(action.meta.puppetId),
+export const start$ = (command: ReturnType<typeof actions.startCommand>) => of(
+  getPuppet(command.meta.puppetId),
 ).pipe(
   mergeMap(puppet => puppet
     ? of(puppet.start())
     : EMPTY,
   ),
-  mapTo(actions.startedMessage({
-    id       : action.meta.id,
-    puppetId : action.meta.puppetId,
+  map(() => actions.startedMessage({
+    id       : command.meta.id,
+    puppetId : command.meta.puppetId,
   })),
   catchError((e: Error) => of(
     actions.startedMessage({
-      gerror   : GError.stringify(e),
-      id       : action.meta.id,
-      puppetId : action.meta.puppetId,
+      ...command.meta,
+      gerror: GError.stringify(e),
     }),
   )),
 )

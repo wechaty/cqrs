@@ -61,12 +61,15 @@ export const recv = (timeoutMilliseconds: number) =>
     tap(message => log.verbose('WechatyCqrs', 'mapCommandQueryToMessage() recv() %s', JSON.stringify(message))),
     filter(message => message.meta.id === commandQuery.meta.id),
     timeout(timeoutMilliseconds),
-    catchError(err => of(
-      messageActionBuilder({
-        gerror   : GError.stringify(err),
-        id       : commandQuery.meta.id,
-        puppetId : commandQuery.meta.puppetId,
-      } as MetaResponse as any),  // Huan(202203): FIXME: remove any
-    )),
+    catchError(err =>
+      of(
+        messageActionBuilder({
+          ...commandQuery.meta,
+          gerror: GError.stringify(err),
+        } as MetaResponse as any),  // Huan(202203): FIXME: remove any
+      ).pipe(
+        tap(() => console.error(err)),
+      ),
+    ),
     take(1),
   )

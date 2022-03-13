@@ -35,22 +35,21 @@ import {
 
 import * as actions from '../actions/mod.js'
 
-export const reset$ = (action: ReturnType<typeof actions.resetCommand>) => of(
-  getPuppet(action.meta.puppetId),
+export const reset$ = (command: ReturnType<typeof actions.resetCommand>) => of(
+  getPuppet(command.meta.puppetId),
 ).pipe(
   mergeMap(puppet => puppet
     ? of(puppet.reset())
     : EMPTY,
   ),
   mapTo(actions.resetMessage({
-    id       : action.meta.id,
-    puppetId : action.meta.puppetId,
+    id       : command.meta.id,
+    puppetId : command.meta.puppetId,
   })),
   catchError((e: Error) => of(
     actions.resetMessage({
-      gerror   : GError.stringify(e),
-      id       : action.meta.id,
-      puppetId : action.meta.puppetId,
+      ...command.meta,
+      gerror: GError.stringify(e),
     }),
   )),
 )

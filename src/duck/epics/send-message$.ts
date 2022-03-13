@@ -35,25 +35,24 @@ import {
 
 import * as actions from '../actions/mod.js'
 
-export const sendMessage$ = (action: ReturnType<typeof actions.sendMessageCommand>) => of(
-  getPuppet(action.meta.puppetId),
+export const sendMessage$ = (command: ReturnType<typeof actions.sendMessageCommand>) => of(
+  getPuppet(command.meta.puppetId),
 ).pipe(
   mergeMap(puppet => puppet
     ? from(puppet.messageSend(
-      action.payload.conversationId,
-      action.payload.sayable,
+      command.payload.conversationId,
+      command.payload.sayable,
     ))
     : EMPTY,
   ),
   mapTo(actions.messageSentMessage({
-    id       : action.meta.id,
-    puppetId : action.meta.puppetId,
+    id       : command.meta.id,
+    puppetId : command.meta.puppetId,
   })),
   catchError(e => of(
     actions.messageSentMessage({
-      gerror   : GError.stringify(e),
-      id       : action.meta.id,
-      puppetId : action.meta.puppetId,
+      ...command.meta,
+      gerror: GError.stringify(e),
     }),
   )),
 )

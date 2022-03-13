@@ -106,7 +106,7 @@ async function cqrsWechaty () {
   const wechaty = WECHATY.WechatyBuilder.build({ name: 'ding-dong-bot' })
   await wechaty.init()
 
-  wechaty.on('message', m => console.info('message:', m))
+  // wechaty.on('message', m => console.info('message:', String(m)))
 
   const bus$ = CQRS.from(wechaty)
 

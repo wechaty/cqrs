@@ -51,15 +51,13 @@ export const currentUserIdEpic: Epic = actions$ => actions$.pipe(
       : undefined,
     ),
     map(contactId => actions.currentUserIdGotMessage({
+      ...query.meta,
       contactId,
-      id       : query.meta.id,
-      puppetId : query.meta.puppetId,
     })),
     catchError(e => of(
       actions.currentUserIdGotMessage({
-        gerror   : GError.stringify(e),
-        id       : query.meta.id,
-        puppetId : query.meta.puppetId,
+        ...query.meta,
+        gerror: GError.stringify(e),
       }),
     )),
   )),
