@@ -37,7 +37,6 @@ import {
 }                         from 'rxjs/operators'
 
 import * as CQRS  from '../src/mods/mod.js'
-import { mapCommandQueryToMessage } from '../src/maps/mod.js'
 
 const onScan$ = (source$: CQRS.BusObs) => CQRS.events.scanReceivedEvent$(source$).pipe(
   map(scanReceivedEvent => scanReceivedEvent.payload),
@@ -61,27 +60,30 @@ const onScan$ = (source$: CQRS.BusObs) => CQRS.events.scanReceivedEvent$(source$
 )
 
 const onMessage$ = (bus$: CQRS.Bus) => CQRS.events.messageReceivedEvent$(bus$).pipe(
+  tap(messageReceivedEvent => console.info('messageReceivedEvent', messageReceivedEvent)),
   mergeMap(messageReceivedEvent => of(messageReceivedEvent).pipe(
     /**
      * message -> sayable
      */
-    tap(e => console.info('before map', e)),
     CQRS.maps.mapMessageReceivedEventToSayable(bus$),
-    tap(e => console.info('after map', e)),
     filter(Boolean),
+    tap(sayable => console.info('sayable:', sayable)),
+
     /**
      * sayable -> ding
      */
     filter(CQRS.sayables.isText),
-    filter(sayable => sayable.payload.text === 'ding'),
-    tap(e => console.info(e)),
+    map(sayable => sayable.payload.text),
+    filter(text => text === 'ding'),
+    tap(text => console.info('text:', text)),
+
     mergeMap(() => of(messageReceivedEvent).pipe(
       /**
        * ding -> talkerId
        */
       CQRS.maps.mapToTalkerId(bus$),
       filter(Boolean),
-      tap(e => console.info(e)),
+      tap(talkerId => console.info('talkerId:', talkerId)),
       /**
        * talkerId -> command
        */
@@ -90,14 +92,15 @@ const onMessage$ = (bus$: CQRS.Bus) => CQRS.events.messageReceivedEvent$(bus$).p
         talkerId,
         CQRS.sayables.text('dong'),
       )),
-      tap(e => console.info(e)),
+      tap(command => console.info('sendMessageCommand:', command)),
+
       /**
-       * command -> bus$
+       * execute command (return MessageSentMessage)
        */
-      mapCommandQueryToMessage(bus$)(
+      mergeMap(command => CQRS.execute$(bus$)(
+        command,
         CQRS.duck.actions.messageSentMessage,
-      ),
-      tap(e => console.info(e)),
+      )),
     )),
   )),
 )
