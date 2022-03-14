@@ -66,6 +66,16 @@ bus$.pipe(
 bus$.next(CQRS.duck.actions.startCommand(wechaty.puppet.id))
 ```
 
+## Getting Started
+
+Here's a video introduction for CQRS Wechaty with live demo, presented by Huan: 
+
+[![CQRS Wechaty Getting Started](docs/images/cqrs-wechaty-getting-started.webp)](https://youtu.be/kauxyPVa0jo)
+
+> YouTube: <https://youtu.be/kauxyPVa0jo>
+
+The getting started [ding-dong-bot.ts](https://github.com/wechaty/getting-started/blob/main/examples/cqrs/ding-dong-bot.ts) in the video: <https://github.com/wechaty/getting-started/blob/main/examples/cqrs/ding-dong-bot.ts>
+
 ## Diagrams
 
 ![CQRS Events Structure](docs/images/cqrs-events-diagram.svg)
