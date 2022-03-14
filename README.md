@@ -41,28 +41,29 @@ npm install wechaty-cqrs wechaty
 Here's the CQRS version of the Wechaty ding/dong bot:
 
 ```ts
-import * as WECHATY from 'wechaty'
 import * as CQRS    from 'wechaty-cqrs'
-
-import { filter }   from 'rxjs/operators'
+import * as WECHATY from 'wechaty'
+import { filter, map, mergeMap }  from 'rxjs/operators'
 
 const wechaty = WECHATY.WechatyBuilder.build()
 await wechaty.init()
 
-const bus$ = CQRS.bus(wechaty)
+const bus$ = CQRS.from(wechaty)
 
 bus$.pipe(
-  filter(CQRS.isActionOf(CQRS.events.messageReceivedEvent)),
-  filter(event => event.payloads.type === CQRS.sayable.type.Text),
-  filter(event => event.payloads.payload === 'ding')
-).subscribe(ding => bus$.next(
-  CQRS.commands.sendMessage(
-    ding.payload.talkerId,
-    CQRS.sayable.text('dong'),
-  ),
-))
+  filter(CQRS.isActionOf(CQRS.actions.messageReceivedEvent)),
+  // MessageReceivedEvent -> Sayable
+  map(messageId => CQRS.duck.actions.getSayablePayloadQuery(
+    messageReceivedEvent.meta.puppetId,
+    messageId,
+  )),
+  mergeMap(CQRS.execute$(bus$)(CQRS.duck.actions.sayablePayloadGotMessage)),
+  // Log `sayable` to console
+).subscribe(sayable =>
+  console.info('Sayable:', sayable),
+)
 
-await wechaty.start()
+bus$.next(CQRS.duck.actions.startCommand(wechaty.puppet.id))
 ```
 
 ## Diagrams
