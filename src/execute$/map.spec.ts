@@ -44,9 +44,8 @@ test('map successful (in time)', testSchedulerRunner(m => {
 
   const query   = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
   const message = CqrsDuck.actions.currentUserIdGotMessage({
+    ...query.meta,
     contactId : CONTACT_ID,
-    id        : query.meta.id,
-    puppetId  : query.meta.puppetId,
   })
 
   const values = {
@@ -87,21 +86,20 @@ test('map timeout', testSchedulerRunner(m => {
   const PUPPET_ID = 'puppet-id'
   const GERROR    = 'Timeout has occurred'
 
-  const command = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
+  const query = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
   const message = CqrsDuck.actions.currentUserIdGotMessage({
-    gerror    : GERROR,
-    id        : command.meta.id,
-    puppetId  : command.meta.puppetId,
+    ...query.meta,
+    gerror: GERROR,
   })
 
   const values = {
-    c: command,
     m: message,
+    q: query,
   }
 
   const TIMEOUT_MILLISECONDS = 100
 
-  const source    = `c ${TIMEOUT_MILLISECONDS - 1}ms  `
+  const source    = `q ${TIMEOUT_MILLISECONDS - 1}ms  `
   const expected  = `- ${TIMEOUT_MILLISECONDS - 1}ms m`
 
   const bus$ = new Subject<any>()

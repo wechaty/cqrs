@@ -37,20 +37,19 @@ test('send$()', testSchedulerRunner(m => {
   const PUPPET_ID   = 'puppet-id'
   const CONTACT_ID  = 'contact-id'
 
-  const command = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
+  const query   = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
   const message = CqrsDuck.actions.currentUserIdGotMessage({
+    ...query.meta,
     contactId : CONTACT_ID,
-    id        : command.meta.id,
-    puppetId  : command.meta.puppetId,
   })
 
   const values = {
-    c: command,
     m: message,
+    q: query,
   }
 
   const source    = '-x'
-  const expected  = '-c'
+  const expected  = '-q'
 
   const bus$ = new Subject<any>()
   const source$ = m.hot(source)
@@ -62,7 +61,7 @@ test('send$()', testSchedulerRunner(m => {
        *  so that it will not miss the events which sent inside the `send$` function
        */
       bus$,
-      send$(bus$)(command),
+      send$(bus$)(query),
     )),
   )
 
