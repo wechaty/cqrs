@@ -28,7 +28,6 @@ import { GError }         from 'gerror'
 import {
   EMPTY,
   Observable,
-  of,
   Subject,
 }                         from 'rxjs'
 import {
@@ -154,8 +153,6 @@ test('execute$() ReturnType without message ', async t => {
   const bus$ = new Subject<any>()
 
   const execute = execute$(bus$)()
-  type T = ReturnType<typeof execute>
-  let xx: T
 
   const test: AssertEqual<
     ReturnType<typeof execute>,
