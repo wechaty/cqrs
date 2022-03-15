@@ -32,10 +32,8 @@ import {
 }                         from 'rxjs'
 import {
   map,
-  filter,
   mergeMap,
 }                         from 'rxjs/operators'
-import { isActionOf }     from 'typesafe-actions'
 
 import * as CqrsDuck  from '../duck/mod.js'
 
@@ -63,7 +61,6 @@ test('execute$() message creator / in time', testSchedulerRunner(m => {
 
   const mockBus$ = m.hot(bus, values)
   const result$ = m.hot(source, { q: values.q }).pipe(
-    filter(isActionOf(CqrsDuck.actions.getCurrentUserIdQuery)),
     mergeMap(execute$(mockBus$)(CqrsDuck.actions.currentUserIdGotMessage)),
   )
 
@@ -100,7 +97,6 @@ test('execute$() with message creator / timeout', testSchedulerRunner(m => {
   })
 
   const result$ = m.hot(source, { q: values.q }).pipe(
-    filter(isActionOf(CqrsDuck.actions.getCurrentUserIdQuery)),
     mergeMap(execute$(dummyBus$)(CqrsDuck.actions.currentUserIdGotMessage)),
     map(normalizeMessage),
   )
@@ -129,7 +125,6 @@ test('execute$() without message creator', testSchedulerRunner(m => {
 
   const mockBus$ = m.hot(bus, values)
   const result$ = m.hot(source, { q: values.q }).pipe(
-    filter(isActionOf(CqrsDuck.actions.getCurrentUserIdQuery)),
     mergeMap(execute$(mockBus$)()),
   )
 

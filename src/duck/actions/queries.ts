@@ -18,8 +18,6 @@
  *
  */
 
-/* eslint-disable sort-keys */
-
 import {
   createAction,
 }                         from 'typesafe-actions'
