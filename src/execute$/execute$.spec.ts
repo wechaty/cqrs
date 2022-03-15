@@ -22,9 +22,12 @@
 import {
   test,
   testSchedulerRunner,
+  AssertEqual,
 }                         from 'tstest'
 import { GError }         from 'gerror'
 import {
+  EMPTY,
+  Observable,
   of,
   Subject,
 }                         from 'rxjs'
@@ -133,3 +136,30 @@ test('execute$() without message creator', testSchedulerRunner(m => {
 
   m.expectObservable(result$).toBe(expected, values)
 }))
+
+test('execute$() ReturnType with message ', async t => {
+  const bus$ = new Subject<any>()
+
+  const execute = execute$(bus$)(CqrsDuck.actions.currentUserIdGotMessage)
+
+  const test: AssertEqual<
+    ReturnType<typeof execute>,
+    Observable<ReturnType<typeof CqrsDuck.actions.currentUserIdGotMessage>>
+  > = true
+
+  t.ok(test, 'should get the right return type of message')
+})
+
+test('execute$() ReturnType without message ', async t => {
+  const bus$ = new Subject<any>()
+
+  const execute = execute$(bus$)()
+  type T = ReturnType<typeof execute>
+  let xx: T
+
+  const test: AssertEqual<
+    ReturnType<typeof execute>,
+    typeof EMPTY
+  > = true
+  t.ok(test, 'should get the right return type of Observable<never>')
+})
