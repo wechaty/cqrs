@@ -23,8 +23,8 @@ import { test } from 'tstest'
 import type { MetaResponse } from './meta.js'
 import {
   create,
-  messageCreator,
-}                   from './create.js'
+  responseActionCreator,
+}                             from './create.js'
 
 test('action create smoke testing', async t => {
   const QUERY_TYPE    = 'TEST_QUERY'
@@ -63,10 +63,10 @@ test('action create smoke testing', async t => {
     MESSAGE_TYPE,
     payloadTestMessage,
   )
-  const testGotMessage = messageCreator(getTestQuery)
+  const testGotResponse = responseActionCreator(getTestQuery)
 
   const query = getTestQuery(PUPPET_ID, TEXT)
-  const message = testGotMessage({
+  const message = testGotResponse({
     ...query.meta,
     data: DATA,
   })

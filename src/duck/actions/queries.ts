@@ -18,18 +18,17 @@
  *
  */
 
-import {
-  createAction,
-}                         from 'typesafe-actions'
 import type * as PUPPET   from 'wechaty-puppet'
 
 import * as types from '../types/mod.js'
 
-import {
-  metaRequest,
-  metaResponse,
+import type {
   MetaResponse,
 }                 from './meta.js'
+
+import {
+  create,
+}           from './create.js'
 
 /**
  * Bug compatible & workaround for Ducks API
@@ -43,8 +42,10 @@ import {
 const payloadGetCurrentUserIdQuery    = (_puppetId: string)                           => ({})
 const payloadCurrentUserIdGotMessage  = (res: MetaResponse & { contactId?: string })  => ({ contactId: res.contactId })
 
-export const getCurrentUserIdQuery    = createAction(types.GET_CURRENT_USER_ID_QUERY,   payloadGetCurrentUserIdQuery,   metaRequest)()
-export const currentUserIdGotMessage  = createAction(types.CURRENT_USER_ID_GOT_MESSAGE, payloadCurrentUserIdGotMessage, metaResponse)()
+export const getCurrentUserIdQuery = create(
+  types.GET_CURRENT_USER_ID_QUERY,   payloadGetCurrentUserIdQuery,
+  types.CURRENT_USER_ID_GOT_MESSAGE, payloadCurrentUserIdGotMessage,
+)
 
 /**
  * puppet.isLoggedIn
@@ -52,26 +53,32 @@ export const currentUserIdGotMessage  = createAction(types.CURRENT_USER_ID_GOT_M
 const payloadGetIsLoggedInQuery   = (_puppetId: string)                             => ({})
 const payloadIsLoggedInGotMessage = (res: MetaResponse & { isLoggedIn?: boolean })  => ({ isLoggedIn: res.isLoggedIn })
 
-export const getIsLoggedInQuery   = createAction(types.GET_IS_LOGGED_IN_QUERY,    payloadGetIsLoggedInQuery,    metaRequest)()
-export const isLoggedInGotMessage = createAction(types.IS_LOGGED_IN_GOT_MESSAGE,  payloadIsLoggedInGotMessage,  metaResponse)()
+export const getIsLoggedInQuery = create(
+  types.GET_IS_LOGGED_IN_QUERY,    payloadGetIsLoggedInQuery,
+  types.IS_LOGGED_IN_GOT_MESSAGE,  payloadIsLoggedInGotMessage,
+)
 
 /**
  * puppet.sayablePayload
  */
 const payloadGetSayablePayloadQuery   = (_puppetId: string, sayableId: string)                      => ({ sayableId })
-const payloadSayablePayloadGotMessage = (res: MetaResponse & { sayable?: PUPPET.payloads.Sayable }) => res.sayable
+const payloadSayablePayloadGotMessage = (res: MetaResponse & { sayable?: PUPPET.payloads.Sayable }) => res.sayable || ({})
 
-export const getSayablePayloadQuery   = createAction(types.GET_SAYABLE_PAYLOAD_QUERY,    payloadGetSayablePayloadQuery,    metaRequest)()
-export const sayablePayloadGotMessage = createAction(types.SAYABLE_PAYLOAD_GOT_MESSAGE,  payloadSayablePayloadGotMessage,  metaResponse)()
+export const getSayablePayloadQuery = create(
+  types.GET_SAYABLE_PAYLOAD_QUERY,    payloadGetSayablePayloadQuery,
+  types.SAYABLE_PAYLOAD_GOT_MESSAGE,  payloadSayablePayloadGotMessage,
+)
 
 /**
  * puppet.messagePayload
  */
 const payloadGetMessagePayloadQuery   = (_puppetId: string, messageId: string)                      => ({ messageId })
-const payloadMessagePayloadGotMessage = (res: MetaResponse & { message?: PUPPET.payloads.Message }) => res.message
+const payloadMessagePayloadGotMessage = (res: MetaResponse & { message?: PUPPET.payloads.Message }) => res.message || ({})
 
-export const getMessagePayloadQuery   = createAction(types.GET_MESSAGE_PAYLOAD_QUERY,    payloadGetMessagePayloadQuery,    metaRequest)()
-export const messagePayloadGotMessage = createAction(types.MESSAGE_PAYLOAD_GOT_MESSAGE,  payloadMessagePayloadGotMessage,  metaResponse)()
+export const getMessagePayloadQuery = create(
+  types.GET_MESSAGE_PAYLOAD_QUERY,    payloadGetMessagePayloadQuery,
+  types.MESSAGE_PAYLOAD_GOT_MESSAGE,  payloadMessagePayloadGotMessage,
+)
 
 /**
  * puppet.qrCode
@@ -79,5 +86,7 @@ export const messagePayloadGotMessage = createAction(types.MESSAGE_PAYLOAD_GOT_M
 const payloadGetAuthQrCodeQuery   = (_puppetId: string)                       => ({})
 const payloadAuthQrCodeGotMessage = (res: MetaResponse & { qrcode?: string }) => ({ qrcode: res.qrcode })
 
-export const getAuthQrCodeQuery   = createAction(types.GET_AUTH_QR_CODE_QUERY,    payloadGetAuthQrCodeQuery,    metaRequest)()
-export const authQrCodeGotMessage = createAction(types.AUTH_QR_CODE_GOT_MESSAGE,  payloadAuthQrCodeGotMessage,  metaResponse)()
+export const getAuthQrCodeQuery = create(
+  types.GET_AUTH_QR_CODE_QUERY,    payloadGetAuthQrCodeQuery,
+  types.AUTH_QR_CODE_GOT_MESSAGE,  payloadAuthQrCodeGotMessage,
+)

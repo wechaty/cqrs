@@ -27,37 +27,37 @@ import {
   MetaResponse,
 }                 from './meta.js'
 
-const MESSAGE = Symbol('MESSAGE')
+export const RESPONSE = "Symbol('MESSAGE')"
 
 export function create <
   CQType extends string,
   MType  extends string,
 
   CQPayload extends {},
-  MPayload  extends {},
+  RPayload  extends {},
 
   TRes extends MetaResponse,
   TArgs extends any[],
 > (
   commandQueryType : CQType, payloadCommandQuery : (puppetId: string, ...args: TArgs) => CQPayload,
-  messageType      : MType,  payloadMessage      : (res: TRes)                        => MPayload,
+  responseType     : MType,  payloadResponse     : (res: TRes)                        => RPayload,
 ) {
-  const getQuery   = createAction(commandQueryType, payloadCommandQuery,  metaRequest)()
-  const gotMessage = createAction(messageType,      payloadMessage,       metaResponse)()
+  const commandQuery  = createAction(commandQueryType, payloadCommandQuery,  metaRequest)()
+  const response      = createAction(responseType,     payloadResponse,      metaResponse)()
 
-  ;(getQuery as any)[MESSAGE] = gotMessage
+  ;(commandQuery as any)[RESPONSE] = response
 
-  const commandQueryActionCreator: typeof getQuery & {
-    [MESSAGE]: typeof gotMessage
-  } = getQuery as any
+  const commandQueryActionCreator: typeof commandQuery & {
+    [RESPONSE]: typeof response
+  } = commandQuery as any
 
   return commandQueryActionCreator
 }
 
-export const messageCreator = <
-  MType extends string,
-  MPayload extends {},
+export const responseActionCreator = <
+  RType extends string,
+  RPayload extends {},
   TRes extends MetaResponse,
-> (commandQueryCreator: {
-  [MESSAGE]: (res: TRes) => PayloadMetaAction<MType, MPayload, MetaResponse>
-}) => commandQueryCreator[MESSAGE]
+> (commandQueryActionCreator: {
+  [RESPONSE]: (res: TRes) => PayloadMetaAction<RType, RPayload, MetaResponse>
+}) => commandQueryActionCreator[RESPONSE]

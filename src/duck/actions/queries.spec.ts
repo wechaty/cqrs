@@ -20,7 +20,8 @@
  */
 import { test } from 'tstest'
 
-import * as queries from './queries.js'
+import * as queries       from './queries.js'
+import { responseActionCreator } from './create.js'
 
 test('queries smoke testing', async t => {
   const ID = 'uuidv4'
@@ -31,7 +32,9 @@ test('queries smoke testing', async t => {
   t.ok(q.meta.id, 'should set id to meta')
   t.equal(q.meta.puppetId, PUPPET_ID, 'should set puppetId to meta')
 
-  const e = queries.currentUserIdGotMessage({
+  const currentUserIdGotResponse = responseActionCreator(queries.getCurrentUserIdQuery)
+
+  const e = currentUserIdGotResponse({
     contactId: CONTACT_ID,
     id: ID,
     puppetId: PUPPET_ID,

@@ -20,18 +20,17 @@
 
 /* eslint-disable sort-keys */
 
-import {
-  createAction,
-}                         from 'typesafe-actions'
 import type * as PUPPET   from 'wechaty-puppet'
 
 import * as types from '../types/mod.js'
 
-import {
+import type {
   MetaResponse,
-  metaRequest,
-  metaResponse,
 }                     from './meta.js'
+
+import {
+  create,
+}                     from './create.js'
 
 /**
  * Internal
@@ -39,8 +38,10 @@ import {
 const payloadNopCommand = (_puppetId: string)   => ({})
 const payloadNopMessage = (_res: MetaResponse)  => ({})
 
-export const nopCommand = createAction(types.NOP_COMMAND, payloadNopCommand,  metaRequest)()
-export const nopMessage = createAction(types.NOP_MESSAGE, payloadNopMessage,  metaResponse)()
+export const nopCommand = create(
+  types.NOP_COMMAND, payloadNopCommand,
+  types.NOP_MESSAGE, payloadNopMessage,
+)
 
 /**
  * puppet.messageSend()
@@ -48,8 +49,10 @@ export const nopMessage = createAction(types.NOP_MESSAGE, payloadNopMessage,  me
 const payloadSendMessageCommand = (_puppetId: string, conversationId: string, sayable: PUPPET.payloads.Sayable) => ({ conversationId, sayable })
 const payloadMessageSentMessage = (res: MetaResponse & { messageId?: string })                                  => ({ messageId: res.messageId })
 
-export const sendMessageCommand = createAction(types.SEND_MESSAGE_COMMAND,  payloadSendMessageCommand,  metaRequest)()
-export const messageSentMessage = createAction(types.MESSAGE_SENT_MESSAGE,  payloadMessageSentMessage,  metaResponse)()
+export const sendMessageCommand = create(
+  types.SEND_MESSAGE_COMMAND,  payloadSendMessageCommand,
+  types.MESSAGE_SENT_MESSAGE,  payloadMessageSentMessage,
+)
 
 /**
  * puppet.ding()
@@ -57,8 +60,10 @@ export const messageSentMessage = createAction(types.MESSAGE_SENT_MESSAGE,  payl
 const payloadDingCommand    = (_puppetId: string, data?: string)  => ({ data })
 const payloadDingedMessage  = (_res: MetaResponse)                => ({})
 
-export const dingCommand    = createAction(types.DING_COMMAND,    payloadDingCommand,   metaRequest)()
-export const dingedMessage  = createAction(types.DINGED_MESSAGE,  payloadDingedMessage, metaResponse)()
+export const dingCommand = create(
+  types.DING_COMMAND,    payloadDingCommand,
+  types.DINGED_MESSAGE,  payloadDingedMessage,
+)
 
 /**
  * puppet.reset()
@@ -66,8 +71,10 @@ export const dingedMessage  = createAction(types.DINGED_MESSAGE,  payloadDingedM
 const payloadResetCommand = (_puppetId: string, data?: string)  => ({ data })
 const payloadResetMessage = (_res: MetaResponse)                => ({})
 
-export const resetCommand = createAction(types.RESET_COMMAND, payloadResetCommand, metaRequest)()
-export const resetMessage = createAction(types.RESET_MESSAGE, payloadResetMessage, metaResponse)()
+export const resetCommand = create(
+  types.RESET_COMMAND, payloadResetCommand,
+  types.RESET_MESSAGE, payloadResetMessage,
+)
 
 /**
  * puppet.start()
@@ -75,8 +82,10 @@ export const resetMessage = createAction(types.RESET_MESSAGE, payloadResetMessag
 const payloadStartCommand    = (_puppetId: string)  => ({})
 const payloadStartedMessage  = (_res: MetaResponse) => ({})
 
-export const startCommand   = createAction(types.START_COMMAND,   payloadStartCommand,   metaRequest)()
-export const startedMessage = createAction(types.STARTED_MESSAGE, payloadStartedMessage, metaResponse)()
+export const startCommand = create(
+  types.START_COMMAND,   payloadStartCommand,
+  types.STARTED_MESSAGE, payloadStartedMessage,
+)
 
 /**
  * puppet.stop()
@@ -84,5 +93,7 @@ export const startedMessage = createAction(types.STARTED_MESSAGE, payloadStarted
 const payloadStopCommand    = (_puppetId: string)   => ({})
 const payloadStoppedMessage = (_res: MetaResponse)  => ({})
 
-export const stopCommand    = createAction(types.STOP_COMMAND,    payloadStopCommand,    metaRequest)()
-export const stoppedMessage = createAction(types.STOPPED_MESSAGE, payloadStoppedMessage, metaResponse)()
+export const stopCommand = create(
+  types.STOP_COMMAND,    payloadStopCommand,
+  types.STOPPED_MESSAGE, payloadStoppedMessage,
+)
