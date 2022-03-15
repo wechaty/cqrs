@@ -18,7 +18,6 @@
  *   limitations under the License.
  *
  */
-import * as TimeConstants   from 'time-constants'
 import type {
   ActionBuilder,
 }                           from 'typesafe-actions'
@@ -39,8 +38,9 @@ import type {
 
 import type { Bus } from '../bus.js'
 
-import { send$ }  from './send$.js'
-import { recv }   from './recv.js'
+import { send$ }        from './send$.js'
+import { recv }         from './recv.js'
+import { TIMEOUT_MS }   from './constants.js'
 
 type MapCommandQueryToMessage = (
   bus$                 : Bus<any>,
@@ -73,7 +73,7 @@ type MapCommandQueryToMessage = (
  */
 export const mapCommandQueryToMessage: MapCommandQueryToMessage = (
   bus$,
-  timeoutMilliseconds =  15 * TimeConstants.SECOND,
+  timeoutMilliseconds = TIMEOUT_MS,
 ) => (
   messageBuilder,
 ) => source$ => source$.pipe(
