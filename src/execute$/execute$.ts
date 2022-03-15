@@ -30,13 +30,14 @@ import type {
 import type {
   MetaRequest,
   MetaResponse,
-}                                   from '../duck/actions/meta.js'
-
-import { mapCommandQueryToMessage } from './map.js'
+}                   from '../duck/actions/meta.js'
 
 import type { Bus } from '../bus.js'
 
-import { send$ }    from './send$.js'
+import {
+  mapCommandQueryToMessage,
+}                             from './map-command-query-to-message.js'
+import { send$ }              from './send$.js'
 
 /**
  * Huan(202203): The const assignment is checked more strictly,

@@ -36,7 +36,7 @@ import { isActionOf } from 'typesafe-actions'
 
 import * as CqrsDuck from '../duck/mod.js'
 
-import { mapCommandQueryToMessage } from './map.js'
+import { mapCommandQueryToMessage } from './map-command-query-to-message.js'
 
 test('map successful (in time)', testSchedulerRunner(m => {
   const PUPPET_ID   = 'puppet-id'
