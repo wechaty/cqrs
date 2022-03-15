@@ -20,9 +20,9 @@
  */
 import { test } from 'tstest'
 
-import * as actions from './actions/mod.js'
+import * as actions from './mod.js'
 
-import * as actionCreatorFilter from '../pure/action-creator-filter.js'
+import * as actionCreatorFilter from '../../pure/action-creator-filter.js'
 
 test('actions smoke testing', async t => {
   const actionList = Object.values(actions)
