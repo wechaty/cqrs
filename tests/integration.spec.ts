@@ -76,7 +76,7 @@ test('ding/dong', async t => {
 
   t.same(eventList, [
     command,
-    CQRS.duck.actions.dingedMessage(command.meta),
+    CQRS.duck.actions.dingCommandResponse(command.meta),
     CQRS.duck.actions.dongReceivedEvent(command.meta.puppetId, { data: DING_DATA }),
   ], 'should get dingCommand & dingedMessage & dingReceivedEvent')
 })

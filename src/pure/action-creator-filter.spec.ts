@@ -19,6 +19,7 @@
  *
  */
 import { test } from 'tstest'
+import { responseOf } from '../duck/actions/action-pair.js'
 
 import * as Duck from '../duck/mod.js'
 
@@ -26,18 +27,18 @@ import * as filterActionCreator from './action-creator-filter.js'
 
 test('filter action creator smoke testing', async t => {
   const fixtures = [
-    [Duck.actions.sendMessageCommand, 1,  0,  0,  0],
-    [Duck.actions.startedEvent,       0,  1,  0,  0],
-    [Duck.actions.messageSentMessage, 0,  0,  1,  0],
-    [Duck.actions.getIsLoggedInQuery, 0,  0,  0,  1],
+    [Duck.actions.sendMessageCommand,             1,  0,  0,  0],
+    [Duck.actions.startedEvent,                   0,  1,  0,  0],
+    [responseOf(Duck.actions.sendMessageCommand), 0,  0,  1,  0],
+    [Duck.actions.getIsLoggedInQuery,             0,  0,  0,  1],
   ] as const
 
   for (const [creator, ...expected] of fixtures) {
-    const isCommand = filterActionCreator.isCommand(creator)
-    const isEvent   = filterActionCreator.isEvent(creator)
-    const isMessage = filterActionCreator.isMessage(creator)
-    const isQuery   = filterActionCreator.isQuery(creator)
+    const isCommand   = filterActionCreator.isCommand(creator)
+    const isEvent     = filterActionCreator.isEvent(creator)
+    const isResponse  = filterActionCreator.isResponse(creator)
+    const isQuery     = filterActionCreator.isQuery(creator)
 
-    t.same([isCommand, isEvent, isMessage, isQuery], expected, `should match ${creator.name} to ${expected}`)
+    t.same([isCommand, isEvent, isResponse, isQuery], expected, `should match ${creator.name} to ${expected}`)
   }
 })

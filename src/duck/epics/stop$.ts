@@ -23,7 +23,7 @@ import {
 }                 from 'rxjs'
 import {
   catchError,
-  mapTo,
+  map,
   mergeMap,
   // tap,
 }                 from 'rxjs/operators'
@@ -42,12 +42,12 @@ export const stop$ = (command: ReturnType<typeof actions.stopCommand>) => of(
     ? of(puppet.stop())
     : EMPTY,
   ),
-  mapTo(actions.stoppedMessage({
+  map(() => actions.stopCommandResponse({
     id       : command.meta.id,
     puppetId : command.meta.puppetId,
   })),
   catchError((e: Error) => of(
-    actions.stoppedMessage({
+    actions.stopCommandResponse({
       ...command.meta,
       gerror: GError.stringify(e),
     }),

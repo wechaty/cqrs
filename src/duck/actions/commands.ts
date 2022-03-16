@@ -39,8 +39,9 @@ const payloadNopCommand = (_puppetId: string)   => ({})
 const payloadNopMessage = (_res: MetaResponse)  => ({})
 
 export const nopCommand = create(
-  types.NOP_COMMAND, payloadNopCommand,
-  types.NOP_MESSAGE, payloadNopMessage,
+  types.NOP_COMMAND,
+  payloadNopCommand,
+  payloadNopMessage,
 )
 
 /**
@@ -50,8 +51,9 @@ const payloadSendMessageCommand = (_puppetId: string, conversationId: string, sa
 const payloadMessageSentMessage = (res: MetaResponse & { messageId?: string })                                  => ({ messageId: res.messageId })
 
 export const sendMessageCommand = create(
-  types.SEND_MESSAGE_COMMAND,  payloadSendMessageCommand,
-  types.MESSAGE_SENT_MESSAGE,  payloadMessageSentMessage,
+  types.SEND_MESSAGE_COMMAND,
+  payloadSendMessageCommand,
+  payloadMessageSentMessage,
 )
 
 /**
@@ -61,8 +63,9 @@ const payloadDingCommand    = (_puppetId: string, data?: string)  => ({ data })
 const payloadDingedMessage  = (_res: MetaResponse)                => ({})
 
 export const dingCommand = create(
-  types.DING_COMMAND,    payloadDingCommand,
-  types.DINGED_MESSAGE,  payloadDingedMessage,
+  types.DING_COMMAND,
+  payloadDingCommand,
+  payloadDingedMessage,
 )
 
 /**
@@ -72,8 +75,9 @@ const payloadResetCommand = (_puppetId: string, data?: string)  => ({ data })
 const payloadResetMessage = (_res: MetaResponse)                => ({})
 
 export const resetCommand = create(
-  types.RESET_COMMAND, payloadResetCommand,
-  types.RESET_MESSAGE, payloadResetMessage,
+  types.RESET_COMMAND,
+  payloadResetCommand,
+  payloadResetMessage,
 )
 
 /**
@@ -83,8 +87,9 @@ const payloadStartCommand    = (_puppetId: string)  => ({})
 const payloadStartedMessage  = (_res: MetaResponse) => ({})
 
 export const startCommand = create(
-  types.START_COMMAND,   payloadStartCommand,
-  types.STARTED_MESSAGE, payloadStartedMessage,
+  types.START_COMMAND,
+  payloadStartCommand,
+  payloadStartedMessage,
 )
 
 /**
@@ -94,6 +99,7 @@ const payloadStopCommand    = (_puppetId: string)   => ({})
 const payloadStoppedMessage = (_res: MetaResponse)  => ({})
 
 export const stopCommand = create(
-  types.STOP_COMMAND,    payloadStopCommand,
-  types.STOPPED_MESSAGE, payloadStoppedMessage,
+  types.STOP_COMMAND,
+  payloadStopCommand,
+  payloadStoppedMessage,
 )

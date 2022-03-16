@@ -41,12 +41,12 @@ export const start$ = (command: ReturnType<typeof actions.startCommand>) => of(
     ? of(puppet.start())
     : EMPTY,
   ),
-  map(() => actions.startedMessage({
+  map(() => actions.startCommandResponse({
     id       : command.meta.id,
     puppetId : command.meta.puppetId,
   })),
   catchError((e: Error) => of(
-    actions.startedMessage({
+    actions.startCommandResponse({
       ...command.meta,
       gerror: GError.stringify(e),
     }),

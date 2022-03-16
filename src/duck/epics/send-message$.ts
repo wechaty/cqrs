@@ -24,7 +24,7 @@ import {
 }                 from 'rxjs'
 import {
   catchError,
-  mapTo,
+  map,
   mergeMap,
 }                 from 'rxjs/operators'
 import { GError } from 'gerror'
@@ -45,12 +45,12 @@ export const sendMessage$ = (command: ReturnType<typeof actions.sendMessageComma
     ))
     : EMPTY,
   ),
-  mapTo(actions.messageSentMessage({
+  map(() => actions.sendMessageCommandResponse({
     id       : command.meta.id,
     puppetId : command.meta.puppetId,
   })),
   catchError(e => of(
-    actions.messageSentMessage({
+    actions.sendMessageCommandResponse({
       ...command.meta,
       gerror: GError.stringify(e),
     }),

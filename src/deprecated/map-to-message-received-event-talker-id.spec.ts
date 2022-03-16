@@ -38,6 +38,7 @@ import * as CqrsDuck from '../duck/mod.js'
 import {
   mapToTalkerId,
 }                     from './map-to-message-received-event-talker-id.js'
+import { responseOf } from '../duck/actions/action-pair.js'
 
 test('mapToTalkerId()', testSchedulerRunner(m => {
   const PUPPET_ID   = 'puppet-id'
@@ -68,7 +69,7 @@ test('mapToTalkerId()', testSchedulerRunner(m => {
      *  which will caused event lost.
      */
     delay(0),
-    map(query => CqrsDuck.actions.messagePayloadGotMessage({
+    map(query => CqrsDuck.actions.getMessagePayloadQueryResponse({
       ...query.meta,
       message: {
         talkerId: TALKER_ID,

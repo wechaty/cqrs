@@ -29,6 +29,8 @@ import {
   MetaResponse,
 }                 from './meta.js'
 
+export const toResponseType = (type: string) => `${type}_RESPONSE`
+
 /**
  * Huan(202203): FIXME: use the real `Symbol` instead of a `string`
  *
@@ -59,8 +61,7 @@ export type ResponseOf<T extends Responseable> = T[typeof RESPONSE]
 export const responseOf = <T extends Responseable> (actionPair: T) => actionPair[RESPONSE]
 
 export function create <
-  CQType extends string,
-  MType  extends string,
+  TType extends string,
 
   CQPayload extends {},
   RPayload  extends {},
@@ -68,11 +69,17 @@ export function create <
   TRes  extends MetaResponse,
   TArgs extends any[],
 > (
-  commandQueryType : CQType, payloadCommandQuery : (puppetId: string, ...args: TArgs) => CQPayload,
-  responseType     : MType,  payloadResponse     : (res: TRes)                        => RPayload,
+  commandQueryType    : TType,
+  payloadCommandQuery : (puppetId: string, ...args: TArgs) => CQPayload,
+  payloadResponse     : (res: TRes)                        => RPayload,
 ) {
-  const commandQuery  = createAction(commandQueryType, payloadCommandQuery,  metaRequest)()
-  const response      = createAction(responseType,     payloadResponse,      metaResponse)()
+  /**
+   * We add `Response` to the end of the `type` for the Response Event for Command/Query
+   */
+  const responseType = toResponseType(commandQueryType)
+
+  const commandQuery  = createAction(commandQueryType,  payloadCommandQuery,  metaRequest)()
+  const response      = createAction(responseType,      payloadResponse,      metaResponse)()
 
   ;(commandQuery as unknown as Pair<typeof commandQuery, typeof response>)[RESPONSE] = response
 

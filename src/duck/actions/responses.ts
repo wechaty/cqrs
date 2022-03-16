@@ -10,16 +10,6 @@ type CQMod =
   & typeof commands
   & typeof queries
 
-// type ResponseableMap = {
-//   [key in keyof CQMod]: Responseable<
-//     CQMod[key] extends Responseable<infer RType, any, any> ? RType : never,
-//     CQMod[key] extends Responseable<any, infer RPayload, any>   ? RPayload  : never,
-//     CQMod[key] extends Responseable<any, any, infer RResponse>  ? RResponse : never
-//   >
-// }
-
-// type Response<T extends Responseable<any, any, any>> = T[typeof RESPONSE]
-
 /**
  * Huan(202203): add suffix `Resonse` to the CommandQuery name:
  *  - getCurrentUserIdQuery -> getCurrentUserIdQueryResponse
@@ -31,7 +21,7 @@ type ResponseMap = {
   [key in keyof CQMod & string as `${key}Response`]: CQMod[key][typeof RESPONSE]
 }
 
-export const responses = Object.entries({
+const responses = Object.entries({
   ...commands,
   ...queries,
 }).reduce(
@@ -41,3 +31,17 @@ export const responses = Object.entries({
   },
   {} as any,
 ) as ResponseMap
+
+export const {
+  dingCommandResponse,
+  getAuthQrCodeQueryResponse,
+  getCurrentUserIdQueryResponse,
+  getIsLoggedInQueryResponse,
+  getMessagePayloadQueryResponse,
+  getSayablePayloadQueryResponse,
+  nopCommandResponse,
+  resetCommandResponse,
+  sendMessageCommandResponse,
+  startCommandResponse,
+  stopCommandResponse,
+} = responses

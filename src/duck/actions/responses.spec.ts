@@ -20,7 +20,7 @@
  */
 import { test } from 'tstest'
 
-import { responses } from './responses.js'
+import * as responses from './responses.js'
 
 test('responses smoke testing', async t => {
   const ID = 'uuidv4'

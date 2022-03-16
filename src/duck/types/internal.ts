@@ -24,4 +24,3 @@
  *
  */
 export const NOP_COMMAND = 'cqrs-wechaty/NOP_COMMAND'
-export const NOP_MESSAGE = 'cqrs-wechaty/NOP_MESSAGE'

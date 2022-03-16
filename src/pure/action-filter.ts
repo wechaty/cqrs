@@ -6,7 +6,7 @@ const actionTypeEndWith = <T extends string>(suffix: T) => function (
   return RegExp(`${suffix}$`).test(action.type)
 }
 
-export const isCommand = actionTypeEndWith('_COMMAND')
-export const isEvent   = actionTypeEndWith('_EVENT')
-export const isMessage = actionTypeEndWith('_MESSAGE')
-export const isQuery   = actionTypeEndWith('_QUERY')
+export const isCommand  = actionTypeEndWith('_COMMAND')
+export const isEvent    = actionTypeEndWith('_EVENT')
+export const isResponse = actionTypeEndWith('_RESPONSE')
+export const isQuery    = actionTypeEndWith('_QUERY')

@@ -40,7 +40,7 @@ import {
 
 test('action create smoke testing', async t => {
   const QUERY_TYPE    = 'TEST_QUERY'
-  const MESSAGE_TYPE  = 'TEST_MESSAGE'
+  const RESPONSE_TYPE = 'TEST_QUERY_RESPONSE'
 
   const PUPPET_ID = 'puppet-id'
   const DATA = 'data'
@@ -55,7 +55,7 @@ test('action create smoke testing', async t => {
     },
     type: QUERY_TYPE,
   }
-  const EXPECTED_MESSAGE = {
+  const EXPECTED_RESPONSE = {
     meta: {
       ...EXPECTED_QUERY.meta,
       gerror: undefined,
@@ -63,7 +63,7 @@ test('action create smoke testing', async t => {
     payload: {
       data: DATA,
     },
-    type: MESSAGE_TYPE,
+    type: RESPONSE_TYPE,
   }
 
   const payloadTestQuery    = (_puppetId: string, text: string)       => ({ text })
@@ -72,22 +72,21 @@ test('action create smoke testing', async t => {
   const getTestQuery = create(
     QUERY_TYPE,
     payloadTestQuery,
-    MESSAGE_TYPE,
     payloadTestMessage,
   )
-  const testGotResponse = responseOf(getTestQuery)
+  const getTestQueryResponse = responseOf(getTestQuery)
 
   const query = getTestQuery(PUPPET_ID, TEXT)
-  const message = testGotResponse({
+  const response = getTestQueryResponse({
     ...query.meta,
     data: DATA,
   })
 
   delete (query.meta as any).id
-  delete (message.meta as any).id
+  delete (response.meta as any).id
 
   t.same(query, EXPECTED_QUERY, 'should get expected query')
-  t.same(message, EXPECTED_MESSAGE, 'should get expected message')
+  t.same(response, EXPECTED_RESPONSE, 'should get expected message')
 })
 
 test('Pair static typing', async t => {

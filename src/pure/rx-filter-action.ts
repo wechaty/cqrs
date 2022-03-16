@@ -13,7 +13,7 @@ export const filterTypeEndWith = <T extends string>(suffix: T) => {
   return filter<Action, Action<`${string}${T}`>>(predict)
 }
 
-export const filterCommand = () => filterTypeEndWith('_COMMAND')
-export const filterEvent   = () => filterTypeEndWith('_EVENT')
-export const filterMessage = () => filterTypeEndWith('_MESSAGE')
-export const filterQuery   = () => filterTypeEndWith('_QUERY')
+export const filterCommand  = () => filterTypeEndWith('_COMMAND')
+export const filterEvent    = () => filterTypeEndWith('_EVENT')
+export const filterResponse = () => filterTypeEndWith('_RESPONSE')
+export const filterQuery    = () => filterTypeEndWith('_QUERY')

@@ -73,7 +73,7 @@ const reducer = createReducer<typeof initialState, AnyAction>(initialState)
     } else if (actionFilter.isEvent(action)) {
       totalCounter.events++
       puppetCounter.events++
-    } else if (actionFilter.isMessage(action)) {
+    } else if (actionFilter.isResponse(action)) {
       totalCounter.messages++
       puppetCounter.messages++
     } else if (actionFilter.isQuery(action)) {

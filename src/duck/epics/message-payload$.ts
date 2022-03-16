@@ -42,13 +42,13 @@ export const messagePayload$ = (query: ReturnType<typeof actions.getMessagePaylo
     ? from(puppet.messagePayload(query.payload.messageId))
     : EMPTY,
   ),
-  map(payload => actions.messagePayloadGotMessage({
+  map(payload => actions.getMessagePayloadQueryResponse({
     id       : query.meta.id,
     message  : payload,
     puppetId : query.meta.puppetId,
   })),
   catchError(e => of(
-    actions.currentUserIdGotMessage({
+    actions.getMessagePayloadQueryResponse({
       ...query.meta,
       gerror: GError.stringify(e),
     }),
