@@ -27,10 +27,10 @@ import type {
 }                     from '../bus.js'
 
 /**
- * Output: Messages & Events
+ * Output: Events & Response
  */
-export const eventMessageMiddleware: (emBus$: Bus) => Middleware = emBus$ => _store => next => action => {
-  log.verbose('WechatyCqrs', 'eventMessageMiddleware() emBus$.next(%s)', JSON.stringify(action))
-  emBus$.next(action)
+export const eventResponseMiddleware: (erBus$: Bus) => Middleware = erBus$ => _store => next => action => {
+  log.verbose('WechatyCqrs', 'eventResponseMiddleware() emBus$.next(%s)', JSON.stringify(action))
+  erBus$.next(action)
   next(action)
 }

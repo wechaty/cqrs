@@ -37,7 +37,7 @@ import {
 
 import {
   commandQueryMiddleware,
-  eventMessageMiddleware,
+  eventResponseMiddleware,
 }                           from './middlewares/mod.js'
 import * as CqrsDuck        from './duck/mod.js'
 
@@ -51,7 +51,7 @@ export function from (
   log.verbose('WechatyCqrs', 'from(%s)', wechaty)
 
   const cqBus$ = new Subject<any>()
-  const emBus$ = new Subject<any>()
+  const erBus$ = new Subject<any>()
 
   const ducks = new Ducks({ cqrs: CqrsDuck })
   const store = createStore(
@@ -69,12 +69,12 @@ export function from (
       ducks.enhancer(),
       applyMiddleware(
         /**
-         * Huan(202203): me - Messages & Events
-         *  `meMiddleware` MUST be the most right one when calling `compose`
+         * Huan(202203): er - Events & Responses
+         *  `erMiddleware` MUST be the most right one when calling `compose`
          *
          * to guarantee that: receive events generated from other middlewares
          */
-        eventMessageMiddleware(emBus$),
+        eventResponseMiddleware(erBus$),
       ),
     ),
   )
@@ -83,10 +83,7 @@ export function from (
     WechatyRedux({ store }),
   )
 
-  // const cqrsDuck = ducks.ducksify('cqrs')
-  // cqrsDuck.operations.ding(wechaty.puppet.id)
-
-  const bus$: Bus = Subject.create(cqBus$, emBus$)
+  const bus$: Bus = Subject.create(cqBus$, erBus$)
 
   return bus$
 }
