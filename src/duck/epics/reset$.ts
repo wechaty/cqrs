@@ -23,7 +23,7 @@ import {
 }                 from 'rxjs'
 import {
   catchError,
-  mapTo,
+  map,
   mergeMap,
   // tap,
 }                 from 'rxjs/operators'
@@ -42,12 +42,12 @@ export const reset$ = (command: ReturnType<typeof actions.resetCommand>) => of(
     ? of(puppet.reset())
     : EMPTY,
   ),
-  mapTo(actions.resetMessage({
+  map(() => actions.resetCommandResponse({
     id       : command.meta.id,
     puppetId : command.meta.puppetId,
   })),
   catchError((e: Error) => of(
-    actions.resetMessage({
+    actions.resetCommandResponse({
       ...command.meta,
       gerror: GError.stringify(e),
     }),

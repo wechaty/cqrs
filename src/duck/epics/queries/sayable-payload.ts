@@ -52,12 +52,12 @@ export const sayablePayloadEpic: Epic = actions$ => actions$.pipe(
       : from(
         puppet.sayablePayload(query.payload.sayableId),
       ).pipe(
-        map(sayable => actions.sayablePayloadGotMessage({
+        map(sayable => actions.getSayablePayloadQueryResponse({
           ...query.meta,
           sayable,
         })),
         catchError(e => of(
-          actions.sayablePayloadGotMessage({
+          actions.getSayablePayloadQueryResponse({
             ...query.meta,
             gerror: GError.stringify(e),
           }),

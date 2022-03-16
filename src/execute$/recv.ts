@@ -19,21 +19,21 @@
  *
  */
 import {
-  ActionBuilder,
   isActionOf,
-}                   from 'typesafe-actions'
+  PayloadMetaAction,
+}                     from 'typesafe-actions'
 import {
   of,
-}                   from 'rxjs'
+}                     from 'rxjs'
 import {
   catchError,
   filter,
   take,
   tap,
   timeout,
-}                   from 'rxjs/operators'
-import { log }      from 'wechaty-puppet'
-import { GError }   from 'gerror'
+}                     from 'rxjs/operators'
+import { log }        from 'wechaty-puppet'
+import { GError }     from 'gerror'
 
 import type {
   MetaRequest,
@@ -51,19 +51,24 @@ import type {
  */
 export const recv = (timeoutMilliseconds: number) =>
   <
-    MPayload extends any,
+    CQType extends string,
+    CQPayload extends {},
+
+    RType extends string,
+    RPayload extends {},
+
     TMetaResponse extends MetaResponse
   >(
-    commandQuery         : ActionBuilder<any,              any,      MetaRequest>,
-    messageActionBuilder : (res: TMetaResponse) => ActionBuilder<any, MPayload, MetaResponse>,
+    commandQuery    : PayloadMetaAction<CQType, CQPayload, MetaRequest>,
+    responseBuilder : (res: TMetaResponse) => PayloadMetaAction<RType, RPayload, MetaResponse>,
   ) => (source$: BusObs) => source$.pipe(
-    filter(isActionOf(messageActionBuilder)),
+    filter(isActionOf(responseBuilder)),
     tap(message => log.verbose('WechatyCqrs', 'mapCommandQueryToMessage() recv() %s', JSON.stringify(message))),
     filter(message => message.meta.id === commandQuery.meta.id),
     timeout(timeoutMilliseconds),
     catchError(err =>
       of(
-        messageActionBuilder({
+        responseBuilder({
           ...commandQuery.meta,
           gerror: GError.stringify(err),
         } as MetaResponse as any),  // Huan(202203): FIXME: remove any

@@ -131,7 +131,7 @@ test('Command/Event - ding/dong', async t => {
 
   t.same(eventList, [
     dingCommand,
-    CqrsDuck.actions.dingedMessage({ id: dingCommand.meta.id, puppetId: puppet.id }),
+    CqrsDuck.actions.dingCommandResponse({ id: dingCommand.meta.id, puppetId: puppet.id }),
     CqrsDuck.actions.dongReceivedEvent(puppet.id, { data: DING_DATA }),
   ], 'should get dong event with data')
 
@@ -160,7 +160,7 @@ test('Commands - start/stop', async t => {
   t.same(eventList, [
     startCommand,
     CqrsDuck.actions.stateActivatedEvent(puppet.id, 'pending'),
-    CqrsDuck.actions.startedMessage(startCommand.meta),
+    CqrsDuck.actions.startCommandResponse(startCommand.meta),
     CqrsDuck.actions.stateActivatedEvent(puppet.id, true),
     CqrsDuck.actions.startedEvent(puppet.id),
   ], 'should get start events')
@@ -176,7 +176,7 @@ test('Commands - start/stop', async t => {
   t.same(eventList, [
     stopCommand,
     CqrsDuck.actions.stateInactivatedEvent(puppet.id, 'pending'),
-    CqrsDuck.actions.stoppedMessage(stopCommand.meta),
+    CqrsDuck.actions.stopCommandResponse(stopCommand.meta),
     CqrsDuck.actions.stateInactivatedEvent(puppet.id, true),
     CqrsDuck.actions.stoppedEvent(puppet.id),
 
@@ -202,7 +202,7 @@ test('Events - not logged in', async t => {
    */
   const currentUserIdMessage = await firstValueFrom(
     of(CqrsDuck.actions.getCurrentUserIdQuery(puppet.id)).pipe(
-      mergeMap(execute$(bus$)(CqrsDuck.actions.currentUserIdGotMessage)),
+      mergeMap(execute$(bus$)(CqrsDuck.actions.getCurrentUserIdQuery)),
     ),
   )
   t.notOk(currentUserIdMessage.payload.contactId, 'should have no currentUserId right after start')
@@ -212,7 +212,7 @@ test('Events - not logged in', async t => {
    */
   const isLoggedIn = await firstValueFrom(
     of(CqrsDuck.actions.getIsLoggedInQuery(puppet.id)).pipe(
-      mergeMap(execute$(bus$)(CqrsDuck.actions.isLoggedInGotMessage)),
+      mergeMap(execute$(bus$)(CqrsDuck.actions.getIsLoggedInQuery)),
     ),
   )
   t.equal(isLoggedIn.payload.isLoggedIn, false, 'should have not logged in right after start')
@@ -224,7 +224,7 @@ test('Events - not logged in', async t => {
     of(
       CqrsDuck.actions.getAuthQrCodeQuery(puppet.id),
     ).pipe(
-      mergeMap(execute$(bus$)(CqrsDuck.actions.authQrCodeGotMessage)),
+      mergeMap(execute$(bus$)(CqrsDuck.actions.getAuthQrCodeQuery)),
     ),
   )
   t.notOk(qrCodeMessage.payload.qrcode, 'should have no qrcode right after start')
@@ -251,7 +251,7 @@ test('Events - logged in', async t => {
     of(
       CqrsDuck.actions.getAuthQrCodeQuery(puppet.id),
     ).pipe(
-      mergeMap(execute$(bus$)(CqrsDuck.actions.authQrCodeGotMessage)),
+      mergeMap(execute$(bus$)(CqrsDuck.actions.getAuthQrCodeQuery)),
     ),
   )
   t.notOk(authQrCodeGotMessage0.payload.qrcode, 'should have no qr code right after start')
@@ -266,7 +266,7 @@ test('Events - logged in', async t => {
     of(
       CqrsDuck.actions.getAuthQrCodeQuery(puppet.id),
     ).pipe(
-      mergeMap(execute$(bus$)(CqrsDuck.actions.authQrCodeGotMessage)),
+      mergeMap(execute$(bus$)(CqrsDuck.actions.getAuthQrCodeQuery)),
     ),
   )
   t.equal(authQrCodeGotMessage.payload.qrcode, QR_CODE, 'should get qr code')
@@ -284,7 +284,7 @@ test('Events - logged in', async t => {
     of(
       CqrsDuck.actions.getCurrentUserIdQuery(puppet.id),
     ).pipe(
-      mergeMap(execute$(bus$)(CqrsDuck.actions.currentUserIdGotMessage)),
+      mergeMap(execute$(bus$)(CqrsDuck.actions.getCurrentUserIdQuery)),
     ),
   )
   t.equal(currentUserIdMessage.payload.contactId, user.id, 'should get the logged in user')
@@ -296,7 +296,7 @@ test('Events - logged in', async t => {
     of(
       CqrsDuck.actions.getIsLoggedInQuery(puppet.id),
     ).pipe(
-      mergeMap(execute$(bus$)(CqrsDuck.actions.isLoggedInGotMessage)),
+      mergeMap(execute$(bus$)(CqrsDuck.actions.getIsLoggedInQuery)),
     ),
   )
   t.ok(isLoggedIn.payload.isLoggedIn, 'should logged in')
@@ -308,7 +308,7 @@ test('Events - logged in', async t => {
     of(
       CqrsDuck.actions.getAuthQrCodeQuery(puppet.id),
     ).pipe(
-      mergeMap(execute$(bus$)(CqrsDuck.actions.authQrCodeGotMessage)),
+      mergeMap(execute$(bus$)(CqrsDuck.actions.getAuthQrCodeQuery)),
     ),
   )
   t.notOk(authQrCodeGotMessage2.payload.qrcode, 'should clean qrcode after logged in')
@@ -351,7 +351,7 @@ test('sendMessageCommand', async t => {
     of(
       CqrsDuck.actions.sendMessageCommand(puppet.id, mary.id, sayables.text(TEXT)),
     ).pipe(
-      mergeMap(execute$(bus$)(CqrsDuck.actions.messageSentMessage)),
+      mergeMap(execute$(bus$)(CqrsDuck.actions.sendMessageCommand)),
     ),
   )
   t.notOk(message.meta.gerror, 'should get no error')
@@ -398,7 +398,7 @@ test('MessageReceivedEvent', async t => {
     of(
       CqrsDuck.actions.getMessagePayloadQuery(puppet.id, messageReceivedEvent.payload.messageId),
     ).pipe(
-      mergeMap(execute$(bus$)(CqrsDuck.actions.messagePayloadGotMessage)),
+      mergeMap(execute$(bus$)(CqrsDuck.actions.getMessagePayloadQuery)),
     ),
   )
 

@@ -17,39 +17,8 @@
  *   limitations under the License.
  *
  */
-
-/**
- *
- * Commands & paired-Messages
- *
- */
-
-/**
- * puppet.ding()
- */
-export const DING_COMMAND   = 'cqrs-wechaty/DING_COMMAND'
-export const DINGED_MESSAGE = 'cqrs-wechaty/DINGED_MESSAGE'
-
-/**
- * puppet.reset()
- */
-export const RESET_COMMAND  = 'cqrs-wechaty/RESET_COMMAND'
-export const RESET_MESSAGE  = 'cqrs-wechaty/RESET_MESSAGE'
-
-/**
- * puppet.messageSend()
- */
-export const SEND_MESSAGE_COMMAND = 'cqrs-wechaty/SEND_MESSAGE_COMMAND'
-export const MESSAGE_SENT_MESSAGE = 'cqrs-wechaty/MESSAGE_SENT_MESSAGE'
-
-/**
- * puppet.start()
- */
-export const START_COMMAND    = 'cqrs-wechaty/START_COMMAND'
-export const STARTED_MESSAGE  = 'cqrs-wechaty/STARTED_MESSAGE'
-
-/**
- * puppet.start()
- */
-export const STOP_COMMAND     = 'cqrs-wechaty/STOP_COMMAND'
-export const STOPPED_MESSAGE  = 'cqrs-wechaty/STOPPED_MESSAGE'
+export const DING_COMMAND         = 'cqrs-wechaty/DING_COMMAND'          // ding()
+export const RESET_COMMAND        = 'cqrs-wechaty/RESET_COMMAND'         // reset()
+export const SEND_MESSAGE_COMMAND = 'cqrs-wechaty/SEND_MESSAGE_COMMAND'  // messageSend()
+export const START_COMMAND        = 'cqrs-wechaty/START_COMMAND'         // start()
+export const STOP_COMMAND         = 'cqrs-wechaty/STOP_COMMAND'          // stop()

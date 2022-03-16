@@ -48,12 +48,12 @@ export const isLoggedInEpic: Epic = actions$ => actions$.pipe(
   mergeMap(query => of(query.meta.puppetId).pipe(
     map(getPuppet),
     map(puppet => !!(puppet?.isLoggedIn)),
-    map(isLoggedIn => actions.isLoggedInGotMessage({
+    map(isLoggedIn => actions.getIsLoggedInQueryResponse({
       ...query.meta,
       isLoggedIn,
     })),
     catchError(e => of(
-      actions.isLoggedInGotMessage({
+      actions.getIsLoggedInQueryResponse({
         ...query.meta,
         gerror: GError.stringify(e),
       }),

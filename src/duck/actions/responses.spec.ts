@@ -20,27 +20,20 @@
  */
 import { test } from 'tstest'
 
-import * as queries       from './queries.js'
-import { responseOf } from './action-pair.js'
+import * as responses from './responses.js'
 
-test('queries smoke testing', async t => {
+test('responses smoke testing', async t => {
   const ID = 'uuidv4'
   const PUPPET_ID = 'puppet-id'
-  const CONTACT_ID = 'contact-id'
+  const IS_LOGGED_IN = true
 
-  const q = queries.getCurrentUserIdQuery(PUPPET_ID)
-  t.ok(q.meta.id, 'should set id to meta')
-  t.equal(q.meta.puppetId, PUPPET_ID, 'should set puppetId to meta')
-
-  const currentUserIdGotResponse = responseOf(queries.getCurrentUserIdQuery)
-
-  const e = currentUserIdGotResponse({
-    contactId: CONTACT_ID,
-    id: ID,
-    puppetId: PUPPET_ID,
+  const response = responses.getIsLoggedInQueryResponse({
+    id         : ID,
+    isLoggedIn : IS_LOGGED_IN,
+    puppetId   : PUPPET_ID,
   })
-  t.equal(e.meta.gerror, undefined, 'should has no gerror')
-  t.equal(e.meta.id, ID, 'should set id to meta')
-  t.equal(e.meta.puppetId, PUPPET_ID, 'should set puppetId to meta')
-  t.equal(e.payload.contactId, CONTACT_ID, 'should set contact id to payload')
+
+  t.ok(response.meta.id, 'should set id to meta')
+  t.equal(response.meta.puppetId, PUPPET_ID, 'should set puppetId to meta')
+  t.same(response.payload.isLoggedIn, IS_LOGGED_IN, `should set isLoggedIn to ${IS_LOGGED_IN}`)
 })

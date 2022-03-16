@@ -48,12 +48,12 @@ export const authQrCodeEpic: Epic = actions$ => actions$.pipe(
   mergeMap(query => of(query.meta.puppetId).pipe(
     map(getPuppet),
     map(puppet => puppet?.authQrCode),
-    map(qrcode => actions.authQrCodeGotMessage({
+    map(qrcode => actions.getAuthQrCodeQueryResponse({
       ...query.meta,
       qrcode,
     })),
     catchError(e => of(
-      actions.authQrCodeGotMessage({
+      actions.getAuthQrCodeQueryResponse({
         ...query.meta,
         gerror: GError.stringify(e),
       }),

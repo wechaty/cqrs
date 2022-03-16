@@ -22,7 +22,8 @@ import { test } from 'tstest'
 
 import * as sayables from '../../mods/sayables.js'
 
-import * as commands from './commands.js'
+import * as commands  from './commands.js'
+import { responseOf } from './action-pair.js'
 
 test('commands smoke testing', async t => {
   const ID = 'uuidv4'
@@ -36,7 +37,8 @@ test('commands smoke testing', async t => {
   t.equal(c.meta.puppetId, PUPPET_ID, 'should set puppetId to meta')
   t.same(c.payload.sayable, SAYABLE, 'should set sayable to payload')
 
-  const e = commands.messageSentMessage({
+  const messageSentResponse = responseOf(commands.sendMessageCommand)
+  const e = messageSentResponse({
     id: ID,
     messageId: MESSAGE_ID,
     puppetId: PUPPET_ID,

@@ -41,12 +41,12 @@ export const ding$ = (action: ReturnType<typeof actions.dingCommand>) => of(
     ? of(puppet.ding(action.payload.data))
     : EMPTY,
   ),
-  map(() => actions.dingedMessage({
+  map(() => actions.dingCommandResponse({
     id       : action.meta.id,
     puppetId : action.meta.puppetId,
   })),
   catchError(e => of(
-    actions.dingedMessage({
+    actions.dingCommandResponse({
       ...action.meta,
       gerror: GError.stringify(e),
     }),

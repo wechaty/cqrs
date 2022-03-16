@@ -35,9 +35,9 @@ test('rx filter action smoke testing', async t => {
   const PUPPET_ID = 'puppet-id'
   const CONVERSATION_ID = 'conversation-id'
 
-  const COMMAND = Duck.actions.sendMessageCommand(PUPPET_ID, CONVERSATION_ID, {} as any)
-  const EVENT   = Duck.actions.dongReceivedEvent(PUPPET_ID, { data: 'data' })
-  const MESSAGE = Duck.actions.dingedMessage({
+  const COMMAND   = Duck.actions.sendMessageCommand(PUPPET_ID, CONVERSATION_ID, {} as any)
+  const EVENT     = Duck.actions.dongReceivedEvent(PUPPET_ID, { data: 'data' })
+  const RESPONSE  = Duck.actions.dingCommandResponse({
     id: 'uuid',
     puppetId: PUPPET_ID,
   })
@@ -47,7 +47,7 @@ test('rx filter action smoke testing', async t => {
   const fixtures = [
     [COMMAND, 1, 0, 0, 0],
     [EVENT,   0, 1, 0, 0],
-    [MESSAGE, 0, 0, 1, 0],
+    [RESPONSE, 0, 0, 1, 0],
     [QUERY,   0, 0, 0, 1],
     [DUMMY,   0, 0, 0, 0],
   ] as const
@@ -55,11 +55,11 @@ test('rx filter action smoke testing', async t => {
   for (const [e, ...expected] of fixtures) {
     const $ = of(e)
 
-    const isCommand = await firstValueFrom($.pipe(rxFilterAction.filterCommand(), count()))
-    const isEvent   = await firstValueFrom($.pipe(rxFilterAction.filterEvent(),   count()))
-    const isMessage = await firstValueFrom($.pipe(rxFilterAction.filterMessage(), count()))
-    const isQuery   = await firstValueFrom($.pipe(rxFilterAction.filterQuery(),   count()))
+    const isCommand   = await firstValueFrom($.pipe(rxFilterAction.filterCommand(),   count()))
+    const isEvent     = await firstValueFrom($.pipe(rxFilterAction.filterEvent(),     count()))
+    const isResponse  = await firstValueFrom($.pipe(rxFilterAction.filterResponse(),  count()))
+    const isQuery     = await firstValueFrom($.pipe(rxFilterAction.filterQuery(),     count()))
 
-    t.same([isCommand, isEvent, isMessage, isQuery], expected, `should match ${e.type} to ${expected}`)
+    t.same([isCommand, isEvent, isResponse, isQuery], expected, `should match ${e.type} to ${expected}`)
   }
 })

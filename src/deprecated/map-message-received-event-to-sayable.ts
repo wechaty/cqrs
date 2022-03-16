@@ -19,6 +19,6 @@ export const mapMessageReceivedEventToSayable = (bus$: Bus) => (source$: ReturnT
     messageReceivedEvent.meta.puppetId,
     messageReceivedEvent.payload.messageId,
   )),
-  mergeMap(execute$(bus$)(actions.sayablePayloadGotMessage)),
+  mergeMap(execute$(bus$)(actions.getSayablePayloadQuery)),
   map(message => message.payload),
 )

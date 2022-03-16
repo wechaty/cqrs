@@ -6,7 +6,7 @@ const actionCreatorTypeEndWith = <T extends string>(suffix: T) => function (
   return RegExp(`${suffix}$`).test(actionCreator.getType!())
 }
 
-export const isCommand = actionCreatorTypeEndWith('_COMMAND')
-export const isEvent   = actionCreatorTypeEndWith('_EVENT')
-export const isMessage = actionCreatorTypeEndWith('_MESSAGE')
-export const isQuery   = actionCreatorTypeEndWith('_QUERY')
+export const isCommand  = actionCreatorTypeEndWith('_COMMAND')
+export const isEvent    = actionCreatorTypeEndWith('_EVENT')
+export const isResponse = actionCreatorTypeEndWith('_RESPONSE')
+export const isQuery    = actionCreatorTypeEndWith('_QUERY')

@@ -70,7 +70,7 @@ test('mapMessageReceivedEventToSayable()', testSchedulerRunner(m => {
      *  which will caused event lost.
      */
     delay(0),
-    map(query => CqrsDuck.actions.sayablePayloadGotMessage({
+    map(query => CqrsDuck.actions.getSayablePayloadQueryResponse({
       ...query.meta,
       sayable,
     })),

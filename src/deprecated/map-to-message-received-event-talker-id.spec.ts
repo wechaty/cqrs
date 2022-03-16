@@ -68,7 +68,7 @@ test('mapToTalkerId()', testSchedulerRunner(m => {
      *  which will caused event lost.
      */
     delay(0),
-    map(query => CqrsDuck.actions.messagePayloadGotMessage({
+    map(query => CqrsDuck.actions.getMessagePayloadQueryResponse({
       ...query.meta,
       message: {
         talkerId: TALKER_ID,

@@ -19,7 +19,7 @@ import {
  */
 export const mapToTalkerId = (bus$: Bus) => (source$: ReturnType<typeof events$.messageReceivedEvent$>) => source$.pipe(
   map(messageReceivedEvent => actions.getMessagePayloadQuery(messageReceivedEvent.meta.puppetId, messageReceivedEvent.payload.messageId)),
-  mergeMap(execute$(bus$)(actions.messagePayloadGotMessage)),
+  mergeMap(execute$(bus$)(actions.getMessagePayloadQuery)),
   /**
    * Huan(202203): `.fromId` deprecated, will be removed after v2.0
    */

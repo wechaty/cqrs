@@ -20,17 +20,17 @@
  */
 import { test } from 'tstest'
 
-import * as actions from './actions/mod.js'
+import * as actions from './mod.js'
 
-import * as actionCreatorFilter from '../pure/action-creator-filter.js'
+import * as actionCreatorFilter from '../../pure/action-creator-filter.js'
 
 test('actions smoke testing', async t => {
   const actionList = Object.values(actions)
 
-  const commandList = actionList.filter(actionCreatorFilter.isCommand)
-  const eventList   = actionList.filter(actionCreatorFilter.isEvent)
-  const messageList = actionList.filter(actionCreatorFilter.isMessage)
-  const queryList   = actionList.filter(actionCreatorFilter.isQuery)
+  const commandList   = actionList.filter(actionCreatorFilter.isCommand)
+  const eventList     = actionList.filter(actionCreatorFilter.isEvent)
+  const responseList  = actionList.filter(actionCreatorFilter.isResponse)
+  const queryList     = actionList.filter(actionCreatorFilter.isQuery)
 
   // console.info('commandList', commandList.map(c => (c as any).getType()))
   // console.info('eventList', eventList.map(e => (e as any).getType()))
@@ -39,13 +39,13 @@ test('actions smoke testing', async t => {
   const cemq = [
     ...commandList,
     ...eventList,
-    ...messageList,
+    ...responseList,
     ...queryList,
   ]
 
   t.ok(commandList.length,  `should have ${commandList.length} commands`)
   t.ok(eventList.length,    `should have ${eventList.length} events`)
-  t.ok(messageList.length,  `should have ${messageList.length} messages`)
+  t.ok(responseList.length, `should have ${responseList.length} response`)
   t.ok(queryList.length,    `should have ${queryList.length} queries`)
 
   t.equal(cemq.length, actionList.length, 'should all actions be command/event/message/query')
