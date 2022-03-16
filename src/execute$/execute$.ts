@@ -17,14 +17,11 @@
  *   limitations under the License.
  *
  */
-/* eslint-disable no-redeclare */
 import {
-  type Observable,
-  defer,
-  of,
+  merge,
 }                   from 'rxjs'
 import type {
-  ActionBuilder,
+  PayloadMetaAction,
 }                   from 'typesafe-actions'
 
 import type {
@@ -35,65 +32,55 @@ import type {
 import type { Bus } from '../bus.js'
 
 import {
-  mapCommandQueryToMessage,
-}                             from './map-command-query-to-message.js'
-import { send$ }              from './send$.js'
+  ActionOf,
+  Pair,
+  responseOf,
+}               from '../duck/actions/action-pair.js'
+import { TIMEOUT_MS } from './constants.js'
 
-/**
- * Huan(202203): The const assignment is checked more strictly,
- *  and the compiler (correctly) complains that
- *  you can't safely treat a function of type
- *  `(name: string | number) => string | number` as a function of type
- *  `((name: string) => string) & ((name: number) => number)`.
- *
- *  @link https://stackoverflow.com/a/61366790/1123955
- */
-export const execute$ = (bus$: Bus) => {
+import { recv }     from './recv.js'
+import { send$ }    from './send$.js'
 
-  /**
-   * Void
-   */
-  function executeCommandQueryMessage (): (
-    commandQuery: ActionBuilder<any, any, MetaRequest>,
-  ) => Observable<never>
-
-  /**
-   * Non-void
-   */
-  function executeCommandQueryMessage <
-    MType extends string,
-    MPayload extends any,
-    R extends MetaResponse,
-  > (
-    messageActionCreator: (res: R) => ActionBuilder<MType, MPayload, MetaResponse>,
-  ): (
-    commandQuery: ActionBuilder<any, any, MetaRequest>,
-  ) => Observable<ActionBuilder<MType, MPayload, MetaResponse>>
-
-  /**
-   * Implementation
-   */
-  function executeCommandQueryMessage <
-    MType extends string,
-    MPayload extends any,
-    R extends MetaResponse,
-  > (
-    messageActionCreator?: (res: R) => ActionBuilder<MType, MPayload, MetaResponse>,
-  ): (
-    commandQuery: ActionBuilder<any, any, MetaRequest>,
-  ) => Observable<never | ActionBuilder<MType, MPayload, MetaResponse>> {
-    return (commandQuery: ActionBuilder<any, any, MetaRequest>) => {
-      if (typeof messageActionCreator === 'undefined') {
-        return send$(bus$)(commandQuery)
-      }
-
-      return defer(() => of(commandQuery)).pipe(
-        mapCommandQueryToMessage(bus$)(
-          messageActionCreator,
-        ),
-      )
-    }
-  }
-
-  return executeCommandQueryMessage
+interface ExecuteOptions {
+  timeoutMilliseconds: number,
 }
+
+export const execute$ = (
+  bus$    : Bus,
+  options : ExecuteOptions = { timeoutMilliseconds: TIMEOUT_MS },
+) =>
+<
+  CQArgs extends any[],
+  CQType extends string,
+  CQPayload extends any,
+
+  RArgs extends any[],
+  RType extends string,
+  RPayload extends any,
+
+  CQ  extends (..._: CQArgs)  => PayloadMetaAction<CQType,  CQPayload,  MetaRequest>,
+  R   extends (..._: RArgs)   => PayloadMetaAction<RType,   RPayload,   MetaResponse>,
+  AP extends Pair<CQ, R>,
+> (actionPair: AP) => (action: ActionOf<AP>) => merge(
+    /**
+     * Recv
+     *
+     * Huan(202203):
+     *  `recv` should be put before(at the leftest) the `send$`
+     *  because it need to subscribe the bus before sending any events
+     */
+    bus$.pipe(
+      recv(options.timeoutMilliseconds)(
+        action,
+        responseOf(actionPair),
+      ),
+    ),
+    /**
+     * Send
+     *
+     * Huan(202203):
+     *  The `send$()` must be put after (at the rightest) the `recv()`
+     *  because it must wait the `recv()` to be registered to the stream first.
+     */
+    send$(bus$)(action),
+  )
