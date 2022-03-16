@@ -22,9 +22,9 @@ import { test } from 'tstest'
 
 import type { MetaResponse } from './meta.js'
 import {
-  create,
-  responseActionCreator,
-}                             from './create.js'
+  createActionPair,
+  responseActionOf,
+}                             from './create-action-pair.js'
 
 test('action create smoke testing', async t => {
   const QUERY_TYPE    = 'TEST_QUERY'
@@ -57,13 +57,13 @@ test('action create smoke testing', async t => {
   const payloadTestQuery    = (_puppetId: string, text: string)       => ({ text })
   const payloadTestMessage  = (res: MetaResponse & { data: string })  => ({ data: res.data })
 
-  const getTestQuery = create(
+  const getTestQuery = createActionPair(
     QUERY_TYPE,
     payloadTestQuery,
     MESSAGE_TYPE,
     payloadTestMessage,
   )
-  const testGotResponse = responseActionCreator(getTestQuery)
+  const testGotResponse = responseActionOf(getTestQuery)
 
   const query = getTestQuery(PUPPET_ID, TEXT)
   const message = testGotResponse({

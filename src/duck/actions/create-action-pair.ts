@@ -29,7 +29,7 @@ import {
 
 export const RESPONSE = "Symbol('MESSAGE')"
 
-export function create <
+export function createActionPair <
   CQType extends string,
   MType  extends string,
 
@@ -54,10 +54,10 @@ export function create <
   return commandQueryActionCreator
 }
 
-export const responseActionCreator = <
+export const responseActionOf = <
   RType extends string,
   RPayload extends {},
   TRes extends MetaResponse,
-> (commandQueryActionCreator: {
+> (commandQueryActionPair: {
   [RESPONSE]: (res: TRes) => PayloadMetaAction<RType, RPayload, MetaResponse>
-}) => commandQueryActionCreator[RESPONSE]
+}) => commandQueryActionPair[RESPONSE]

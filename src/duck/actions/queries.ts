@@ -24,11 +24,11 @@ import * as types from '../types/mod.js'
 
 import type {
   MetaResponse,
-}                 from './meta.js'
+}                   from './meta.js'
 
 import {
-  create,
-}           from './create.js'
+  createActionPair,
+}                   from './create-action-pair.js'
 
 /**
  * Bug compatible & workaround for Ducks API
@@ -42,7 +42,7 @@ import {
 const payloadGetCurrentUserIdQuery    = (_puppetId: string)                           => ({})
 const payloadCurrentUserIdGotMessage  = (res: MetaResponse & { contactId?: string })  => ({ contactId: res.contactId })
 
-export const getCurrentUserIdQuery = create(
+export const getCurrentUserIdQuery = createActionPair(
   types.GET_CURRENT_USER_ID_QUERY,   payloadGetCurrentUserIdQuery,
   types.CURRENT_USER_ID_GOT_MESSAGE, payloadCurrentUserIdGotMessage,
 )
@@ -53,7 +53,7 @@ export const getCurrentUserIdQuery = create(
 const payloadGetIsLoggedInQuery   = (_puppetId: string)                             => ({})
 const payloadIsLoggedInGotMessage = (res: MetaResponse & { isLoggedIn?: boolean })  => ({ isLoggedIn: res.isLoggedIn })
 
-export const getIsLoggedInQuery = create(
+export const getIsLoggedInQuery = createActionPair(
   types.GET_IS_LOGGED_IN_QUERY,    payloadGetIsLoggedInQuery,
   types.IS_LOGGED_IN_GOT_MESSAGE,  payloadIsLoggedInGotMessage,
 )
@@ -64,7 +64,7 @@ export const getIsLoggedInQuery = create(
 const payloadGetSayablePayloadQuery   = (_puppetId: string, sayableId: string)                      => ({ sayableId })
 const payloadSayablePayloadGotMessage = (res: MetaResponse & { sayable?: PUPPET.payloads.Sayable }) => res.sayable || ({})
 
-export const getSayablePayloadQuery = create(
+export const getSayablePayloadQuery = createActionPair(
   types.GET_SAYABLE_PAYLOAD_QUERY,    payloadGetSayablePayloadQuery,
   types.SAYABLE_PAYLOAD_GOT_MESSAGE,  payloadSayablePayloadGotMessage,
 )
@@ -75,7 +75,7 @@ export const getSayablePayloadQuery = create(
 const payloadGetMessagePayloadQuery   = (_puppetId: string, messageId: string)                      => ({ messageId })
 const payloadMessagePayloadGotMessage = (res: MetaResponse & { message?: PUPPET.payloads.Message }) => res.message || ({})
 
-export const getMessagePayloadQuery = create(
+export const getMessagePayloadQuery = createActionPair(
   types.GET_MESSAGE_PAYLOAD_QUERY,    payloadGetMessagePayloadQuery,
   types.MESSAGE_PAYLOAD_GOT_MESSAGE,  payloadMessagePayloadGotMessage,
 )
@@ -86,7 +86,7 @@ export const getMessagePayloadQuery = create(
 const payloadGetAuthQrCodeQuery   = (_puppetId: string)                       => ({})
 const payloadAuthQrCodeGotMessage = (res: MetaResponse & { qrcode?: string }) => ({ qrcode: res.qrcode })
 
-export const getAuthQrCodeQuery = create(
+export const getAuthQrCodeQuery = createActionPair(
   types.GET_AUTH_QR_CODE_QUERY,    payloadGetAuthQrCodeQuery,
   types.AUTH_QR_CODE_GOT_MESSAGE,  payloadAuthQrCodeGotMessage,
 )
