@@ -2,9 +2,9 @@ import * as commands  from './commands.js'
 import * as queries   from './queries.js'
 
 import {
-  responseActionOf,
+  responseOf,
   RESPONSE,
-}                     from './create-action-pair.js'
+}                     from './action-pair.js'
 
 type CQMod =
   & typeof commands
@@ -36,7 +36,7 @@ export const responses = Object.entries({
   ...queries,
 }).reduce(
   (acc, [key, actionPair]) => {
-    acc[`${key}Response`] = responseActionOf(actionPair)
+    acc[`${key}Response`] = responseOf(actionPair)
     return acc
   },
   {} as any,

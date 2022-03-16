@@ -18,13 +18,25 @@
  *   limitations under the License.
  *
  */
-import { test } from 'tstest'
-
-import type { MetaResponse } from './meta.js'
 import {
-  createActionPair,
-  responseActionOf,
-}                             from './create-action-pair.js'
+  test,
+  AssertEqual,
+}                 from 'tstest'
+import {
+  createAction,
+}                 from 'typesafe-actions'
+
+import {
+  metaRequest,
+  metaResponse,
+  MetaResponse,
+}                 from './meta.js'
+import {
+  create,
+  responseOf,
+  Pair,
+  RESPONSE,
+}                 from './action-pair.js'
 
 test('action create smoke testing', async t => {
   const QUERY_TYPE    = 'TEST_QUERY'
@@ -57,13 +69,13 @@ test('action create smoke testing', async t => {
   const payloadTestQuery    = (_puppetId: string, text: string)       => ({ text })
   const payloadTestMessage  = (res: MetaResponse & { data: string })  => ({ data: res.data })
 
-  const getTestQuery = createActionPair(
+  const getTestQuery = create(
     QUERY_TYPE,
     payloadTestQuery,
     MESSAGE_TYPE,
     payloadTestMessage,
   )
-  const testGotResponse = responseActionOf(getTestQuery)
+  const testGotResponse = responseOf(getTestQuery)
 
   const query = getTestQuery(PUPPET_ID, TEXT)
   const message = testGotResponse({
@@ -76,4 +88,20 @@ test('action create smoke testing', async t => {
 
   t.same(query, EXPECTED_QUERY, 'should get expected query')
   t.same(message, EXPECTED_MESSAGE, 'should get expected message')
+})
+
+test('Pair static typing', async t => {
+  const payloadQuery    = (_puppetId: string, text: string)       => ({ text })
+  const payloadResponse = (res: MetaResponse & { data: string })  => ({ data: res.data })
+
+  const query     = createAction('QUERY',     payloadQuery,     metaRequest)()
+  const response  = createAction('RESPONSE',  payloadResponse,  metaResponse)()
+
+  const test: AssertEqual<
+    Pair<typeof query, typeof response>,
+    typeof query & {
+      [RESPONSE]: typeof response
+    }
+  > = true
+  t.ok(test, 'should be expected typing')
 })

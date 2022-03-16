@@ -29,8 +29,8 @@ import type {
 }                     from './meta.js'
 
 import {
-  createActionPair,
-}                     from './create-action-pair.js'
+  create,
+}                     from './action-pair.js'
 
 /**
  * Internal
@@ -38,7 +38,7 @@ import {
 const payloadNopCommand = (_puppetId: string)   => ({})
 const payloadNopMessage = (_res: MetaResponse)  => ({})
 
-export const nopCommand = createActionPair(
+export const nopCommand = create(
   types.NOP_COMMAND, payloadNopCommand,
   types.NOP_MESSAGE, payloadNopMessage,
 )
@@ -49,7 +49,7 @@ export const nopCommand = createActionPair(
 const payloadSendMessageCommand = (_puppetId: string, conversationId: string, sayable: PUPPET.payloads.Sayable) => ({ conversationId, sayable })
 const payloadMessageSentMessage = (res: MetaResponse & { messageId?: string })                                  => ({ messageId: res.messageId })
 
-export const sendMessageCommand = createActionPair(
+export const sendMessageCommand = create(
   types.SEND_MESSAGE_COMMAND,  payloadSendMessageCommand,
   types.MESSAGE_SENT_MESSAGE,  payloadMessageSentMessage,
 )
@@ -60,7 +60,7 @@ export const sendMessageCommand = createActionPair(
 const payloadDingCommand    = (_puppetId: string, data?: string)  => ({ data })
 const payloadDingedMessage  = (_res: MetaResponse)                => ({})
 
-export const dingCommand = createActionPair(
+export const dingCommand = create(
   types.DING_COMMAND,    payloadDingCommand,
   types.DINGED_MESSAGE,  payloadDingedMessage,
 )
@@ -71,7 +71,7 @@ export const dingCommand = createActionPair(
 const payloadResetCommand = (_puppetId: string, data?: string)  => ({ data })
 const payloadResetMessage = (_res: MetaResponse)                => ({})
 
-export const resetCommand = createActionPair(
+export const resetCommand = create(
   types.RESET_COMMAND, payloadResetCommand,
   types.RESET_MESSAGE, payloadResetMessage,
 )
@@ -82,7 +82,7 @@ export const resetCommand = createActionPair(
 const payloadStartCommand    = (_puppetId: string)  => ({})
 const payloadStartedMessage  = (_res: MetaResponse) => ({})
 
-export const startCommand = createActionPair(
+export const startCommand = create(
   types.START_COMMAND,   payloadStartCommand,
   types.STARTED_MESSAGE, payloadStartedMessage,
 )
@@ -93,7 +93,7 @@ export const startCommand = createActionPair(
 const payloadStopCommand    = (_puppetId: string)   => ({})
 const payloadStoppedMessage = (_res: MetaResponse)  => ({})
 
-export const stopCommand = createActionPair(
+export const stopCommand = create(
   types.STOP_COMMAND,    payloadStopCommand,
   types.STOPPED_MESSAGE, payloadStoppedMessage,
 )

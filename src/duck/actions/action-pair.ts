@@ -18,10 +18,12 @@
  *
  */
 import {
-  createAction, PayloadMetaAction,
+  createAction,
+  PayloadMetaAction,
 }                         from 'typesafe-actions'
 
 import {
+  MetaRequest,
   metaRequest,
   metaResponse,
   MetaResponse,
@@ -37,15 +39,33 @@ import {
  *  but cannot be named. ts(4023)
  */
 export const RESPONSE = "Symbol('MESSAGE')"
+export interface Responseable <
+  R extends (..._: any) => PayloadMetaAction<any, any, MetaResponse> = (..._: any) => PayloadMetaAction<any, any, MetaResponse>,
+> {
+  [RESPONSE]: R
+}
 
-export function createActionPair <
+export type Pair<
+  CQ  extends (..._: any) => PayloadMetaAction<any, any, MetaRequest>,
+  R   extends (..._: any) => PayloadMetaAction<any, any, MetaResponse>,
+> =
+  & CQ
+  & Responseable<R>
+
+export type ActionOf<T extends Responseable> = Omit<T, typeof RESPONSE>
+export const actionOf = <T extends Responseable>(action: T): ActionOf<T> => action
+
+export type ResponseOf<T extends Responseable> = T[typeof RESPONSE]
+export const responseOf = <T extends Responseable> (actionPair: T) => actionPair[RESPONSE]
+
+export function create <
   CQType extends string,
   MType  extends string,
 
   CQPayload extends {},
   RPayload  extends {},
 
-  TRes extends MetaResponse,
+  TRes  extends MetaResponse,
   TArgs extends any[],
 > (
   commandQueryType : CQType, payloadCommandQuery : (puppetId: string, ...args: TArgs) => CQPayload,
@@ -54,25 +74,11 @@ export function createActionPair <
   const commandQuery  = createAction(commandQueryType, payloadCommandQuery,  metaRequest)()
   const response      = createAction(responseType,     payloadResponse,      metaResponse)()
 
-  ;(commandQuery as any)[RESPONSE] = response
+  ;(commandQuery as unknown as Pair<typeof commandQuery, typeof response>)[RESPONSE] = response
 
-  const commandQueryActionCreator: typeof commandQuery & {
+  const pair: typeof commandQuery & {
     [RESPONSE]: typeof response
   } = commandQuery as any
 
-  return commandQueryActionCreator
+  return pair
 }
-
-export interface Responseable <
-  TType     extends string,
-  TPayload  extends {},
-  TResponse extends MetaResponse,
-> {
-  [RESPONSE]: (res: TResponse) => PayloadMetaAction<TType, TPayload, MetaResponse>
-}
-
-export const responseActionOf = <
-  TType     extends string,
-  TPayload  extends {},
-  TResponse extends MetaResponse,
-> (actionPair: Responseable<TType, TPayload, TResponse>) => actionPair[RESPONSE]
