@@ -38,7 +38,6 @@ import * as CqrsDuck from '../duck/mod.js'
 import {
   mapToTalkerId,
 }                     from './map-to-message-received-event-talker-id.js'
-import { responseOf } from '../duck/actions/action-pair.js'
 
 test('mapToTalkerId()', testSchedulerRunner(m => {
   const PUPPET_ID   = 'puppet-id'

@@ -39,7 +39,6 @@ import * as sayables from '../mods/sayables.js'
 import {
   mapMessageReceivedEventToSayable,
 }                                     from './map-message-received-event-to-sayable.js'
-import { responseOf } from '../duck/actions/action-pair.js'
 
 test('mapMessageReceivedEventToSayable()', testSchedulerRunner(m => {
   const PUPPET_ID   = 'puppet-id'
