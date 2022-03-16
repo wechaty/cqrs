@@ -27,6 +27,15 @@ import {
   MetaResponse,
 }                 from './meta.js'
 
+/**
+ * Huan(202203): FIXME: use the real `Symbol` instead of a `string`
+ *
+ * Error message:
+ *
+ *  Exported variable 'resetCommand' has or is using name 'RESPONSE'
+ *  from external module "/home/huan/git/wechaty/cqrs/src/duck/actions/create-action-pair"
+ *  but cannot be named. ts(4023)
+ */
 export const RESPONSE = "Symbol('MESSAGE')"
 
 export function createActionPair <
@@ -54,10 +63,16 @@ export function createActionPair <
   return commandQueryActionCreator
 }
 
+export interface Responseable <
+  TType     extends string,
+  TPayload  extends {},
+  TResponse extends MetaResponse,
+> {
+  [RESPONSE]: (res: TResponse) => PayloadMetaAction<TType, TPayload, MetaResponse>
+}
+
 export const responseActionOf = <
-  RType extends string,
-  RPayload extends {},
-  TRes extends MetaResponse,
-> (commandQueryActionPair: {
-  [RESPONSE]: (res: TRes) => PayloadMetaAction<RType, RPayload, MetaResponse>
-}) => commandQueryActionPair[RESPONSE]
+  TType     extends string,
+  TPayload  extends {},
+  TResponse extends MetaResponse,
+> (actionPair: Responseable<TType, TPayload, TResponse>) => actionPair[RESPONSE]

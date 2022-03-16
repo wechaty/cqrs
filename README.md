@@ -57,7 +57,7 @@ bus$.pipe(
     messageReceivedEvent.meta.puppetId,
     messageId,
   )),
-  mergeMap(CQRS.execute$(bus$)(CQRS.duck.actions.sayablePayloadGotMessage)),
+  mergeMap(CQRS.execute$(bus$)(CQRS.duck.actions.sayablePayloadGotResponse)),
   // Log `sayable` to console
 ).subscribe(sayable =>
   console.info('Sayable:', sayable),
@@ -91,9 +91,9 @@ graph LR
     C(VerbNounCommand):::command
   end
 
-  subgraph Message
-    MC(NounVerbedMessage)
-    MQ(NounGotMessage)
+  subgraph Response
+    RC(VerbNounCommandResponse)
+    RQ(GetNounQueryResponse)
   end
     
   subgraph Query
@@ -104,11 +104,11 @@ graph LR
     ER(ReceivedEvent):::event
   end
 
-  C-->MC
+  C-->RC
 
   ER-->ER
 
-  Q-->MQ
+  Q-->RQ
 ```
 
 ### Command
@@ -122,7 +122,7 @@ sequenceDiagram
     Bus->>Redux: ExecuteCommand
     Redux->>Wechaty: Call
     Wechaty->>Redux: Call Return (void)
-    Redux->>Bus: CommandExecutedMessage
+    Redux->>Bus: ExecuteCommandResponse
 ```
 
 ### Query
@@ -136,7 +136,7 @@ sequenceDiagram
     Bus->>Redux: GetNounQuery
     Redux->>Wechaty: Call
     Wechaty->>Redux: Call Return (value)
-    Redux->>Bus: NounGotMessage
+    Redux->>Bus: GetNounQueryResponse
 ```
 
 ### Event
