@@ -49,7 +49,6 @@ import * as sayables  from './mods/sayables.js'
 import { execute$ }   from './execute$/mod.js'
 
 import { from }       from './cqrs.js'
-import { responseOf } from './duck/actions/action-pair.js'
 
 test('smoke testing', async t => {
   const mocker  = new mock.Mocker()
@@ -132,7 +131,7 @@ test('Command/Event - ding/dong', async t => {
 
   t.same(eventList, [
     dingCommand,
-    responseOf(CqrsDuck.actions.dingCommand)({ id: dingCommand.meta.id, puppetId: puppet.id }),
+    CqrsDuck.actions.dingCommandResponse({ id: dingCommand.meta.id, puppetId: puppet.id }),
     CqrsDuck.actions.dongReceivedEvent(puppet.id, { data: DING_DATA }),
   ], 'should get dong event with data')
 
@@ -161,7 +160,7 @@ test('Commands - start/stop', async t => {
   t.same(eventList, [
     startCommand,
     CqrsDuck.actions.stateActivatedEvent(puppet.id, 'pending'),
-    responseOf(CqrsDuck.actions.startCommand)(startCommand.meta),
+    CqrsDuck.actions.startCommandResponse(startCommand.meta),
     CqrsDuck.actions.stateActivatedEvent(puppet.id, true),
     CqrsDuck.actions.startedEvent(puppet.id),
   ], 'should get start events')
@@ -177,7 +176,7 @@ test('Commands - start/stop', async t => {
   t.same(eventList, [
     stopCommand,
     CqrsDuck.actions.stateInactivatedEvent(puppet.id, 'pending'),
-    responseOf(CqrsDuck.actions.stopCommand)(stopCommand.meta),
+    CqrsDuck.actions.stopCommandResponse(stopCommand.meta),
     CqrsDuck.actions.stateInactivatedEvent(puppet.id, true),
     CqrsDuck.actions.stoppedEvent(puppet.id),
 

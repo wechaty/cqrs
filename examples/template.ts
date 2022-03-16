@@ -23,7 +23,6 @@ import * as PUPPET  from 'wechaty-puppet'
 import {
   merge,
   defer,
-  from,
 }                   from 'rxjs'
 import {
   map,
@@ -60,7 +59,7 @@ async function main () {
   /**
    * Start/stop Wechaty when subscribing/unsubscribing
    */
-  const onSubscribe$  = () => defer(()    => from(CQRS.execute$(bus$)(CQRS.duck.actions.startCommand)(CQRS.duck.actions.startCommand(wechaty.puppet.id))))
+  const onSubscribe$  = () => defer(()    => CQRS.execute$(bus$)(CQRS.duck.actions.startCommand)(CQRS.duck.actions.startCommand(wechaty.puppet.id)))
   const onUnsubscribe = () => finalize(() => bus$.next(CQRS.duck.actions.stopCommand(wechaty.puppet.id)))
 
   const handlers$ = (bus$: CQRS.Bus) => merge(

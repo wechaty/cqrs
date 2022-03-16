@@ -57,7 +57,7 @@ bus$.pipe(
     messageReceivedEvent.meta.puppetId,
     messageId,
   )),
-  mergeMap(CQRS.execute$(bus$)(CQRS.duck.actions.sayablePayloadGotResponse)),
+  mergeMap(CQRS.execute$(bus$)(CQRS.duck.actions.getSayablePayloadQueryResponse)),
   // Log `sayable` to console
 ).subscribe(sayable =>
   console.info('Sayable:', sayable),
