@@ -144,7 +144,7 @@ async function main () {
   const main$ = defer(() => of(CQRS.duck.actions.startCommand(puppetId))).pipe(
     mergeMap(startCommand => merge(
       onStartedEvent$(bus$),
-      CQRS.execute$(bus$)()(startCommand),
+      CQRS.execute$(bus$)(CQRS.duck.actions.startCommand)(startCommand),
     )),
     ignoreElements(),
     finalize(() => bus$.next(CQRS.duck.actions.stopCommand(puppetId))),

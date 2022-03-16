@@ -33,20 +33,26 @@ import * as CqrsDuck from '../duck/mod.js'
 
 import { send$ } from './send$.js'
 
-test('send$()', testSchedulerRunner(m => {
-  const PUPPET_ID   = 'puppet-id'
-  const CONTACT_ID  = 'contact-id'
+test('send$() EMPTY', testSchedulerRunner(m => {
+  const query   = CqrsDuck.actions.getCurrentUserIdQuery('puppet-id')
+  const values  = { q: query }
 
-  const query   = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
-  const message = CqrsDuck.actions.currentUserIdGotMessage({
-    ...query.meta,
-    contactId : CONTACT_ID,
-  })
+  const source    = '-q-|'
+  const expected  = '---|'
 
-  const values = {
-    m: message,
-    q: query,
-  }
+  const source$   = m.hot(source, values)
+  const dummyBus$ = new Subject<any>()
+
+  const result$ = source$.pipe(
+    mergeMap(send$(dummyBus$)),
+  )
+
+  m.expectObservable(result$).toBe(expected, values)
+}))
+
+test('send$() with bus$', testSchedulerRunner(m => {
+  const query   = CqrsDuck.actions.getCurrentUserIdQuery('puppet-id')
+  const values  = { q: query }
 
   const source    = '-x'
   const expected  = '-q'

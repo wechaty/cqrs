@@ -30,7 +30,11 @@ import {
 }                         from 'rxjs/operators'
 import { isActionOf }     from 'typesafe-actions'
 
-import * as CqrsDuck from '../duck/mod.js'
+import {
+  ResponseOf,
+  responseOf,
+}                     from '../duck/actions/action-pair.js'
+import * as CqrsDuck  from '../duck/mod.js'
 
 import { recv } from './recv.js'
 
@@ -39,27 +43,26 @@ test('recv() in time', testSchedulerRunner(m => {
   const CONTACT_ID  = 'contact-id'
 
   const query   = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
-  const message = CqrsDuck.actions.currentUserIdGotMessage({
+  const response = responseOf(CqrsDuck.actions.getCurrentUserIdQuery)({
     ...query.meta,
     contactId : CONTACT_ID,
   })
 
   const values = {
-    m: message,
     q: query,
+    r: response,
   }
 
   const TIMEOUT_MS = 100
-  const source    = `${TIMEOUT_MS - 1}ms m`
-  const expected  = `${TIMEOUT_MS - 1}ms (m|)`
+  const source    = `${TIMEOUT_MS - 1}ms r`
+  const expected  = `${TIMEOUT_MS - 1}ms (r|)`
 
   const bus$ = m.hot(source, values)
 
   const result$ = bus$.pipe(
-    filter(isActionOf(CqrsDuck.actions.currentUserIdGotMessage)),
     recv(TIMEOUT_MS)(
       query,
-      CqrsDuck.actions.currentUserIdGotMessage,
+      responseOf(CqrsDuck.actions.getCurrentUserIdQuery),
     ),
   )
 
@@ -70,25 +73,25 @@ test('recv() timeout', testSchedulerRunner(m => {
   const PUPPET_ID = 'puppet-id'
   const GERROR    = 'Timeout has occurred'
 
-  const query   = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
-  const message = CqrsDuck.actions.currentUserIdGotMessage({
+  const query     = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
+  const response  = responseOf(CqrsDuck.actions.getCurrentUserIdQuery)({
     ...query.meta,
     gerror    : GERROR,
   })
 
   const values = {
-    m: message,
     q: query,
+    r: response,
   }
 
   const TIMEOUT_MS = 100
 
   const source    = `${TIMEOUT_MS}ms -`
-  const expected  = `${TIMEOUT_MS}ms (m|)`
+  const expected  = `${TIMEOUT_MS}ms (r|)`
 
   const bus$ = m.hot(source, values)
 
-  const normalizeMessage = (message: ReturnType<typeof CqrsDuck.actions.currentUserIdGotMessage>) => ({
+  const normalizeMessage = (message: ReturnType<ResponseOf<typeof CqrsDuck.actions.getCurrentUserIdQuery>>) => ({
     ...message,
     meta: {
       ...message.meta,
@@ -100,7 +103,7 @@ test('recv() timeout', testSchedulerRunner(m => {
     filter(isActionOf(CqrsDuck.actions.getCurrentUserIdQuery)),
     recv(TIMEOUT_MS)(
       query,
-      CqrsDuck.actions.currentUserIdGotMessage,
+      responseOf(CqrsDuck.actions.getCurrentUserIdQuery),
     ),
     map(normalizeMessage),
   )

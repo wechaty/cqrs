@@ -26,7 +26,6 @@ import {
 }                         from 'tstest'
 import { GError }         from 'gerror'
 import {
-  EMPTY,
   Observable,
   Subject,
 }                         from 'rxjs'
@@ -35,6 +34,10 @@ import {
   mergeMap,
 }                         from 'rxjs/operators'
 
+import {
+  ResponseOf,
+  responseOf,
+}                     from '../duck/actions/action-pair.js'
 import * as CqrsDuck  from '../duck/mod.js'
 
 import { TIMEOUT_MS } from './constants.js'
@@ -45,23 +48,23 @@ test('execute$() message creator / in time', testSchedulerRunner(m => {
   const CONTACT_ID  = 'contact-id'
 
   const query = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
-  const message = CqrsDuck.actions.currentUserIdGotMessage({
+  const response = responseOf(CqrsDuck.actions.getCurrentUserIdQuery)({
     ...query.meta,
     contactId : CONTACT_ID,
   })
 
   const values = {
-    m: message,
     q: query,
+    r: response,
   }
 
   const source    = '-q--'
-  const bus       = '---m'
-  const expected  = '---m'
+  const bus       = '---r'
+  const expected  = '---r'
 
   const mockBus$ = m.hot(bus, values)
   const result$ = m.hot(source, { q: values.q }).pipe(
-    mergeMap(execute$(mockBus$)(CqrsDuck.actions.currentUserIdGotMessage)),
+    mergeMap(execute$(mockBus$)(CqrsDuck.actions.getCurrentUserIdQuery)),
   )
 
   m.expectObservable(result$).toBe(expected, values)
@@ -71,87 +74,48 @@ test('execute$() with message creator / timeout', testSchedulerRunner(m => {
   const PUPPET_ID = 'puppet-id'
   const GERROR    = 'Timeout has occurred'
 
-  const query = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
-  const message = CqrsDuck.actions.currentUserIdGotMessage({
+  const query     = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
+  const response  = responseOf(CqrsDuck.actions.getCurrentUserIdQuery)({
     gerror    : GERROR,
     id        : query.meta.id,
     puppetId  : query.meta.puppetId,
   })
 
   const values = {
-    m: message,
     q: query,
+    r: response,
   }
 
   const source    = `q ${TIMEOUT_MS - 1}ms -`
-  const expected  = `- ${TIMEOUT_MS - 1}ms m`
+  const expected  = `- ${TIMEOUT_MS - 1}ms r`
 
   const dummyBus$ = new Subject<any>()
 
-  const normalizeMessage = (message: ReturnType<typeof CqrsDuck.actions.currentUserIdGotMessage>) => ({
-    ...message,
+  const normalizeMessage = (response: ReturnType<ResponseOf<typeof CqrsDuck.actions.getCurrentUserIdQuery>>) => ({
+    ...response,
     meta: {
-      ...message.meta,
-      gerror: GError.from(message.meta.gerror).message,
+      ...response.meta,
+      gerror: GError.from(response.meta.gerror).message,
     },
   })
 
   const result$ = m.hot(source, { q: values.q }).pipe(
-    mergeMap(execute$(dummyBus$)(CqrsDuck.actions.currentUserIdGotMessage)),
+    mergeMap(execute$(dummyBus$)(CqrsDuck.actions.getCurrentUserIdQuery)),
     map(normalizeMessage),
   )
 
   m.expectObservable(result$).toBe(expected, values)
 }))
 
-test('execute$() without message creator', testSchedulerRunner(m => {
-  const PUPPET_ID   = 'puppet-id'
-  const CONTACT_ID  = 'contact-id'
-
-  const query   = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
-  const message = CqrsDuck.actions.currentUserIdGotMessage({
-    ...query.meta,
-    contactId: CONTACT_ID,
-  })
-
-  const values = {
-    m: message,
-    q: query,
-  }
-
-  const source    = '-q-- 9m |'
-  const bus       = '---m     '
-  const expected  = '---- 9m |'
-
-  const mockBus$ = m.hot(bus, values)
-  const result$ = m.hot(source, { q: values.q }).pipe(
-    mergeMap(execute$(mockBus$)()),
-  )
-
-  m.expectObservable(result$).toBe(expected, values)
-}))
-
-test('execute$() ReturnType with message ', async t => {
+test('execute$() ReturnType typing', async t => {
   const bus$ = new Subject<any>()
 
-  const execute = execute$(bus$)(CqrsDuck.actions.currentUserIdGotMessage)
+  const execute = execute$(bus$)(CqrsDuck.actions.getCurrentUserIdQuery)
 
   const test: AssertEqual<
     ReturnType<typeof execute>,
-    Observable<ReturnType<typeof CqrsDuck.actions.currentUserIdGotMessage>>
+    Observable<ReturnType<ResponseOf<typeof CqrsDuck.actions.getCurrentUserIdQuery>>>
   > = true
 
   t.ok(test, 'should get the right return type of message')
-})
-
-test('execute$() ReturnType without message ', async t => {
-  const bus$ = new Subject<any>()
-
-  const execute = execute$(bus$)()
-
-  const test: AssertEqual<
-    ReturnType<typeof execute>,
-    typeof EMPTY
-  > = true
-  t.ok(test, 'should get the right return type of Observable<never>')
 })

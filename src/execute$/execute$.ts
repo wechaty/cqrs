@@ -19,27 +19,26 @@
  */
 import {
   merge,
-}                   from 'rxjs'
+}                     from 'rxjs'
 import type {
   PayloadMetaAction,
-}                   from 'typesafe-actions'
+}                     from 'typesafe-actions'
 
 import type {
   MetaRequest,
   MetaResponse,
-}                   from '../duck/actions/meta.js'
+}                     from '../duck/actions/meta.js'
 
-import type { Bus } from '../bus.js'
+import type { Bus }   from '../bus.js'
 
 import {
-  ActionOf,
   Pair,
   responseOf,
-}               from '../duck/actions/action-pair.js'
-import { TIMEOUT_MS } from './constants.js'
+}                     from '../duck/actions/action-pair.js'
 
-import { recv }     from './recv.js'
-import { send$ }    from './send$.js'
+import { TIMEOUT_MS } from './constants.js'
+import { recv }       from './recv.js'
+import { send$ }      from './send$.js'
 
 interface ExecuteOptions {
   timeoutMilliseconds: number,
@@ -52,16 +51,17 @@ export const execute$ = (
 <
   CQArgs extends any[],
   CQType extends string,
-  CQPayload extends any,
+  CQPayload extends {},
 
   RArgs extends any[],
   RType extends string,
-  RPayload extends any,
+  RPayload extends {},
 
-  CQ  extends (..._: CQArgs)  => PayloadMetaAction<CQType,  CQPayload,  MetaRequest>,
-  R   extends (..._: RArgs)   => PayloadMetaAction<RType,   RPayload,   MetaResponse>,
-  AP extends Pair<CQ, R>,
-> (actionPair: AP) => (action: ActionOf<AP>) => merge(
+  CQ  extends (..._: CQArgs)  => PayloadMetaAction <CQType,  CQPayload,  MetaRequest>,
+  R   extends (..._: RArgs)   => PayloadMetaAction <RType,   RPayload,   MetaResponse>,
+> (actionPair: Pair<CQ, R>) => (
+    action: ReturnType<CQ>,
+  ) => merge(
     /**
      * Recv
      *

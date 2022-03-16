@@ -19,13 +19,13 @@
  *
  */
 import type {
-  ActionBuilder,
-}                   from 'typesafe-actions'
+  PayloadMetaAction,
+}                     from 'typesafe-actions'
 import {
   defer,
   EMPTY,
-}                   from 'rxjs'
-import { log }      from 'wechaty-puppet'
+}                     from 'rxjs'
+import { log }        from 'wechaty-puppet'
 
 import type {
   MetaResponse,
@@ -42,10 +42,10 @@ import type {
  */
 export const send$ = (bus$: Bus) =>
   <
-    TMessageType    extends string,
-    TMessagePayload extends any
+    TType    extends string,
+    TPayload extends {}
   >(
-    commandQuery: ActionBuilder<TMessageType, TMessagePayload, MetaResponse>,
+    commandQuery: PayloadMetaAction<TType, TPayload, MetaResponse>,
   ) => defer(() => {
     log.verbose('WechatyCqrs', 'mapCommandQueryToMessage() send$() defer() bus$.next(%s)', JSON.stringify(commandQuery))
     /**
