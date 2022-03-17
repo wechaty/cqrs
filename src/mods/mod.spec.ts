@@ -65,6 +65,6 @@ test('mod export isEventOf (alias of isActionOf)', async t => {
   t.ok(mod.isEventOf, 'should export isEventOf')
 })
 
-test('mod export duck', async t => {
-  t.ok(mod.duck, 'should export duck')
-})
+// test('mod export duck', async t => {
+//   t.ok(mod.duck, 'should export duck')
+// })
