@@ -172,6 +172,8 @@ Read CQRS Wechaty API Reference at: <https://paka.dev/npm/wechaty-cqrs>
 
 ### main
 
+## v0.10 (Mar 17) Beta release
+
 - v0.9 (Mar 17,2022): Refactoring(clean) module exports
 - v0.7 (Mar 16, 2022): Refactoring `execute$` with `duck.actions` builders.
 - v0.6 (Mar 13, 2022): Alpha release.
