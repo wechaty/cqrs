@@ -42,11 +42,11 @@ const onScan$ = (source$: CQRS.BusObs) => CQRS.events$.scanReceivedEvent$(source
 )
 
 const onMessage$ = (bus$: CQRS.Bus) => CQRS.events$.messageReceivedEvent$(bus$).pipe(
-  map(messageReceivedEvent => CQRS.duck.actions.getSayablePayloadQuery(
+  map(messageReceivedEvent => CQRS.queries.getSayablePayloadQuery(
     messageReceivedEvent.meta.puppetId,
     messageReceivedEvent.payload.messageId,
   )),
-  mergeMap(CQRS.execute$(bus$)(CQRS.duck.actions.getSayablePayloadQuery)),
+  mergeMap(CQRS.execute$(bus$)(CQRS.queries.getSayablePayloadQuery)),
   map(sayablePayloadGotMessage => sayablePayloadGotMessage.payload),
   tap(sayable => console.info('onMessage$:', sayable)),
 )
@@ -59,8 +59,8 @@ async function main () {
   /**
    * Start/stop Wechaty when subscribing/unsubscribing
    */
-  const onSubscribe$  = () => defer(()    => CQRS.execute$(bus$)(CQRS.duck.actions.startCommand)(CQRS.duck.actions.startCommand(wechaty.puppet.id)))
-  const onUnsubscribe = () => finalize(() => bus$.next(CQRS.duck.actions.stopCommand(wechaty.puppet.id)))
+  const onSubscribe$  = () => defer(()    => CQRS.execute$(bus$)(CQRS.commands.startCommand)(CQRS.commands.startCommand(wechaty.puppet.id)))
+  const onUnsubscribe = () => finalize(() => bus$.next(CQRS.commands.stopCommand(wechaty.puppet.id)))
 
   const handlers$ = (bus$: CQRS.Bus) => merge(
     onScan$(bus$),

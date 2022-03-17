@@ -38,29 +38,21 @@ async function main () {
   const eventList: any[] = []
   bus$.subscribe(e => eventList.push(e))
 
-  const command = CQRS.duck.actions.dingCommand(wechaty.puppet.id, 'ding-data')
+  const command = CQRS.commands.dingCommand(wechaty.puppet.id, 'ding-data')
   bus$.next(command)
 
   await firstValueFrom(bus$.pipe(
-    filter(CQRS.helpers.isActionOf(CQRS.duck.actions.dongReceivedEvent)),
+    filter(CQRS.isEventOf(CQRS.events.dongReceivedEvent)),
     take(1),
   ))
 
   assert.deepEqual(eventList, [
     command,
-    CQRS.duck.actions.dingCommandResponse(command.meta),
-    CQRS.duck.actions.dongReceivedEvent(command.meta.puppetId, { data: command.payload.data }),
+    CQRS.responses.dingCommandResponse(command.meta),
+    CQRS.events.dongReceivedEvent(command.meta.puppetId, { data: command.payload.data }),
   ], 'should get dingCommand & dingedMessage & dingReceivedEvent')
 
   assert.notEqual(CQRS.VERSION, '0.0.0', 'version should be set before publishing')
-
-  // if (eventList.length <= 0) {
-  //   throw new Error('should emit events via bus$')
-  // }
-
-  // if (CQRS.VERSION === '0.0.0') {
-  //   throw new Error('version should be set before publishing')
-  // }
 }
 
 main()
