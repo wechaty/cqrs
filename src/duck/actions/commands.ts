@@ -44,60 +44,60 @@ export const nopCommand = create(
   payloadNopMessage,
 )
 
-/**
- * puppet.messageSend()
- */
 const payloadSendMessageCommand = (_puppetId: string, conversationId: string, sayable: PUPPET.payloads.Sayable) => ({ conversationId, sayable })
 const payloadMessageSentMessage = (res: MetaResponse & { messageId?: string })                                  => ({ messageId: res.messageId })
 
+/**
+ * puppet.messageSend()
+ */
 export const sendMessageCommand = create(
   types.SEND_MESSAGE_COMMAND,
   payloadSendMessageCommand,
   payloadMessageSentMessage,
 )
 
-/**
- * puppet.ding()
- */
 const payloadDingCommand    = (_puppetId: string, data?: string)  => ({ data })
 const payloadDingedMessage  = (_res: MetaResponse)                => ({})
 
+/**
+ * puppet.ding()
+ */
 export const dingCommand = create(
   types.DING_COMMAND,
   payloadDingCommand,
   payloadDingedMessage,
 )
 
-/**
- * puppet.reset()
- */
 const payloadResetCommand = (_puppetId: string, data?: string)  => ({ data })
 const payloadResetMessage = (_res: MetaResponse)                => ({})
 
+/**
+ * puppet.reset()
+ */
 export const resetCommand = create(
   types.RESET_COMMAND,
   payloadResetCommand,
   payloadResetMessage,
 )
 
-/**
- * puppet.start()
- */
 const payloadStartCommand    = (_puppetId: string)  => ({})
 const payloadStartedMessage  = (_res: MetaResponse) => ({})
 
+/**
+ * puppet.start()
+ */
 export const startCommand = create(
   types.START_COMMAND,
   payloadStartCommand,
   payloadStartedMessage,
 )
 
-/**
- * puppet.stop()
- */
 const payloadStopCommand    = (_puppetId: string)   => ({})
 const payloadStoppedMessage = (_res: MetaResponse)  => ({})
 
+/**
+ * puppet.stop()
+ */
 export const stopCommand = create(
   types.STOP_COMMAND,
   payloadStopCommand,

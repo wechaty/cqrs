@@ -20,15 +20,9 @@
 
 import type * as PUPPET   from 'wechaty-puppet'
 
-import * as types from '../types/mod.js'
-
-import type {
-  MetaResponse,
-}                   from './meta.js'
-
-import {
-  create,
-}                   from './action-pair.js'
+import * as types             from '../types/mod.js'
+import type { MetaResponse }  from './meta.js'
+import { create }             from './action-pair.js'
 
 /**
  * Bug compatible & workaround for Ducks API
@@ -36,62 +30,73 @@ import {
  */
 // const nop = createAction(types.NOP)()
 
-/**
- * puppet.getCurrentUserId
- */
+/********************************************
+ *
+ * Puppet Properties
+ *
+ ********************************************/
+
 const payloadGetCurrentUserIdQuery    = (_puppetId: string)                           => ({})
 const payloadCurrentUserIdGotMessage  = (res: MetaResponse & { contactId?: string })  => ({ contactId: res.contactId })
 
+/**
+ * puppet.currentUserId
+ */
 export const getCurrentUserIdQuery = create(
   types.GET_CURRENT_USER_ID_QUERY,
   payloadGetCurrentUserIdQuery,
   payloadCurrentUserIdGotMessage,
 )
 
+const payloadGetAuthQrCodeQuery   = (_puppetId: string)                       => ({})
+const payloadAuthQrCodeGotMessage = (res: MetaResponse & { qrcode?: string }) => ({ qrcode: res.qrcode })
+
 /**
- * puppet.isLoggedIn
+ * puppet.authQrCode
  */
+export const getAuthQrCodeQuery = create(
+  types.GET_AUTH_QR_CODE_QUERY,
+  payloadGetAuthQrCodeQuery,
+  payloadAuthQrCodeGotMessage,
+)
+
 const payloadGetIsLoggedInQuery   = (_puppetId: string)                             => ({})
 const payloadIsLoggedInGotMessage = (res: MetaResponse & { isLoggedIn?: boolean })  => ({ isLoggedIn: res.isLoggedIn })
 
+/**
+ * puppet.isLoggedIn
+ */
 export const getIsLoggedInQuery = create(
   types.GET_IS_LOGGED_IN_QUERY,
   payloadGetIsLoggedInQuery,
   payloadIsLoggedInGotMessage,
 )
 
-/**
- * puppet.sayablePayload
- */
+/********************************************
+ *
+ * Puppet Methods
+ *
+ /********************************************/
+
 const payloadGetSayablePayloadQuery   = (_puppetId: string, sayableId: string)                      => ({ sayableId })
 const payloadSayablePayloadGotMessage = (res: MetaResponse & { sayable?: PUPPET.payloads.Sayable }) => res.sayable || ({})
 
+/**
+ * puppet.sayablePayload()
+ */
 export const getSayablePayloadQuery = create(
   types.GET_SAYABLE_PAYLOAD_QUERY,
   payloadGetSayablePayloadQuery,
   payloadSayablePayloadGotMessage,
 )
 
-/**
- * puppet.messagePayload
- */
 const payloadGetMessagePayloadQuery   = (_puppetId: string, messageId: string)                      => ({ messageId })
 const payloadMessagePayloadGotMessage = (res: MetaResponse & { message?: PUPPET.payloads.Message }) => res.message || ({})
-
+/**
+ * puppet.messagePayload()
+ */
 export const getMessagePayloadQuery = create(
   types.GET_MESSAGE_PAYLOAD_QUERY,
   payloadGetMessagePayloadQuery,
   payloadMessagePayloadGotMessage,
-)
-
-/**
- * puppet.qrCode
- */
-const payloadGetAuthQrCodeQuery   = (_puppetId: string)                       => ({})
-const payloadAuthQrCodeGotMessage = (res: MetaResponse & { qrcode?: string }) => ({ qrcode: res.qrcode })
-
-export const getAuthQrCodeQuery = create(
-  types.GET_AUTH_QR_CODE_QUERY,
-  payloadGetAuthQrCodeQuery,
-  payloadAuthQrCodeGotMessage,
 )
