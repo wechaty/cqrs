@@ -28,6 +28,32 @@ respectively.
 
 > Image source: [CQRS (command query responsibility segregation)](https://www.techtarget.com/searchapparchitecture/definition/CQRS-command-query-responsibility-segregation)
 
+## Motivation
+
+Can we use Wechaty by only sending / receiving the [Plain Old JavaScript Object (POJO)](https://masteringjs.io/tutorials/fundamentals/pojo)?
+
+That's an Event-driven way, which will give us the following benifites:
+
+1. Better integration with Domain-driven Design (DDD)
+1. Decouple the sub-systems with the Wechaty instance completely
+1. Enable using Wechaty with Microservices
+1. Make it possible for providing an API endpoint with JSON request/responses
+1. etc.
+
+So we decided to support the  Event-driven Architecture
+by enabling the Event-driven Programming with Wechaty
+by publishing the [wechaty-cqrs](https://npmjs.com/package/wechaty-cqrs) NPM module.
+
+## Features
+
+1. Convert Wechaty instance to a messaging `bus$` with the `from()` function.
+1. Well-defined `commands`, `queries`, `responses`, and `events` payload creators.
+1. A great `execute$()` helper function for sending the events to the bus and get back the response.
+1. Well-defined `events$` for the Wechaty events
+1. Well-defined `sayables` for build all the message contents
+1. Static typing with TypeScript with all events & streams
+1. Working perfect with the powerful RxJS
+
 ## Usage
 
 ### Install
