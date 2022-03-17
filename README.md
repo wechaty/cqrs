@@ -5,7 +5,7 @@
 [![Ducksify Extension](https://img.shields.io/badge/Redux-Ducksify-yellowgreen)](https://github.com/huan/ducks#3-ducksify-extension-currying--api-interface)
 [![ES Modules](https://img.shields.io/badge/ES-Modules-brightgreen)](https://github.com/Chatie/tsconfig/issues/16)
 
-A event-driven architecture wrapper for Wechaty
+An event-driven architecture wrapper for Wechaty
 that applies the CQS principle
 by using separate Query and Command messages
 to retrieve and modify the bot state,
@@ -151,22 +151,29 @@ sequenceDiagram
     Redux->>Bus: ReceivedEvent
 ```
 
-## API Docs
+## API Reference
 
-TBW
+Read CQRS Wechaty API Reference at: <https://paka.dev/npm/wechaty-cqrs>
+
+## Blogs
+
+- [Refactoring Friday BOT with NestJS, Domain-driven Design (DDD), and CQRS, @huan, Feb 27, 2022](https://wechaty.js.org/2022/02/27/refactoring-friday-bot-with-nestjs-ddd-cqrs/)
 
 ## Resources
 
-- [class-transformer](https://github.com/typestack/class-transformer) -
-  Decorator-based transformation, serialization, and deserialization
-  between objects and classes.
+- [Layers in DDD microservices](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/ddd-oriented-microservice#layers-in-ddd-microservices)
+- Effective Aggregate Design
+  - [Part I: Modeling a Single Aggregate](https://www.dddcommunity.org/wp-content/uploads/files/pdf_articles/Vernon_2011_1.pdf)
+  - [Part II: Making Aggregates Work Together](https://www.dddcommunity.org/wp-content/uploads/files/pdf_articles/Vernon_2011_2.pdf)
+  - [Part III: Gining Insight Through Discovery](https://www.dddcommunity.org/wp-content/uploads/files/pdf_articles/Vernon_2011_3.pdf)
+- [Domain-Application-Infrastructure Services pattern](https://badia-kharroubi.gitbooks.io/microservices-architecture/content/patterns/tactical-patterns/domain-application-infrastructure-services-pattern.html)
 
 ## History
 
-### main v0.7 (Mar 16, 2022)
+### main 
 
-Refactoring `execute$` with `duck.actions` builders.
-
+- v0.9 (Mar 17,2022): Refactoring(clean) module exports
+- v0.7 (Mar 16, 2022): Refactoring `execute$` with `duck.actions` builders.
 - v0.6 (Mar 13, 2022): Alpha release.
 - v0.4 (Mar 13, 2022): CQRS Ding/Dong BOT works as expected.
 - v0.2 (Mar 11, 2022): Unit tests all passed, DevOps enabled.
