@@ -17,10 +17,26 @@
  *   limitations under the License.
  *
  */
+import * as types from '../types/mod.js'
+
+import type {
+  MetaResponse,
+}                     from './meta.js'
+
+import {
+  create,
+}                     from './action-pair.js'
 
 /**
  *
- * Internal
+ * Private used internally inside this NPM module only
  *
  */
-export const NOP_COMMAND = 'cqrs-wechaty/NOP_COMMAND'
+const payloadNopCommand = (_puppetId: string)   => ({})
+const payloadNopMessage = (_res: MetaResponse)  => ({})
+
+export const nopCommand = create(
+  types.NOP_COMMAND,
+  payloadNopCommand,
+  payloadNopMessage,
+)

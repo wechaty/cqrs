@@ -39,7 +39,6 @@ export const {
   getIsLoggedInQueryResponse,
   getMessagePayloadQueryResponse,
   getSayablePayloadQueryResponse,
-  nopCommandResponse,
   resetCommandResponse,
   sendMessageCommandResponse,
   startCommandResponse,

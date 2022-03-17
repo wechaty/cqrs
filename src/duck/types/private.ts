@@ -17,9 +17,10 @@
  *   limitations under the License.
  *
  */
-export * from './commands.js'
-export * from './events.js'
-export * from './queries.js'
-export * from './responses.js'
 
-export * from './private.js'
+/**
+ *
+ * Private used internally inside this NPM module only
+ *
+ */
+export const NOP_COMMAND = 'cqrs-wechaty/NOP_COMMAND'

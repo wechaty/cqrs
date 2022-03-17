@@ -17,9 +17,6 @@
  *   limitations under the License.
  *
  */
-
-/* eslint-disable sort-keys */
-
 import type * as PUPPET   from 'wechaty-puppet'
 
 import * as types from '../types/mod.js'
@@ -31,18 +28,6 @@ import type {
 import {
   create,
 }                     from './action-pair.js'
-
-/**
- * Internal
- */
-const payloadNopCommand = (_puppetId: string)   => ({})
-const payloadNopMessage = (_res: MetaResponse)  => ({})
-
-export const nopCommand = create(
-  types.NOP_COMMAND,
-  payloadNopCommand,
-  payloadNopMessage,
-)
 
 const payloadSendMessageCommand = (_puppetId: string, conversationId: string, sayable: PUPPET.payloads.Sayable) => ({ conversationId, sayable })
 const payloadMessageSentMessage = (res: MetaResponse & { messageId?: string })                                  => ({ messageId: res.messageId })
