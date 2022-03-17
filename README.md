@@ -48,7 +48,8 @@ by publishing the [wechaty-cqrs](https://npmjs.com/package/wechaty-cqrs) NPM mod
 
 1. Convert Wechaty instance to a messaging `bus$` with the `from()` function.
 1. Well-defined `commands`, `queries`, `responses`, and `events` payload creators.
-1. A great `execute$()` helper function for sending the events to the bus and get back the response.
+1. A great `execute$()` helper function for sending the events
+  to the bus and get back the response.
 1. Well-defined `events$` for the Wechaty events
 1. Well-defined `sayables` for build all the message contents
 1. Static typing with TypeScript with all events & streams
