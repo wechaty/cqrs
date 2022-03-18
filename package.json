@@ -107,6 +107,7 @@
   },
   "dependencies": {
     "ducks": "^1.3.2",
+    "lodash": "^4.17.21",
     "redux": "^4.1.2",
     "rxjs": "^7.5.5",
     "time-constants": "^1.0.3",
@@ -123,6 +124,7 @@
     "@chatie/semver": "^0.4.7",
     "@chatie/tsconfig": "^4.6.3",
     "@types/glob": "^7.2.0",
+    "@types/lodash": "^4.14.180",
     "@types/time-constants": "^1.0.0",
     "@types/uuid": "^8.3.4",
     "glob": "^7.2.0",
