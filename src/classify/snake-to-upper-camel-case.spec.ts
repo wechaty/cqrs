@@ -6,16 +6,16 @@ import {
 }               from 'tstest'
 
 import {
-  snakeToCamelCase,
-  SnakeToCamelCase,
-}                     from './snake-to-camel-case.js'
+  snakeToUpperCamelCase,
+  SnakeToUpperCamelCase,
+}                     from './snake-to-upper-camel-case.js'
 
 test('SnakeToCamelCase typing smoke testing', async t => {
   type SNAKE_CASE = 'SNAKE_CASE'
   type EXPECTED_CAMEL_CASE = 'SnakeCase'
 
   const test: AssertEqual<
-    SnakeToCamelCase<SNAKE_CASE>,
+    SnakeToUpperCamelCase<SNAKE_CASE>,
     EXPECTED_CAMEL_CASE
   > = true
   t.ok(test, 'should convert typing correctly')
@@ -25,12 +25,13 @@ test('snakeToCamelCase() smoke testing', async t => {
   const SNAKE_CASE = 'SNAKE_CASE'
   const EXPECTED_CAMEL_CASE = 'SnakeCase'
 
-  const result = snakeToCamelCase(SNAKE_CASE)
+  const result = snakeToUpperCamelCase(SNAKE_CASE)
   const test: AssertEqual<
     typeof result,
     typeof EXPECTED_CAMEL_CASE
   > = true
   t.ok(test, 'should match typing')
+  t.equal(result, EXPECTED_CAMEL_CASE, 'should convert to expected')
 })
 
 test('snakeToCamelCase() fixture testing', async t => {
@@ -42,12 +43,12 @@ test('snakeToCamelCase() fixture testing', async t => {
   ] as const
 
   for (const [snakeCase, expectedCamelCase] of fixtures) {
-    const result = snakeToCamelCase(snakeCase)
+    const result = snakeToUpperCamelCase(snakeCase)
     const test: AssertEqual<
       typeof result,
       typeof expectedCamelCase
     > = true
     t.ok(test, `should match typing ${snakeCase} -> ${expectedCamelCase}`)
+    t.equal(result, expectedCamelCase, `should convert ${result} -> ${expectedCamelCase}`)
   }
-
 })

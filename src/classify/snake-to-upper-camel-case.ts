@@ -13,20 +13,12 @@ import _ from 'lodash'
  * SO: TypeScript convert generic object from snake to camel case
  *  @link https://stackoverflow.com/a/65642944/1123955
  */
-export type SnakeToCamelCase<S extends string> =
+export type SnakeToUpperCamelCase<S extends string> =
   S extends `${infer T}_${infer U}`
-    ? `${Capitalize<Lowercase<T>>}${Capitalize<SnakeToCamelCase<Lowercase<U>>>}`
+    ? `${Capitalize<Lowercase<T>>}${Capitalize<SnakeToUpperCamelCase<Lowercase<U>>>}`
     : S
 
 /**
- * SNAKE_CASE -> CamelCase
+ * SNAKE_CASE -> UpperCamelCase
  */
-export const snakeToCamelCase = <T extends string> (str: T) => _.camelCase(str) as Capitalize<SnakeToCamelCase<T>>
-
-  // /**
-  //  * CamelCase -> SNAKE_CASE
-  //  */
-  // const camelCaseToSnakeCase = (str: string) => {
-  //   snakeCase(str)
-  // }
-
+export const snakeToUpperCamelCase = <T extends string> (str: T) => _.upperFirst(_.camelCase(str)) as Capitalize<SnakeToUpperCamelCase<T>>
