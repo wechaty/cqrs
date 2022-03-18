@@ -10,27 +10,18 @@ import _ from 'lodash'
  */
 
 /**
- * SO: Is it possible to use mapped types in Typescript to change a types key names?
- *  @link https://stackoverflow.com/a/64933956/1123955
+ * SO: TypeScript convert generic object from snake to camel case
+ *  @link https://stackoverflow.com/a/65642944/1123955
  */
-type SnakeToCamel<T extends string, P extends string = ''> =
-string extends T ? T :
-T extends `_${infer C0}${infer R}`
-  ? SnakeToCamel<
-      R,
-      `${P}${Uppercase<C0>}`
-    >
-  : T extends `${infer C0}${infer R}`
-    ? SnakeToCamel<
-        R,
-        `${P}${Lowercase<C0>}`
-      >
-    : P
+type SnakeToCamelCase<S extends string> =
+  S extends `${infer T}_${infer U}`
+    ? `${T}${Capitalize<SnakeToCamelCase<U>>}`
+    : S
 
 /**
  * SNAKE_CASE -> CamelCase
  */
-export const snakeToCamelCase = <T extends string> (str: T) => _.camelCase(str) as Capitalize<SnakeToCamel<T>>
+export const snakeToCamelCase = <T extends string> (str: T) => _.camelCase(str) as Capitalize<SnakeToCamelCase<T>>
 
   // /**
   //  * CamelCase -> SNAKE_CASE
