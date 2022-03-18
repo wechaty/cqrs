@@ -19,6 +19,9 @@ export type SnakeToUpperCamelCase<S extends string> =
     : S
 
 /**
- * SNAKE_CASE -> UpperCamelCase
+ * Convert `SNAKE_CASE` -> `CamelCase` with static typing
  */
-export const snakeToUpperCamelCase = <T extends string> (str: T) => _.upperFirst(_.camelCase(str)) as Capitalize<SnakeToUpperCamelCase<T>>
+export const snakeToUpperCamelCase = <T extends string> (str: T) =>
+  _.upperFirst(
+    _.camelCase(str),
+  ) as Capitalize<SnakeToUpperCamelCase<T>>
