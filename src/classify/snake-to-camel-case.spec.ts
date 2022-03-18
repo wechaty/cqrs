@@ -5,7 +5,21 @@ import {
   AssertEqual,
 }               from 'tstest'
 
-import { snakeToCamelCase } from './snake-to-camel-case.js'
+import {
+  snakeToCamelCase,
+  SnakeToCamelCase,
+}                     from './snake-to-camel-case.js'
+
+test('SnakeToCamelCase typing smoke testing', async t => {
+  type SNAKE_CASE = 'SNAKE_CASE'
+  type EXPECTED_CAMEL_CASE = 'SnakeCase'
+
+  const test: AssertEqual<
+    SnakeToCamelCase<SNAKE_CASE>,
+    EXPECTED_CAMEL_CASE
+  > = true
+  t.ok(test, 'should convert typing correctly')
+})
 
 test('snakeToCamelCase() smoke testing', async t => {
   const SNAKE_CASE = 'SNAKE_CASE'

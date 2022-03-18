@@ -13,9 +13,9 @@ import _ from 'lodash'
  * SO: TypeScript convert generic object from snake to camel case
  *  @link https://stackoverflow.com/a/65642944/1123955
  */
-type SnakeToCamelCase<S extends string> =
+export type SnakeToCamelCase<S extends string> =
   S extends `${infer T}_${infer U}`
-    ? `${T}${Capitalize<SnakeToCamelCase<U>>}`
+    ? `${Capitalize<Lowercase<T>>}${Capitalize<SnakeToCamelCase<Lowercase<U>>>}`
     : S
 
 /**
