@@ -29,7 +29,7 @@ import {
   MetaResponse,
 }                 from './meta.js'
 
-export const toResponseType = (type: string) => `${type}_RESPONSE`
+export const toResponseType = <T extends string> (type: T) => `${type}_RESPONSE` as `${T}_RESPONSE`
 
 /**
  * Huan(202203): FIXME: use the real `Symbol` instead of a `string`

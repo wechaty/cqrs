@@ -20,6 +20,9 @@ export type SnakeToUpperCamelCase<S extends string> =
 
 /**
  * Convert `SNAKE_CASE` -> `CamelCase` with static typing
+ *
+ *  Huan(202203): FIXME: the lodash `camelCase` will drop non-letters characters,
+ *    so we need to fix the typing here
  */
 export const snakeToUpperCamelCase = <T extends string> (str: T) =>
   _.upperFirst(

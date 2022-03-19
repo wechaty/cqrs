@@ -30,7 +30,7 @@ test('pureTypeName() smoke testing', async t => {
 })
 
 test('pureTypeName() fixture testing', async t => {
-    const fixtures = [
+  const fixtures = [
     ['cqrs-wechaty/SNAKE_CASE',           'SNAKE_CASE'],
     ['cqrs-wechaty/CAMEL_CASE',           'CAMEL_CASE'],
     ['cqrs-wechaty/UPPER',                'UPPER'],

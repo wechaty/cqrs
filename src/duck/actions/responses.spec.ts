@@ -18,7 +18,9 @@
  *   limitations under the License.
  *
  */
-import { test } from 'tstest'
+import { AssertEqual, test } from 'tstest'
+
+import * as types from '../types/mod.js'
 
 import * as responses from './responses.js'
 
@@ -36,4 +38,15 @@ test('responses smoke testing', async t => {
   t.ok(response.meta.id, 'should set id to meta')
   t.equal(response.meta.puppetId, PUPPET_ID, 'should set puppetId to meta')
   t.same(response.payload.isLoggedIn, IS_LOGGED_IN, `should set isLoggedIn to ${IS_LOGGED_IN}`)
+})
+
+test('responses type testing', async t => {
+  const response = responses.getIsLoggedInQueryResponse({} as any)
+
+  const test: AssertEqual<
+    typeof response.type,
+    `${typeof types.GET_IS_LOGGED_IN_QUERY}_RESPONSE`
+  > = true
+  t.ok(test, 'should have a typed type value')
+  t.equal(response.type, `${types.GET_IS_LOGGED_IN_QUERY}_RESPONSE`, 'should be equal to types')
 })

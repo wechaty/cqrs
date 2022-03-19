@@ -34,8 +34,21 @@ test('snakeToCamelCase() smoke testing', async t => {
   t.equal(result, EXPECTED_CAMEL_CASE, 'should convert to expected')
 })
 
+test('snakeToCamelCase() FIXME: non-letter characters typing is incorrect', async t => {
+  const SNAKE_CASE = 'A_!_B_@_C_)'
+  const EXPECTED_CAMEL_CASE = 'ABC'
+
+  const result = snakeToUpperCamelCase(SNAKE_CASE)
+  const test: AssertEqual<
+    typeof result,
+    typeof EXPECTED_CAMEL_CASE
+  > = {} as never
+  void test
+  t.equal(result, EXPECTED_CAMEL_CASE, `FIXME: should convert ${SNAKE_CASE} to ${EXPECTED_CAMEL_CASE}`)
+})
+
 test('snakeToCamelCase() fixture testing', async t => {
-    const fixtures = [
+  const fixtures = [
     ['SNAKE_CASE', 'SnakeCase'],
     ['CAMEL_CASE', 'CamelCase'],
     ['UPPER', 'Upper'],

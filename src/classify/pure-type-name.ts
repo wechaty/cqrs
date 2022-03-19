@@ -9,4 +9,3 @@ export const pureTypeName = <T extends string>(type: T) => (
     ? type.substring(type.lastIndexOf('/') + 1)
     : type
 ) as PureTypeName<T>
-
