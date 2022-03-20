@@ -20,7 +20,7 @@
 import { packageJson }  from '../package-json.js'
 
 /**
- * Command, Query, Response, and Event
+ * Classified: Command, Query, Response, and Event
  */
 export * as commands    from './commands.js'
 export * as queries     from './queries.js'
@@ -36,7 +36,7 @@ export { execute$ }     from '../execute$/mod.js'
 
 export * as events$     from './events$.js'
 export * as sayables    from './sayables.js'
-// export * as duck        from './duck.js'
+export * as duck        from './duck.js'
 
 export { isActionOf as isEventOf }   from 'typesafe-actions'
 
