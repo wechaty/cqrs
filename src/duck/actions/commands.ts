@@ -26,7 +26,7 @@ import type {
 }                     from './meta.js'
 
 import {
-  create,
+  createWithResponse,
 }                     from './action-pair.js'
 
 const payloadSendMessageCommand = (_puppetId: string, conversationId: string, sayable: PUPPET.payloads.Sayable) => ({ conversationId, sayable })
@@ -35,7 +35,7 @@ const payloadMessageSentMessage = (res: MetaResponse & { messageId?: string })  
 /**
  * puppet.messageSend()
  */
-export const sendMessageCommand = create(
+export const sendMessageCommand = createWithResponse(
   types.SEND_MESSAGE_COMMAND,
   payloadSendMessageCommand,
   payloadMessageSentMessage,
@@ -47,7 +47,7 @@ const payloadDingedMessage  = (_res: MetaResponse)                => ({})
 /**
  * puppet.ding()
  */
-export const dingCommand = create(
+export const dingCommand = createWithResponse(
   types.DING_COMMAND,
   payloadDingCommand,
   payloadDingedMessage,
@@ -59,7 +59,7 @@ const payloadResetMessage = (_res: MetaResponse)                => ({})
 /**
  * puppet.reset()
  */
-export const resetCommand = create(
+export const resetCommand = createWithResponse(
   types.RESET_COMMAND,
   payloadResetCommand,
   payloadResetMessage,
@@ -71,7 +71,7 @@ const payloadStartedMessage  = (_res: MetaResponse) => ({})
 /**
  * puppet.start()
  */
-export const startCommand = create(
+export const startCommand = createWithResponse(
   types.START_COMMAND,
   payloadStartCommand,
   payloadStartedMessage,
@@ -83,7 +83,7 @@ const payloadStoppedMessage = (_res: MetaResponse)  => ({})
 /**
  * puppet.stop()
  */
-export const stopCommand = create(
+export const stopCommand = createWithResponse(
   types.STOP_COMMAND,
   payloadStopCommand,
   payloadStoppedMessage,

@@ -24,7 +24,7 @@ import type {
 }                     from './meta.js'
 
 import {
-  create,
+  createWithResponse,
 }                     from './action-pair.js'
 
 /**
@@ -35,7 +35,7 @@ import {
 const payloadNopCommand = (_puppetId: string)   => ({})
 const payloadNopMessage = (_res: MetaResponse)  => ({})
 
-export const nopCommand = create(
+export const nopCommand = createWithResponse(
   types.NOP_COMMAND,
   payloadNopCommand,
   payloadNopMessage,

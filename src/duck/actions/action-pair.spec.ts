@@ -32,7 +32,7 @@ import {
   MetaResponse,
 }                 from './meta.js'
 import {
-  create,
+  createWithResponse,
   responseOf,
   Pair,
   RESPONSE,
@@ -69,7 +69,7 @@ test('action create smoke testing', async t => {
   const payloadTestQuery    = (_puppetId: string, text: string)       => ({ text })
   const payloadTestMessage  = (res: MetaResponse & { data: string })  => ({ data: res.data })
 
-  const getTestQuery = create(
+  const getTestQuery = createWithResponse(
     QUERY_TYPE,
     payloadTestQuery,
     payloadTestMessage,

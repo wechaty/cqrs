@@ -1,37 +1,73 @@
 #!/usr/bin/env -S node --no-warnings --loader ts-node/esm
-
+/**
+ *   Wechaty Open Source Software - https://github.com/wechaty
+ *
+ *   @copyright 2016 Huan LI (李卓桓) <https://github.com/huan>, and
+ *                   Wechaty Contributors <https://github.com/wechaty>.
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
+ */
 import {
   test,
   AssertEqual,
 }                     from 'tstest'
 import UUID           from 'uuid'
 import { isActionOf } from 'typesafe-actions'
+import * as PUPPET    from 'wechaty-puppet'
 
-import * as duck from '../duck/mod.js'
+import * as duck    from '../duck/mod.js'
 
-import {
-  classify,
-}                     from './classify.js'
+import { classify } from './classify.js'
 
 test('classify smoke testing', async t => {
-  const DingCommand                = classify(duck.actions.dingCommand)
-  const DingCommandResponse        = classify(duck.actions.dingCommandResponse)
-  const GetIsLoggedInQuery         = classify(duck.actions.getIsLoggedInQuery)
-  const GetIsLoggedInQueryResponse = classify(duck.actions.getIsLoggedInQueryResponse)
-  const DongReceivedEvent          = classify(duck.actions.dongReceivedEvent)
-
   const PUPPET_ID = 'puppet-id'
   const DATA      = 'data'
-  const ID        = UUID.v4()
+
+  const DingCommand = classify(duck.actions.dingCommand)
+
+  const instance = new DingCommand(PUPPET_ID, DATA)
+  const payload = duck.actions.dingCommand(PUPPET_ID, DATA)
+
+  delete (instance.meta as any).id
+  delete (payload.meta as any).id
+  delete (instance as any).toString
+  delete (payload as any).toString
+
+  t.same(instance, payload, 'should be same of payload and instance')
+})
+
+test('classify Command, Query, Response, and Event testing', async t => {
+  const SendMessageCommand          = classify(duck.actions.sendMessageCommand)
+  const SendMessageCommandResponse  = classify(duck.actions.sendMessageCommandResponse)
+  const GetIsLoggedInQuery          = classify(duck.actions.getIsLoggedInQuery)
+  const GetIsLoggedInQueryResponse  = classify(duck.actions.getIsLoggedInQueryResponse)
+  const DongReceivedEvent           = classify(duck.actions.dongReceivedEvent)
+
+  const PUPPET_ID       = 'puppet-id'
+  const DATA            = 'data'
+  const SAYABLE         = PUPPET.payloads.sayable.text('test')
+  const CONVERSATION_ID = 'conversation-id'
+  const ID              = UUID.v4()
 
   const fixtures = [
     [
-      new DingCommand(PUPPET_ID, DATA),
-      duck.actions.dingCommand(PUPPET_ID, DATA),
+      new SendMessageCommand(PUPPET_ID, CONVERSATION_ID, SAYABLE),
+      duck.actions.sendMessageCommand(PUPPET_ID, CONVERSATION_ID, SAYABLE),
     ],
     [
-      new DingCommandResponse({ id: ID, puppetId: PUPPET_ID }),
-      duck.actions.dingCommandResponse({ id: ID, puppetId: PUPPET_ID }),
+      new SendMessageCommandResponse({ id: ID, puppetId: PUPPET_ID }),
+      duck.actions.sendMessageCommandResponse({ id: ID, puppetId: PUPPET_ID }),
     ],
     [
       new GetIsLoggedInQuery(PUPPET_ID),

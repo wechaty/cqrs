@@ -22,7 +22,7 @@ import type * as PUPPET   from 'wechaty-puppet'
 
 import * as types             from '../types/mod.js'
 import type { MetaResponse }  from './meta.js'
-import { create }             from './action-pair.js'
+import { createWithResponse }             from './action-pair.js'
 
 /**
  * Bug compatible & workaround for Ducks API
@@ -42,7 +42,7 @@ const payloadCurrentUserIdGotMessage  = (res: MetaResponse & { contactId?: strin
 /**
  * puppet.currentUserId
  */
-export const getCurrentUserIdQuery = create(
+export const getCurrentUserIdQuery = createWithResponse(
   types.GET_CURRENT_USER_ID_QUERY,
   payloadGetCurrentUserIdQuery,
   payloadCurrentUserIdGotMessage,
@@ -54,7 +54,7 @@ const payloadAuthQrCodeGotMessage = (res: MetaResponse & { qrcode?: string }) =>
 /**
  * puppet.authQrCode
  */
-export const getAuthQrCodeQuery = create(
+export const getAuthQrCodeQuery = createWithResponse(
   types.GET_AUTH_QR_CODE_QUERY,
   payloadGetAuthQrCodeQuery,
   payloadAuthQrCodeGotMessage,
@@ -66,7 +66,7 @@ const payloadIsLoggedInGotMessage = (res: MetaResponse & { isLoggedIn?: boolean 
 /**
  * puppet.isLoggedIn
  */
-export const getIsLoggedInQuery = create(
+export const getIsLoggedInQuery = createWithResponse(
   types.GET_IS_LOGGED_IN_QUERY,
   payloadGetIsLoggedInQuery,
   payloadIsLoggedInGotMessage,
@@ -84,7 +84,7 @@ const payloadSayablePayloadGotMessage = (res: MetaResponse & { sayable?: PUPPET.
 /**
  * puppet.sayablePayload()
  */
-export const getSayablePayloadQuery = create(
+export const getSayablePayloadQuery = createWithResponse(
   types.GET_SAYABLE_PAYLOAD_QUERY,
   payloadGetSayablePayloadQuery,
   payloadSayablePayloadGotMessage,
@@ -95,7 +95,7 @@ const payloadMessagePayloadGotMessage = (res: MetaResponse & { message?: PUPPET.
 /**
  * puppet.messagePayload()
  */
-export const getMessagePayloadQuery = create(
+export const getMessagePayloadQuery = createWithResponse(
   types.GET_MESSAGE_PAYLOAD_QUERY,
   payloadGetMessagePayloadQuery,
   payloadMessagePayloadGotMessage,

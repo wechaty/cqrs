@@ -60,7 +60,7 @@ export const actionOf = <T extends Responseable>(action: T): ActionOf<T> => acti
 export type ResponseOf<T extends Responseable> = T[typeof RESPONSE]
 export const responseOf = <T extends Responseable> (actionPair: T) => actionPair[RESPONSE]
 
-export function create <
+export function createWithResponse <
   TType extends string,
 
   CQPayload extends {},

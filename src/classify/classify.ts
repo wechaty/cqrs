@@ -1,16 +1,55 @@
+/**
+ *   Wechaty Open Source Software - https://github.com/wechaty
+ *
+ *   @copyright 2016 Huan LI (李卓桓) <https://github.com/huan>, and
+ *                   Wechaty Contributors <https://github.com/wechaty>.
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
+ */
 import {
   ActionCreatorTypeMetadata,
-  PayloadMetaActionCreator,
   getType,
+  createAction,
 }                             from 'typesafe-actions'
 
 import { typeToClassName }  from './type-to-class-name.js'
+
+// /**
+//  * Fake function to get the generic typing of `createAction`
+//  *
+//  * SO: Typescript ReturnType of generic function
+//  *  @link https://stackoverflow.com/a/62620115/1123955
+//  */
+// const FakeFunction = () => createAction<string, {}, {}>('any', () => ({}))()
+// type ActionCreator = ReturnType<typeof FakeFunction>
+
+/**
+ * SO: TypeScript: Is it possible to get the return type of a generic function?
+ *  @link https://stackoverflow.com/a/52964723/1123955
+ */
+class Helper <T extends string> {
+
+  Return = createAction<T, any, any>('any' as any, () => ({}), () => ({}))
+
+}
+type ActionCreator<T extends string> = ReturnType<Helper<T>['Return']>
 
 /**
  * Store the actionCreator & class for cache & singleton
  */
 const singletonCache = new Map<
-  PayloadMetaActionCreator<any, any, any>,
+  ActionCreator<string>,
   Function
 >()
 
@@ -18,11 +57,15 @@ const singletonCache = new Map<
  * The typed ReturnType for `classify`
  */
 export type ClassifiedConstructor<
-  T extends PayloadMetaActionCreator<string, any, any>,
+  T extends ActionCreator<string>,
 > = {
   new (...args: Parameters<T>): ReturnType<T>
   (...args: Parameters<T>): ReturnType<T>
-} & ActionCreatorTypeMetadata<T extends PayloadMetaActionCreator<infer TType, any, any> ? TType : never>
+} & ActionCreatorTypeMetadata<
+  T extends ActionCreator<infer TType>
+    ? TType
+    : never
+>
 
 /**
  * Convert a typesafe-actions `ActionCreatorBuilder` to a new-able `Class`
@@ -33,7 +76,7 @@ export type ClassifiedConstructor<
  *  @link https://github.com/wechaty/cqrs/issues/1
  */
 export const classify = <
-  T extends PayloadMetaActionCreator<string, any, any>,
+  T extends ActionCreator<string>,
 > (creator: T) => {
 
   /**
