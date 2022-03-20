@@ -1,8 +1,9 @@
-import type { PayloadMetaActionCreator } from 'typesafe-actions'
 import {
   classify,
   ClassifiedConstructor,
 }                           from './classify.js'
+
+import type { MetaActionCreator } from './meta-action-creator.js'
 
 /**
  * Convert an actionMap to a classMap
@@ -10,7 +11,7 @@ import {
 export const classifyMap = <
   T extends Record<
     string,
-    PayloadMetaActionCreator<string, any, any>
+    MetaActionCreator<string>
   >
 > (actionMap: T) =>
   Object.entries(actionMap).reduce((acc, [key, creator]) => {

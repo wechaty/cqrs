@@ -20,36 +20,16 @@
 import {
   ActionCreatorTypeMetadata,
   getType,
-  createAction,
 }                             from 'typesafe-actions'
 
-import { typeToClassName }  from './type-to-class-name.js'
-
-// /**
-//  * Fake function to get the generic typing of `createAction`
-//  *
-//  * SO: Typescript ReturnType of generic function
-//  *  @link https://stackoverflow.com/a/62620115/1123955
-//  */
-// const FakeFunction = () => createAction<string, {}, {}>('any', () => ({}))()
-// type ActionCreator = ReturnType<typeof FakeFunction>
-
-/**
- * SO: TypeScript: Is it possible to get the return type of a generic function?
- *  @link https://stackoverflow.com/a/52964723/1123955
- */
-class Helper <T extends string> {
-
-  Return = createAction<T, any, any>('any' as any, () => ({}), () => ({}))
-
-}
-type ActionCreator<T extends string> = ReturnType<Helper<T>['Return']>
+import { typeToClassName }        from './type-to-class-name.js'
+import type { MetaActionCreator } from './meta-action-creator.js'
 
 /**
  * Store the actionCreator & class for cache & singleton
  */
 const singletonCache = new Map<
-  ActionCreator<string>,
+  MetaActionCreator<string>,
   Function
 >()
 
@@ -57,12 +37,12 @@ const singletonCache = new Map<
  * The typed ReturnType for `classify`
  */
 export type ClassifiedConstructor<
-  T extends ActionCreator<string>,
+  T extends MetaActionCreator<string>,
 > = {
   new (...args: Parameters<T>): ReturnType<T>
   (...args: Parameters<T>): ReturnType<T>
 } & ActionCreatorTypeMetadata<
-  T extends ActionCreator<infer TType>
+  T extends MetaActionCreator<infer TType>
     ? TType
     : never
 >
@@ -76,7 +56,7 @@ export type ClassifiedConstructor<
  *  @link https://github.com/wechaty/cqrs/issues/1
  */
 export const classify = <
-  T extends ActionCreator<string>,
+  T extends MetaActionCreator<string>,
 > (creator: T) => {
 
   /**
