@@ -30,13 +30,15 @@ import {
   metaRequest,
   metaResponse,
   MetaResponse,
-}                 from './meta.js'
+}                       from './meta.js'
 import {
   createWithResponse,
   responseOf,
   Pair,
+}                       from './event-pair.js'
+import {
   RESPONSE,
-}                 from './action-pair.js'
+}                       from './response.js'
 
 test('action create smoke testing', async t => {
   const QUERY_TYPE    = 'TEST_QUERY'

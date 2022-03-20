@@ -19,7 +19,7 @@
  *
  */
 import { test } from 'tstest'
-import { responseOf } from '../response-paired-action/action-pair.js'
+import { responseOf } from '../cqr-event/event-pair.js'
 
 import * as Duck from '../duck/mod.js'
 

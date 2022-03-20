@@ -37,7 +37,7 @@ import {
 import {
   ResponseOf,
   responseOf,
-}                     from '../response-paired-action/action-pair.js'
+}                     from '../cqr-event/event-pair.js'
 import * as CqrsDuck  from '../duck/mod.js'
 
 import { TIMEOUT_MS } from './constants.js'

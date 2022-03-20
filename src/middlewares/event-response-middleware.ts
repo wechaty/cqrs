@@ -20,9 +20,8 @@
 import { log }              from 'wechaty-puppet'
 import type { Middleware }  from 'redux'
 
-import type { Bus } from '../bus.js'
+import type { Bus }     from '../bus.js'
 import { plainToClass } from '../classify/plain-to-class.js'
-
 
 /**
  * Output: Events & Response
@@ -32,6 +31,9 @@ export const eventResponseMiddleware: (erBus$: Bus) => Middleware = erBus$ =>
     next =>
       action => {
         log.verbose('WechatyCqrs', 'eventResponseMiddleware() erBus$.next(%s)', JSON.stringify(action))
+        /**
+         * Convert the object from a Plain Object to a Class Object (and compatible with the Plain Object)
+         */
         const classObject = plainToClass(action)
         /**
          * Huan(202203): is there any way to remove `as any` here?

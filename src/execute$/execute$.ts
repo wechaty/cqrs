@@ -27,14 +27,14 @@ import type {
 import type {
   MetaRequest,
   MetaResponse,
-}                     from '../response-paired-action/meta.js'
+}                     from '../cqr-event/meta.js'
 
 import type { Bus }   from '../bus.js'
 
 import {
   Pair,
   responseOf,
-}                     from '../response-paired-action/action-pair.js'
+}                     from '../cqr-event/event-pair.js'
 
 import { TIMEOUT_MS } from './constants.js'
 import { recv }       from './recv.js'

@@ -38,7 +38,7 @@ import { GError }     from 'gerror'
 import type {
   MetaRequest,
   MetaResponse,
-}                   from '../response-paired-action/meta.js'
+}                   from '../cqr-event/meta.js'
 
 import type {
   BusObs,

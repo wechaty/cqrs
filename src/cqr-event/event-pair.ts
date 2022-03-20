@@ -29,23 +29,11 @@ import {
   MetaResponse,
 }                 from './meta.js'
 
-export const toResponseType = <T extends string> (type: T) => `${type}_RESPONSE` as `${T}_RESPONSE`
-
-/**
- * Huan(202203): FIXME: use the real `Symbol` instead of a `string`
- *
- * Error message:
- *
- *  Exported variable 'resetCommand' has or is using name 'RESPONSE'
- *  from external module "/home/huan/git/wechaty/cqrs/src/duck/actions/create-action-pair"
- *  but cannot be named. ts(4023)
- */
-export const RESPONSE = "Symbol('MESSAGE')"
-export interface Responseable <
-  R extends (..._: any) => PayloadMetaAction<any, any, MetaResponse> = (..._: any) => PayloadMetaAction<any, any, MetaResponse>,
-> {
-  [RESPONSE]: R
-}
+import {
+  Responseable,
+  RESPONSE,
+  responseType,
+}                 from './response.js'
 
 export type Pair<
   CQ  extends (..._: any) => PayloadMetaAction<any, any, MetaRequest>,
@@ -73,13 +61,8 @@ export function createWithResponse <
   payloadCommandQuery : (puppetId: string, ...args: TArgs) => CQPayload,
   payloadResponse     : (res: TRes)                        => RPayload,
 ) {
-  /**
-   * We add `Response` to the end of the `type` for the Response Event for Command/Query
-   */
-  const responseType = toResponseType(commandQueryType)
-
-  const commandQuery  = createAction(commandQueryType,  payloadCommandQuery,  metaRequest)()
-  const response      = createAction(responseType,      payloadResponse,      metaResponse)()
+  const commandQuery  = createAction(commandQueryType,                payloadCommandQuery,  metaRequest)()
+  const response      = createAction(responseType(commandQueryType),  payloadResponse,      metaResponse)()
 
   ;(commandQuery as unknown as Pair<typeof commandQuery, typeof response>)[RESPONSE] = response
 
