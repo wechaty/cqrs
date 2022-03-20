@@ -20,7 +20,10 @@
 import {
   ActionCreatorTypeMetadata,
   getType,
+  PayloadMetaAction,
 }                             from 'typesafe-actions'
+
+import type { Action } from '../duck/mod.js'
 
 import { typeToClassName }        from './type-to-class-name.js'
 import type { MetaActionCreator } from './meta-action-creator.js'
@@ -48,13 +51,21 @@ export type ClassifiedConstructor<
 >
 
 /**
- * Get the class from the actionCreator
+ * 1. Get the class from the actionCreator
  */
 export function classify <T extends MetaActionCreator<string>> (creator: T): ClassifiedConstructor<T>
 /**
- * Get the class from the type string
+ * 2. Get the class from the type string
  */
-export function classify <T extends string> (type: T): undefined | ClassifiedConstructor<MetaActionCreator<T>>
+export function classify <
+  TType extends string,
+  A extends Action
+> (type: TType): undefined | ClassifiedConstructor<
+  A extends PayloadMetaAction<TType, infer TPayload, infer TMeta>
+    ? MetaActionCreator<TType, TPayload, TMeta>
+    // ? MetaActionCreator<TType>
+    : MetaActionCreator<TType>
+>
 
 /**
  * Convert a typesafe-actions `ActionCreatorBuilder` to a new-able `Class`

@@ -109,7 +109,7 @@ test('classify class constructor parameters typing', async t => {
   t.ok(test, 'should be the same of class constructor parameters & payload creator parameters')
 })
 
-test('classify class instance typing: from actionCreator', async t => {
+test('classify class instance typing: from an actionCreator', async t => {
   const DingCommand = classify(duck.actions.dingCommand)
 
   const test: AssertEqual<
@@ -119,18 +119,15 @@ test('classify class instance typing: from actionCreator', async t => {
   t.ok(test, 'should be the same of class instance interface & payload interface')
 })
 
-test('FIXME: classify class instance typing: from type string', async t => {
-  const DingCommand = classify(duck.types.DING_COMMAND)!
+test('classify class instance typing: from a type string', async t => {
+  const SendMessageCommand = classify(duck.types.SEND_MESSAGE_COMMAND)!
 
-  type RESULT   = InstanceType<typeof DingCommand>
-  type EXPECTED = ReturnType<typeof duck.actions.dingCommand>
+  type RESULT   = InstanceType<typeof SendMessageCommand>
+  type EXPECTED = ReturnType<typeof duck.actions.sendMessageCommand>
 
   const test: AssertEqual<
     RESULT,
-    /**
-     * Huan(202203) FIXME: make the string type can return the correct type of `meta` & `payload`
-     */
-    Omit<EXPECTED, 'payload' | 'meta'> & { payload: {}, meta: {}}
+    EXPECTED
   > = true
   t.ok(test, 'should be the same of class instance interface & payload interface')
 })
