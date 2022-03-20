@@ -29,7 +29,7 @@ import type { MetaActionCreator } from './meta-action-creator.js'
  * Store the actionCreator & class for cache & singleton
  */
 const singletonCache = new Map<
-  MetaActionCreator<string>,
+  string,
   Function
 >()
 
@@ -48,6 +48,15 @@ export type ClassifiedConstructor<
 >
 
 /**
+ * Get the class for the actionCreator by the creator
+ */
+export function classify <T extends MetaActionCreator<string>>  (creator: T): ClassifiedConstructor<T>
+/**
+ * Get the class for the actionCreator by the type
+ */
+export function classify <T extends string>                     (type: T):    undefined | ClassifiedConstructor<MetaActionCreator<T>>
+
+/**
  * Convert a typesafe-actions `ActionCreatorBuilder` to a new-able `Class`
  *  and keep the data structure as close to the original as possible.
  *  to make the class a Plain Old JavaScript Object (POJO) & Data Translate Object (DTO)
@@ -55,15 +64,30 @@ export type ClassifiedConstructor<
  * Issue: Compatible with Class events with NestJS #1
  *  @link https://github.com/wechaty/cqrs/issues/1
  */
-export const classify = <
-  T extends MetaActionCreator<string>,
-> (creator: T) => {
+export function classify <
+  T extends string,
+> (action: T | MetaActionCreator<T>) {
+
+  /**
+   * 1. Deal with string type
+   */
+  if (typeof action === 'string') {
+    if (singletonCache.has(action)) {
+      return singletonCache.get(action) as ClassifiedConstructor<MetaActionCreator<T>>
+    }
+    return undefined
+  }
+
+  /**
+   * 2. Deal with Typesafe Actions type
+   */
+  const type = getType(action)
 
   /**
    * Check the cache for always return the same value for a creator
    */
-  if (singletonCache.has(creator)) {
-    return singletonCache.get(creator) as ClassifiedConstructor<T>
+  if (singletonCache.has(type)) {
+    return singletonCache.get(type) as ClassifiedConstructor<MetaActionCreator<T>>
   }
 
   /**
@@ -71,12 +95,15 @@ export const classify = <
    *  @link https://stackoverflow.com/a/43624326/1123955
    *  @example  `function () {} as unknown as { new (layerName: string): TestVectorLayer; }`
    */
-  const PojoClass = function (this: ReturnType<T>, ...args: Parameters<T>) {
+  const PojoClass = function (
+    this: ReturnType<MetaActionCreator<T>>,
+    ...args: Parameters<MetaActionCreator<T>>
+  ) {
     const {
       type,
       meta,
       payload,
-    } = (creator as any)(...args) // <- FIXME: remove `any` Huan(202203)
+    } = (action as any)(...args) // <- FIXME: remove `any` Huan(202203)
 
     this.type = type
     this.meta = meta
@@ -86,8 +113,6 @@ export const classify = <
 
     return this
   }
-
-  const type = getType(creator)
 
   PojoClass.getType = () => type
   // redux-actions compatibility
@@ -100,7 +125,7 @@ export const classify = <
   /**
    * Set cache for the future singleton
    */
-  singletonCache.set(creator, PojoClass)
+  singletonCache.set(type, PojoClass)
 
-  return PojoClass as unknown as ClassifiedConstructor<T>
+  return PojoClass as unknown as ClassifiedConstructor<MetaActionCreator<T>>
 }

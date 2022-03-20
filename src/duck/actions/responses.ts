@@ -4,7 +4,7 @@ import * as queries   from './queries.js'
 import {
   responseOf,
   RESPONSE,
-}                     from './action-pair.js'
+}                     from '../../response-paired-action/action-pair.js'
 
 type CQMod =
   & typeof commands

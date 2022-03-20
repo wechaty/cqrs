@@ -20,10 +20,10 @@
  */
 import { test } from 'tstest'
 
-import * as sayables from '../../mods/sayables.js'
+import * as sayables  from '../../mods/sayables.js'
+import { responseOf } from '../../response-paired-action/action-pair.js'
 
 import * as commands  from './commands.js'
-import { responseOf } from './action-pair.js'
 
 test('commands smoke testing', async t => {
   const ID = 'uuidv4'

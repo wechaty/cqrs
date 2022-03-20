@@ -23,11 +23,11 @@ import * as types from '../types/mod.js'
 
 import type {
   MetaResponse,
-}                     from './meta.js'
+}                     from '../../response-paired-action/meta.js'
 
 import {
   createWithResponse,
-}                     from './action-pair.js'
+}                     from '../../response-paired-action/action-pair.js'
 
 const payloadSendMessageCommand = (_puppetId: string, conversationId: string, sayable: PUPPET.payloads.Sayable) => ({ conversationId, sayable })
 const payloadMessageSentMessage = (res: MetaResponse & { messageId?: string })                                  => ({ messageId: res.messageId })

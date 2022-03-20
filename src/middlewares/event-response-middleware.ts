@@ -17,20 +17,25 @@
  *   limitations under the License.
  *
  */
-import { log }            from 'wechaty-puppet'
-import type {
-  Middleware,
-}                         from 'redux'
+import { log }              from 'wechaty-puppet'
+import type { Middleware }  from 'redux'
 
-import type {
-  Bus,
-}                     from '../bus.js'
+import type { Bus } from '../bus.js'
+import { plainToClass } from '../classify/plain-to-class.js'
+
 
 /**
  * Output: Events & Response
  */
-export const eventResponseMiddleware: (erBus$: Bus) => Middleware = erBus$ => _store => next => action => {
-  log.verbose('WechatyCqrs', 'eventResponseMiddleware() emBus$.next(%s)', JSON.stringify(action))
-  erBus$.next(action)
-  next(action)
-}
+export const eventResponseMiddleware: (erBus$: Bus) => Middleware = erBus$ =>
+  _store =>
+    next =>
+      action => {
+        log.verbose('WechatyCqrs', 'eventResponseMiddleware() erBus$.next(%s)', JSON.stringify(action))
+        const classObject = plainToClass(action)
+        /**
+         * Huan(202203): is there any way to remove `as any` here?
+         */
+        erBus$.next(classObject as any)
+        next(action)
+      }

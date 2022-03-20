@@ -21,11 +21,11 @@ import * as types from '../types/mod.js'
 
 import type {
   MetaResponse,
-}                     from './meta.js'
+}                     from '../../response-paired-action/meta.js'
 
 import {
   createWithResponse,
-}                     from './action-pair.js'
+}                     from '../../response-paired-action/action-pair.js'
 
 /**
  *

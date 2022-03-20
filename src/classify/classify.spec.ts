@@ -47,6 +47,13 @@ test('classify smoke testing', async t => {
   t.same(instance, payload, 'should be same of payload and instance')
 })
 
+test('classify a string type', async t => {
+  const ClassFromCreator  = classify(duck.actions.dingCommand)
+  const ClassFromType     = classify(duck.types.DING_COMMAND)
+
+  t.equal(ClassFromCreator, ClassFromType, 'should be same class either from creator or type')
+})
+
 test('classify Command, Query, Response, and Event testing', async t => {
   const SendMessageCommand          = classify(duck.actions.sendMessageCommand)
   const SendMessageCommandResponse  = classify(duck.actions.sendMessageCommandResponse)

@@ -29,7 +29,7 @@ import { log }        from 'wechaty-puppet'
 
 import type {
   MetaResponse,
-}                   from '../duck/actions/meta.js'
+}                   from '../response-paired-action/meta.js'
 
 import type {
   Bus,

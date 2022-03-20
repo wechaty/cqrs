@@ -20,8 +20,9 @@
  */
 import { test } from 'tstest'
 
-import * as queries       from './queries.js'
-import { responseOf } from './action-pair.js'
+import { responseOf } from '../../response-paired-action/action-pair.js'
+
+import * as queries from './queries.js'
 
 test('queries smoke testing', async t => {
   const ID = 'uuidv4'

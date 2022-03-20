@@ -27,14 +27,14 @@ import type {
 import type {
   MetaRequest,
   MetaResponse,
-}                     from '../duck/actions/meta.js'
+}                     from '../response-paired-action/meta.js'
 
 import type { Bus }   from '../bus.js'
 
 import {
   Pair,
   responseOf,
-}                     from '../duck/actions/action-pair.js'
+}                     from '../response-paired-action/action-pair.js'
 
 import { TIMEOUT_MS } from './constants.js'
 import { recv }       from './recv.js'

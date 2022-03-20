@@ -21,8 +21,8 @@
 import type * as PUPPET   from 'wechaty-puppet'
 
 import * as types             from '../types/mod.js'
-import type { MetaResponse }  from './meta.js'
-import { createWithResponse }             from './action-pair.js'
+import type { MetaResponse }  from '../../response-paired-action/meta.js'
+import { createWithResponse } from '../../response-paired-action/action-pair.js'
 
 /**
  * Bug compatible & workaround for Ducks API
