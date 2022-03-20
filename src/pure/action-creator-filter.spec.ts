@@ -19,9 +19,9 @@
  *
  */
 import { test } from 'tstest'
-import { responseOf } from '../cqr-event/event-pair.js'
 
-import * as Duck from '../duck/mod.js'
+import { responseOf } from '../cqr-event/response-pair.js'
+import * as Duck      from '../duck/mod.js'
 
 import * as filterActionCreator from './action-creator-filter.js'
 

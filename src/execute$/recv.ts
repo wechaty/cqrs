@@ -18,31 +18,22 @@
  *   limitations under the License.
  *
  */
-import {
-  isActionOf,
-  PayloadMetaAction,
-}                     from 'typesafe-actions'
-import {
-  of,
-}                     from 'rxjs'
+import { isActionOf, PayloadMetaAction }  from 'typesafe-actions'
+import { of }                             from 'rxjs'
 import {
   catchError,
   filter,
   take,
   tap,
   timeout,
-}                     from 'rxjs/operators'
-import { log }        from 'wechaty-puppet'
-import { GError }     from 'gerror'
+}                                         from 'rxjs/operators'
+import { log }                            from 'wechaty-puppet'
+import { GError }                         from 'gerror'
 
-import type {
-  MetaRequest,
-  MetaResponse,
-}                   from '../cqr-event/meta.js'
+import type { MetaRequest, MetaResponse } from '../cqr-event/meta.js'
+import type { ClassifiedConstructor }     from '../classify/classify.js'
 
-import type {
-  BusObs,
-}                   from '../bus.js'
+import type { BusObs }  from '../bus.js'
 
 /**
  * Monitor the `source$` to catch the `message` built by `messageActionBuilder` in response to the `commandQuery`
@@ -59,16 +50,16 @@ export const recv = (timeoutMilliseconds: number) =>
 
     TMetaResponse extends MetaResponse
   >(
-    commandQuery    : PayloadMetaAction<CQType, CQPayload, MetaRequest>,
-    responseBuilder : (res: TMetaResponse) => PayloadMetaAction<RType, RPayload, MetaResponse>,
+    commandQuery  : PayloadMetaAction<CQType, CQPayload, MetaRequest>,
+    ResponseClass : ClassifiedConstructor<(res: TMetaResponse) => PayloadMetaAction<RType, RPayload, MetaResponse>>,
   ) => (source$: BusObs) => source$.pipe(
-    filter(isActionOf(responseBuilder)),
+    filter(isActionOf(ResponseClass)),
     tap(message => log.verbose('WechatyCqrs', 'mapCommandQueryToMessage() recv() %s', JSON.stringify(message))),
     filter(message => message.meta.id === commandQuery.meta.id),
     timeout(timeoutMilliseconds),
     catchError(err =>
       of(
-        responseBuilder({
+        new ResponseClass({
           ...commandQuery.meta,
           gerror: GError.stringify(err),
         } as MetaResponse as any),  // Huan(202203): FIXME: remove any

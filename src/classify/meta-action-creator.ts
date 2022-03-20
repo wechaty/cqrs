@@ -12,18 +12,28 @@ import { createAction } from 'typesafe-actions'
  * SO: TypeScript: Is it possible to get the return type of a generic function?
  *  @link https://stackoverflow.com/a/52964723/1123955
  */
-class Helper <T extends string> {
+class Helper <
+  TType extends string,
+  TPayload extends {},
+  TMeta extends {}
+> {
 
   Return = createAction<
-    T,
-    {},
-    {}
+    TType,
+    TPayload,
+    TMeta
   >(
     'any' as any,
-    () => ({}),
-    () => ({}),
+    () => ({}) as any,
+    () => ({}) as any,
   )
 
 }
 
-export type MetaActionCreator<T extends string> = ReturnType<Helper<T>['Return']>
+export type MetaActionCreator<
+  TType extends string,
+  TPayload extends {} = {},
+  TMeta extends {} = {}
+> = ReturnType<
+  Helper<TType, TPayload, TMeta>['Return']
+>

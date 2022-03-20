@@ -34,8 +34,8 @@ import {
 import {
   createWithResponse,
   responseOf,
-  Pair,
-}                       from './event-pair.js'
+  ResponsePair,
+}                       from './response-pair.js'
 import {
   RESPONSE,
 }                       from './response.js'
@@ -99,7 +99,7 @@ test('Pair static typing', async t => {
   const response  = createAction('RESPONSE',  payloadResponse,  metaResponse)()
 
   const test: AssertEqual<
-    Pair<typeof query, typeof response>,
+    ResponsePair<typeof query, typeof response>,
     typeof query & {
       [RESPONSE]: typeof response
     }

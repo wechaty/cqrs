@@ -27,7 +27,7 @@ import type {
 
 import {
   createWithResponse,
-}                     from '../../cqr-event/event-pair.js'
+}                     from '../../cqr-event/response-pair.js'
 
 const payloadSendMessageCommand = (_puppetId: string, conversationId: string, sayable: PUPPET.payloads.Sayable) => ({ conversationId, sayable })
 const payloadMessageSentMessage = (res: MetaResponse & { messageId?: string })                                  => ({ messageId: res.messageId })

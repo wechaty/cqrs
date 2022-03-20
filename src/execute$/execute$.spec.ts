@@ -27,6 +27,7 @@ import {
 import { GError }         from 'gerror'
 import {
   Observable,
+  of,
   Subject,
 }                         from 'rxjs'
 import {
@@ -37,18 +38,26 @@ import {
 import {
   ResponseOf,
   responseOf,
-}                     from '../cqr-event/event-pair.js'
+}                     from '../cqr-event/response-pair.js'
 import * as CqrsDuck  from '../duck/mod.js'
 
 import { TIMEOUT_MS } from './constants.js'
 import { execute$ }   from './execute$.js'
+import { classify } from '../classify/classify.js'
+import type { PayloadMetaAction } from 'typesafe-actions'
+import type { MetaResponse } from '../cqr-event/meta.js'
 
 test('execute$() message creator / in time', testSchedulerRunner(m => {
   const PUPPET_ID   = 'puppet-id'
   const CONTACT_ID  = 'contact-id'
 
+  /**
+   * Save to cache/register for future usage
+   */
+  const Response = classify(responseOf(CqrsDuck.actions.getCurrentUserIdQuery))
+
   const query = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
-  const response = responseOf(CqrsDuck.actions.getCurrentUserIdQuery)({
+  const response = new Response({
     ...query.meta,
     contactId : CONTACT_ID,
   })
@@ -64,7 +73,7 @@ test('execute$() message creator / in time', testSchedulerRunner(m => {
 
   const mockBus$ = m.hot(bus, values)
   const result$ = m.hot(source, { q: values.q }).pipe(
-    mergeMap(execute$(mockBus$)(CqrsDuck.actions.getCurrentUserIdQuery)),
+    mergeMap(execute$(mockBus$)),
   )
 
   m.expectObservable(result$).toBe(expected, values)
@@ -74,8 +83,13 @@ test('execute$() with message creator / timeout', testSchedulerRunner(m => {
   const PUPPET_ID = 'puppet-id'
   const GERROR    = 'Timeout has occurred'
 
+  /**
+   * Save to cache/register for future usage
+   */
+  const Response = classify(responseOf(CqrsDuck.actions.getCurrentUserIdQuery))
+
   const query     = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
-  const response  = responseOf(CqrsDuck.actions.getCurrentUserIdQuery)({
+  const response  = new Response({
     gerror    : GERROR,
     id        : query.meta.id,
     puppetId  : query.meta.puppetId,
@@ -100,7 +114,7 @@ test('execute$() with message creator / timeout', testSchedulerRunner(m => {
   })
 
   const result$ = m.hot(source, { q: values.q }).pipe(
-    mergeMap(execute$(dummyBus$)(CqrsDuck.actions.getCurrentUserIdQuery)),
+    mergeMap(execute$(dummyBus$)),
     map(normalizeMessage),
   )
 
@@ -110,7 +124,11 @@ test('execute$() with message creator / timeout', testSchedulerRunner(m => {
 test('execute$() ReturnType typing', async t => {
   const bus$ = new Subject<any>()
 
-  const execute = execute$(bus$)(CqrsDuck.actions.getCurrentUserIdQuery)
+  const query = CqrsDuck.actions.getCurrentUserIdQuery('PUPPET_ID')
+
+  const $ = of(query).pipe(
+    execute$(bus$),
+  )
 
   const test: AssertEqual<
     ReturnType<typeof execute>,
@@ -118,4 +136,17 @@ test('execute$() ReturnType typing', async t => {
   > = true
 
   t.ok(test, 'should get the right return type of message')
+})
+
+test('execute$() ReturnType typing without input', async t => {
+  const bus$ = new Subject<any>()
+
+  const execute = execute$(bus$)
+
+  const test: AssertEqual<
+    ReturnType<typeof execute>,
+    Observable<PayloadMetaAction<string, {}, MetaResponse>>
+  > = true
+
+  t.ok(test, 'should get the right return type of response')
 })

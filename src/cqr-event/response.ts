@@ -41,7 +41,7 @@ export const responseType = <T extends string> (type: T) => `${type}${_RESPONSE}
  *  from external module "/home/huan/git/wechaty/cqrs/src/duck/actions/create-action-pair"
  *  but cannot be named. ts(4023)
  */
-export const RESPONSE = "Symbol('MESSAGE')"
+export const RESPONSE = Symbol('RESPONSE')
 export interface Responseable <
   R extends (..._: any) => PayloadMetaAction<any, any, MetaResponse> = (..._: any) => PayloadMetaAction<any, any, MetaResponse>,
 > {

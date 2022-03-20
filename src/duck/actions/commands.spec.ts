@@ -21,7 +21,7 @@
 import { test } from 'tstest'
 
 import * as sayables  from '../../mods/sayables.js'
-import { responseOf } from '../../cqr-event/event-pair.js'
+import { responseOf } from '../../cqr-event/response-pair.js'
 
 import * as commands  from './commands.js'
 

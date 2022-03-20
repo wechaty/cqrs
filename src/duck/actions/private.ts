@@ -25,7 +25,7 @@ import type {
 
 import {
   createWithResponse,
-}                     from '../../cqr-event/event-pair.js'
+}                     from '../../cqr-event/response-pair.js'
 
 /**
  *

@@ -33,10 +33,11 @@ import { isActionOf }     from 'typesafe-actions'
 import {
   ResponseOf,
   responseOf,
-}                     from '../cqr-event/event-pair.js'
+}                     from '../cqr-event/response-pair.js'
 import * as CqrsDuck  from '../duck/mod.js'
+import { classify }   from '../classify/classify.js'
 
-import { recv } from './recv.js'
+import { recv }     from './recv.js'
 
 test('recv() in time', testSchedulerRunner(m => {
   const PUPPET_ID   = 'puppet-id'
@@ -59,10 +60,12 @@ test('recv() in time', testSchedulerRunner(m => {
 
   const bus$ = m.hot(source, values)
 
+  const Response = classify(responseOf(CqrsDuck.actions.getCurrentUserIdQuery))
+
   const result$ = bus$.pipe(
     recv(TIMEOUT_MS)(
       query,
-      responseOf(CqrsDuck.actions.getCurrentUserIdQuery),
+      Response,
     ),
   )
 
@@ -73,10 +76,12 @@ test('recv() timeout', testSchedulerRunner(m => {
   const PUPPET_ID = 'puppet-id'
   const GERROR    = 'Timeout has occurred'
 
+  const Response = classify(responseOf(CqrsDuck.actions.getCurrentUserIdQuery))
+
   const query     = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
-  const response  = responseOf(CqrsDuck.actions.getCurrentUserIdQuery)({
+  const response  = new Response({
     ...query.meta,
-    gerror    : GERROR,
+    gerror: GERROR,
   })
 
   const values = {
@@ -103,7 +108,7 @@ test('recv() timeout', testSchedulerRunner(m => {
     filter(isActionOf(CqrsDuck.actions.getCurrentUserIdQuery)),
     recv(TIMEOUT_MS)(
       query,
-      responseOf(CqrsDuck.actions.getCurrentUserIdQuery),
+      Response,
     ),
     map(normalizeMessage),
   )

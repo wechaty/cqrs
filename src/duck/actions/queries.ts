@@ -22,7 +22,7 @@ import type * as PUPPET   from 'wechaty-puppet'
 
 import * as types             from '../types/mod.js'
 import type { MetaResponse }  from '../../cqr-event/meta.js'
-import { createWithResponse } from '../../cqr-event/event-pair.js'
+import { createWithResponse } from '../../cqr-event/response-pair.js'
 
 /**
  * Bug compatible & workaround for Ducks API

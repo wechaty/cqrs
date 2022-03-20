@@ -35,7 +35,7 @@ import {
   responseType,
 }                 from './response.js'
 
-export type Pair<
+export type ResponsePair<
   CQ  extends (..._: any) => PayloadMetaAction<any, any, MetaRequest>,
   R   extends (..._: any) => PayloadMetaAction<any, any, MetaResponse>,
 > =
@@ -46,7 +46,7 @@ export type ActionOf<T extends Responseable> = Omit<T, typeof RESPONSE>
 export const actionOf = <T extends Responseable>(action: T): ActionOf<T> => action
 
 export type ResponseOf<T extends Responseable> = T[typeof RESPONSE]
-export const responseOf = <T extends Responseable> (actionPair: T) => actionPair[RESPONSE]
+export const responseOf = <T extends Responseable> (pair: T) => pair[RESPONSE]
 
 export function createWithResponse <
   TType extends string,
@@ -64,11 +64,17 @@ export function createWithResponse <
   const commandQuery  = createAction(commandQueryType,                payloadCommandQuery,  metaRequest)()
   const response      = createAction(responseType(commandQueryType),  payloadResponse,      metaResponse)()
 
-  ;(commandQuery as unknown as Pair<typeof commandQuery, typeof response>)[RESPONSE] = response
+  const pair: ResponsePair<
+    typeof commandQuery,
+    typeof response
+  > = Object.assign(commandQuery, {
+    [RESPONSE]: response,
+  })
 
-  const pair: typeof commandQuery & {
-    [RESPONSE]: typeof response
-  } = commandQuery as any
+  // ;(commandQuery as unknown as ResponsePair<typeof commandQuery, typeof response>)[RESPONSE] = response
+  // const pair: typeof commandQuery & {
+  //   [RESPONSE]: typeof response
+  // } = commandQuery as any
 
   return pair
 }

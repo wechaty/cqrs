@@ -48,13 +48,13 @@ export type ClassifiedConstructor<
 >
 
 /**
- * Get the class for the actionCreator by the creator
+ * Get the class from the actionCreator
  */
-export function classify <T extends MetaActionCreator<string>>  (creator: T): ClassifiedConstructor<T>
+export function classify <T extends MetaActionCreator<string>> (creator: T): ClassifiedConstructor<T>
 /**
- * Get the class for the actionCreator by the type
+ * Get the class from the type string
  */
-export function classify <T extends string>                     (type: T):    undefined | ClassifiedConstructor<MetaActionCreator<T>>
+export function classify <T extends string> (type: T): undefined | ClassifiedConstructor<MetaActionCreator<T>>
 
 /**
  * Convert a typesafe-actions `ActionCreatorBuilder` to a new-able `Class`
@@ -109,14 +109,14 @@ export function classify <
     this.meta = meta
     this.payload = payload
 
-    this.toString = () => type
+    this.toString = function toString () { return type }
 
     return this
   }
 
   PojoClass.getType = () => type
   // redux-actions compatibility
-  PojoClass.toString = () => type
+  PojoClass.toString = function toString () { return type }
 
   Reflect.defineProperty(PojoClass, 'name', {
     value: typeToClassName(type),
