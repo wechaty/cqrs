@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 import {
   classify,
   ClassifiedConstructor,
@@ -15,8 +17,16 @@ export const classifyMap = <
   >
 > (actionMap: T) =>
   Object.entries(actionMap).reduce((acc, [key, creator]) => {
-    acc[key] = classify(creator)
+    acc[_.upperFirst(key)] = classify(creator)
     return acc
   }, {} as any) as {
-    [K in keyof T]: ClassifiedConstructor<T[K]>
+    /**
+     * SO: Convert nested properties
+     *  @link https://stackoverflow.com/a/65642944/1123955
+     *
+     * Huan(202203): Map the object key name from
+     *  `sendMessageCommand` to `SendMessageCommand`
+     *  by capitalizing the first letter of the first word.
+     */
+    [K in keyof T as Capitalize<K & string>]: ClassifiedConstructor<T[K]>
   }

@@ -18,9 +18,9 @@ test('classify smoke testing', async t => {
   }
 
   const EXPECTED = {
-    dongReceivedEvent:          classify(duck.actions.dongReceivedEvent),
-    sendMessageCommand:         classify(duck.actions.sendMessageCommand),
-    sendMessageCommandResponse: classify(duck.actions.sendMessageCommandResponse),
+    DongReceivedEvent:          classify(duck.actions.dongReceivedEvent),
+    SendMessageCommand:         classify(duck.actions.sendMessageCommand),
+    SendMessageCommandResponse: classify(duck.actions.sendMessageCommandResponse),
   }
 
   const classMap = classifyMap(actionMap)
