@@ -3,9 +3,7 @@ import * as queries   from './queries.js'
 
 import {
   responseOf,
-}                   from '../../cqr-event/response-pair.js'
-import type {
-  RESPONSE,
+  type RESPONSE,
 }                   from '../../cqr-event/response.js'
 
 type CQMod =

@@ -1,6 +1,6 @@
 import 'reflect-metadata'
 
-import type { PayloadMetaAction }   from 'typesafe-actions'
+import type { ActionBuilder }   from 'typesafe-actions'
 import {
   plainToClass as classTransformer,
 }                                   from 'class-transformer'
@@ -10,7 +10,7 @@ import { classify } from './classify.js'
 /**
  * Convert an plain object to class object
  */
-export const plainToClass = (object: PayloadMetaAction<string, any, any>) => {
+export const plainToClass = (object: ActionBuilder<string, any, any>) => {
   /**
    * 1. class object (already)
    *  Huan(202203): double confirm this logic is correct for identify the plain object

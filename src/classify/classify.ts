@@ -20,7 +20,7 @@
 import {
   ActionCreatorTypeMetadata,
   getType,
-  PayloadMetaAction,
+  ActionBuilder,
 }                             from 'typesafe-actions'
 
 import type { Action } from '../duck/mod.js'
@@ -61,9 +61,12 @@ export function classify <
   TType extends string,
   A extends Action
 > (type: TType): undefined | ClassifiedConstructor<
-  A extends PayloadMetaAction<TType, infer TPayload, infer TMeta>
-    ? MetaActionCreator<TType, TPayload, TMeta>
-    // ? MetaActionCreator<TType>
+  A extends ActionBuilder<TType, infer TPayload, infer TMeta>
+    ? TPayload extends {}
+      ? TMeta extends {}
+        ? MetaActionCreator<TType, TPayload, TMeta>
+        : MetaActionCreator<TType>
+      : MetaActionCreator<TType>
     : MetaActionCreator<TType>
 >
 
