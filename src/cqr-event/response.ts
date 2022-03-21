@@ -18,7 +18,7 @@
  *
  */
 import type {
-  PayloadMetaAction,
+  ActionBuilder,
 }                         from 'typesafe-actions'
 
 import type {
@@ -43,7 +43,14 @@ export const responseType = <T extends string> (type: T) => `${type}${_RESPONSE}
  */
 export const RESPONSE = Symbol('RESPONSE')
 export interface Responseable <
-  R extends (..._: any) => PayloadMetaAction<any, any, MetaResponse> = (..._: any) => PayloadMetaAction<any, any, MetaResponse>,
+  R extends (..._: any) => ActionBuilder<any, any, MetaResponse> = (..._: any) => ActionBuilder<any, any, MetaResponse>,
 > {
   [RESPONSE]: R
 }
+
+export type ResponseOf<T extends Responseable> = T[typeof RESPONSE]
+// Huan(202203) the tailing `as T[...]` is not necessary in theory but it seems to be a bug in TS
+export const responseOf = <T extends Responseable> (responseable: T) => responseable[RESPONSE] as T[typeof RESPONSE]
+
+export type ActionOf<T extends Responseable> = Omit<T, typeof RESPONSE>
+export const actionOf = <T extends Responseable>(action: T): ActionOf<T> => action
