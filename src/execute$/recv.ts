@@ -18,7 +18,7 @@
  *   limitations under the License.
  *
  */
-import { isActionOf, PayloadMetaAction }  from 'typesafe-actions'
+import { isActionOf, ActionBuilder }      from 'typesafe-actions'
 import { of }                             from 'rxjs'
 import {
   catchError,
@@ -50,8 +50,8 @@ export const recv = (timeoutMilliseconds: number) =>
 
     TMetaResponse extends MetaResponse
   >(
-    commandQuery  : PayloadMetaAction<CQType, CQPayload, MetaRequest>,
-    ResponseClass : ClassifiedConstructor<(res: TMetaResponse) => PayloadMetaAction<RType, RPayload, MetaResponse>>,
+    commandQuery  : ActionBuilder<CQType, CQPayload, MetaRequest>,
+    ResponseClass : ClassifiedConstructor<(res: TMetaResponse) => ActionBuilder<RType, RPayload, MetaResponse>>,
   ) => (source$: BusObs) => source$.pipe(
     filter(isActionOf(ResponseClass)),
     tap(message => log.verbose('WechatyCqrs', 'mapCommandQueryToMessage() recv() %s', JSON.stringify(message))),

@@ -19,7 +19,7 @@
  *
  */
 import type {
-  PayloadMetaAction,
+  ActionBuilder,
 }                     from 'typesafe-actions'
 import {
   defer,
@@ -45,7 +45,7 @@ export const send$ = (bus$: Bus) =>
     TType    extends string,
     TPayload extends {}
   >(
-    commandQuery: PayloadMetaAction<TType, TPayload, MetaResponse>,
+    commandQuery: ActionBuilder<TType, TPayload, MetaResponse>,
   ) => defer(() => {
     log.verbose('WechatyCqrs', 'mapCommandQueryToMessage() send$() defer() bus$.next(%s)', JSON.stringify(commandQuery))
     /**
