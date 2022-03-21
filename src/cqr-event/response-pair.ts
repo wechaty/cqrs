@@ -18,8 +18,8 @@
  *
  */
 import {
+  ActionBuilder,
   createAction,
-  PayloadMetaAction,
 }                         from 'typesafe-actions'
 
 import {
@@ -36,17 +36,11 @@ import {
 }                 from './response.js'
 
 export type ResponsePair<
-  CQ  extends (..._: any) => PayloadMetaAction<any, any, MetaRequest>,
-  R   extends (..._: any) => PayloadMetaAction<any, any, MetaResponse>,
+  CQ  extends (..._: any) => ActionBuilder<any, any, MetaRequest>,
+  R   extends (..._: any) => ActionBuilder<any, any, MetaResponse>,
 > =
   & CQ
   & Responseable<R>
-
-export type ActionOf<T extends Responseable> = Omit<T, typeof RESPONSE>
-export const actionOf = <T extends Responseable>(action: T): ActionOf<T> => action
-
-export type ResponseOf<T extends Responseable> = T[typeof RESPONSE]
-export const responseOf = <T extends Responseable> (pair: T) => pair[RESPONSE]
 
 export function createWithResponse <
   TType extends string,

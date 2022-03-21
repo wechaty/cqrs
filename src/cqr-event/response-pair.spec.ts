@@ -33,10 +33,10 @@ import {
 }                       from './meta.js'
 import {
   createWithResponse,
-  responseOf,
   ResponsePair,
 }                       from './response-pair.js'
 import {
+  responseOf,
   RESPONSE,
 }                       from './response.js'
 
@@ -76,10 +76,11 @@ test('action create smoke testing', async t => {
     payloadTestQuery,
     payloadTestMessage,
   )
+
   const getTestQueryResponse = responseOf(getTestQuery)
 
-  const query = getTestQuery(PUPPET_ID, TEXT)
-  const response = getTestQueryResponse({
+  const query     = getTestQuery(PUPPET_ID, TEXT)
+  const response  = getTestQueryResponse({
     ...query.meta,
     data: DATA,
   })
@@ -92,17 +93,20 @@ test('action create smoke testing', async t => {
 })
 
 test('Pair static typing', async t => {
-  const payloadQuery    = (_puppetId: string, text: string)       => ({ text })
-  const payloadResponse = (res: MetaResponse & { data: string })  => ({ data: res.data })
+  const payloadQuery    = (_puppetId: string, t: string, o: { n: number })  => ({ o, t })
+  const payloadResponse = (res: MetaResponse & { data: string })            => ({ data: res.data })
 
   const query     = createAction('QUERY',     payloadQuery,     metaRequest)()
   const response  = createAction('RESPONSE',  payloadResponse,  metaResponse)()
 
+  type RESULT = ResponsePair<typeof query, typeof response>
+  type EXPECTED = typeof query & {
+    [RESPONSE]: typeof response
+  }
+
   const test: AssertEqual<
-    ResponsePair<typeof query, typeof response>,
-    typeof query & {
-      [RESPONSE]: typeof response
-    }
+    RESULT,
+    EXPECTED
   > = true
   t.ok(test, 'should be expected typing')
 })
