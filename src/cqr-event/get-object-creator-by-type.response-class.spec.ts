@@ -27,48 +27,7 @@ import { classify } from '../classify/classify.js'
 
 import * as duck from '../duck/mod.js'
 
-import {
-  getResponseCreatorByType,
-  getResponseClassByType,
-}                               from './get-object-creator-by-type.js'
-
-test('getResponseCreatorByType() payload', async t => {
-  const ID = 'id'
-  const PUPPET_ID = 'puppet-id'
-
-  const creator = getResponseCreatorByType(duck.types.SEND_MESSAGE_COMMAND)
-
-  const object = creator({
-    id: ID,
-    puppetId: PUPPET_ID,
-  })
-  const EXPECTED = duck.actions.sendMessageCommandResponse({ ...object.meta })
-
-  t.same(object, EXPECTED, 'should set same object')
-})
-
-test('getResponseCreatorByType() typing', async t => {
-  const responseCreator = getResponseCreatorByType(duck.types.SEND_MESSAGE_COMMAND)
-
-  type RESULT   = typeof responseCreator
-  type EXPECTED = typeof duck.actions.sendMessageCommandResponse
-
-  const test: AssertEqual<
-    RESULT,
-    EXPECTED
-  > = true
-  t.ok(test, 'should be same typing')
-})
-
-test('getResponseCreatorByType() reference compare', async t => {
-  const responseCreator = getResponseCreatorByType(duck.types.SEND_MESSAGE_COMMAND)
-
-  t.equal(
-    responseCreator,
-    duck.actions.sendMessageCommandResponse,
-    'should be the same function reference',
-  )
-})
+import { getResponseClassByType } from './get-object-creator-by-type.js'
 
 test('getResponseClassByType() object payload', async t => {
   const PUPPET_ID = 'puppet-id'

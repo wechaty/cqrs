@@ -19,9 +19,10 @@
  */
 import {
   merge,
+  EMPTY,
 }                     from 'rxjs'
 import type {
-  PayloadMetaAction,
+  ActionBuilder,
 }                     from 'typesafe-actions'
 
 import type {
@@ -31,14 +32,13 @@ import type {
 
 import type { Bus }   from '../bus.js'
 
-import {
-  Pair,
-  responseOf,
-}                     from '../cqr-event/event-pair.js'
-
 import { TIMEOUT_MS } from './constants.js'
 import { recv }       from './recv.js'
 import { send$ }      from './send$.js'
+import { responseType } from '../cqr-event/response.js'
+import {
+  classify,
+}                         from '../classify/classify.js'
 
 interface ExecuteOptions {
   timeoutMilliseconds: number,
@@ -57,11 +57,30 @@ export const execute$ = (
   RType extends string,
   RPayload extends {},
 
-  CQ  extends (..._: CQArgs)  => PayloadMetaAction <CQType,  CQPayload,  MetaRequest>,
-  R   extends (..._: RArgs)   => PayloadMetaAction <RType,   RPayload,   MetaResponse>,
-> (actionPair: Pair<CQ, R>) => (
+  CQ  extends (..._: CQArgs)  => ActionBuilder <CQType,  CQPayload,  MetaRequest>,
+  R   extends (..._: RArgs)   => ActionBuilder <RType,   RPayload,   MetaResponse>,
+  // (actionPair: ResponsePair<CQ, R>) =>
+> (
     action: ReturnType<CQ>,
-  ) => merge(
+  ): Observable<CQType extends  => {
+
+  // const rType = responseType(action.type)
+  // console.info('rType', rType)
+
+  const ResponseClass = classify(responseType(action.type))!
+
+  // console.info('ResponseClass', ResponseClass)
+  const recv$ = ResponseClass
+    ? bus$.pipe(
+      // tap(e => console.info('tap', e)),
+      recv(options.timeoutMilliseconds)(
+        action,
+        ResponseClass,
+      ),
+    )
+    : EMPTY
+
+  return merge(
     /**
      * Recv
      *
@@ -69,12 +88,13 @@ export const execute$ = (
      *  `recv` should be put before(at the leftest) the `send$`
      *  because it need to subscribe the bus before sending any events
      */
-    bus$.pipe(
-      recv(options.timeoutMilliseconds)(
-        action,
-        responseOf(actionPair),
-      ),
-    ),
+    recv$,
+    // bus$.pipe(
+    //   recv(options.timeoutMilliseconds)(
+    //     action,
+    //     responseOf(actionPair),
+    //   ),
+    // ),
     /**
      * Send
      *
@@ -84,3 +104,4 @@ export const execute$ = (
      */
     send$(bus$)(action),
   )
+}

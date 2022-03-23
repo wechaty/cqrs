@@ -29,6 +29,7 @@ import {
   Observable,
   of,
   Subject,
+  tap,
 }                         from 'rxjs'
 import {
   map,
@@ -44,7 +45,7 @@ import * as CqrsDuck  from '../duck/mod.js'
 import { TIMEOUT_MS } from './constants.js'
 import { execute$ }   from './execute$.js'
 import { classify } from '../classify/classify.js'
-import type { PayloadMetaAction } from 'typesafe-actions'
+import type { ActionBuilder } from 'typesafe-actions'
 import type { MetaResponse } from '../cqr-event/meta.js'
 
 test('execute$() message creator / in time', testSchedulerRunner(m => {
@@ -113,8 +114,12 @@ test('execute$() with message creator / timeout', testSchedulerRunner(m => {
     },
   })
 
+  const execute = execute$(dummyBus$)
+  type T = ReturnType<typeof execute>
+
   const result$ = m.hot(source, { q: values.q }).pipe(
-    mergeMap(execute$(dummyBus$)),
+    tap(e => console.info(e)),
+    mergeMap(execute),
     map(normalizeMessage),
   )
 
@@ -145,7 +150,7 @@ test('execute$() ReturnType typing without input', async t => {
 
   const test: AssertEqual<
     ReturnType<typeof execute>,
-    Observable<PayloadMetaAction<string, {}, MetaResponse>>
+    Observable<ActionBuilder<string, {}, MetaResponse>>
   > = true
 
   t.ok(test, 'should get the right return type of response')

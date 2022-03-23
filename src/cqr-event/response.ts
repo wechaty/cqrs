@@ -17,13 +17,9 @@
  *   limitations under the License.
  *
  */
-import type {
-  ActionBuilder,
-}                         from 'typesafe-actions'
+import type { MetaActionCreator } from '../classify/meta-action-creator.js'
 
-import type {
-  MetaResponse,
-}                 from './meta.js'
+import type { MetaResponse }  from './meta.js'
 
 /**
  * We add `_RESPONSE` to the end of the `type` for the Response Event for Command/Query
@@ -31,6 +27,17 @@ import type {
 const _RESPONSE = '_RESPONSE'
 export type ResponseType<T extends string> = `${T}${typeof _RESPONSE}`
 export const responseType = <T extends string> (type: T) => `${type}${_RESPONSE}` as ResponseType<T>
+
+export type ResponseTypeMap<T extends { [key: string]: string }> = {
+  [K in keyof T as ResponseType<string & K>]: ResponseType<T[K]>
+}
+export const responseTypeMap = <T extends { [key: string]: string }> (o: T) =>
+  Object.entries(o).reduce((acc, [key, val]) => {
+    const k = responseType(key)
+    const v = responseType(val)
+    acc[k] = v
+    return acc
+  }, {} as any) as ResponseTypeMap<T>
 
 /**
  * Huan(202203): FIXME: use the real `Symbol` instead of a `string`
@@ -41,9 +48,10 @@ export const responseType = <T extends string> (type: T) => `${type}${_RESPONSE}
  *  from external module "/home/huan/git/wechaty/cqrs/src/duck/actions/create-action-pair"
  *  but cannot be named. ts(4023)
  */
-export const RESPONSE = Symbol('RESPONSE')
+
+export const RESPONSE = "Symbol('RESPONSE')"
 export interface Responseable <
-  R extends (..._: any) => ActionBuilder<any, any, MetaResponse> = (..._: any) => ActionBuilder<any, any, MetaResponse>,
+  R extends MetaActionCreator<string, {}, MetaResponse> = MetaActionCreator<string, {}, MetaResponse>,
 > {
   [RESPONSE]: R
 }

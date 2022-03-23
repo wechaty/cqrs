@@ -64,11 +64,11 @@ const onMessage$ = (bus$: CQRS.Bus) => CQRS.events$.messageReceivedEvent$(bus$).
     /**
      * message -> sayable
      */
-    map(messageId => CQRS.queries.getSayablePayloadQuery(
+    map(messageId => new CQRS.queries.GetSayablePayloadQuery(
       messageReceivedEvent.meta.puppetId,
       messageId,
     )),
-    mergeMap(CQRS.execute$(bus$)(CQRS.queries.getSayablePayloadQuery)),
+    mergeMap(CQRS.execute$(bus$)(CQRS.queries.GetSayablePayloadQuery)),
     map(sayablePayloadGotMessage => sayablePayloadGotMessage.payload),
     filter(Boolean),
     tap(sayable => console.info('sayable:', sayable)),

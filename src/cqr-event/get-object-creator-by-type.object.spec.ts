@@ -23,14 +23,10 @@ import {
   AssertEqual,
 }                   from 'tstest'
 import * as PUPPET  from 'wechaty-puppet'
-import { classify } from '../classify/classify.js'
 
 import * as duck from '../duck/mod.js'
 
-import {
-  getCreatorByType,
-  getClassByType,
-}                     from './get-object-creator-by-type.js'
+import { getCreatorByType } from './get-object-creator-by-type.js'
 
 test('getCreatorByType() payload', async t => {
   const PUPPET_ID = 'puppet-id'
@@ -64,46 +60,4 @@ test('getCreatorByType() reference compare', async t => {
     duck.actions.sendMessageCommand,
     'should be the same function reference',
   )
-})
-
-test('getClassByType() payload', async t => {
-  const PUPPET_ID = 'puppet-id'
-  const SAYABLE = PUPPET.payloads.sayable.text('text')
-  const CONVERSATION_ID = 'conversation-id'
-
-  /**
-   * setup cache
-   */
-  const warmUp = classify(duck.actions.sendMessageCommand)
-  void warmUp
-
-  const SendMessageCommand = getClassByType(duck.types.SEND_MESSAGE_COMMAND)
-
-  const object = new SendMessageCommand(PUPPET_ID, CONVERSATION_ID, SAYABLE)
-  const EXPECTED = duck.actions.sendMessageCommand(PUPPET_ID, CONVERSATION_ID, SAYABLE)
-
-  delete (object.meta as any).id
-  delete (EXPECTED.meta as any).id
-
-  t.same(
-    JSON.parse(JSON.stringify(object)),
-    JSON.parse(JSON.stringify(EXPECTED)),
-    'should set same action',
-  )
-})
-
-test('getClassByType() typing', async t => {
-  const SendMessageCommand = getClassByType(duck.types.SEND_MESSAGE_COMMAND)
-
-  const testParameter: AssertEqual<
-    ConstructorParameters<typeof SendMessageCommand>,
-    Parameters<typeof duck.actions.sendMessageCommand>
-  > = true
-  const testObject: AssertEqual<
-    InstanceType<typeof SendMessageCommand>,
-    ReturnType<typeof duck.actions.sendMessageCommand>
-  > = true
-
-  t.ok(testParameter, 'should be same typing for parameters')
-  t.ok(testObject, 'should be same typing for object')
 })
