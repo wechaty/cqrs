@@ -1,6 +1,6 @@
 import { getType } from 'typesafe-actions'
 
-import type { MetaActionCreator } from '../classify/meta-action-creator'
+import type { MetaActionCreator } from './meta-action-creator'
 
 import * as duck from '../duck/mod.js'
 

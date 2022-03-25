@@ -52,3 +52,17 @@ test('responseOf() typing with non-existing type', async t => {
   const typingTest: AssertEqual<RESULT, EXPECTED> = true
   t.ok(typingTest, 'should typed non-existing type with `never`')
 })
+
+test('responseOf() args with type & creator', async t => {
+  const byType    = responseOf(duck.types.SEND_MESSAGE_COMMAND)
+  const byCreator = responseOf(duck.actions.sendMessageCommand)
+  t.equal(byType, byCreator, 'should be equal by type & creator')
+})
+
+test('responseOf() args with type & creator typings', async t => {
+  const byType    = responseOf(duck.types.SEND_MESSAGE_COMMAND)
+  const byCreator = responseOf(duck.actions.sendMessageCommand)
+
+  const typingTest: AssertEqual<typeof byType, typeof byCreator> = true
+  t.ok(typingTest, 'should be equal typing by type & creator')
+})

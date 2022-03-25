@@ -5,7 +5,7 @@ import {
   ClassifiedConstructor,
 }                           from './classify.js'
 
-import type { MetaActionCreator } from './meta-action-creator.js'
+import type { MetaActionCreator } from '../cqr-event/meta-action-creator.js'
 
 /**
  * Convert an actionMap to a classMap

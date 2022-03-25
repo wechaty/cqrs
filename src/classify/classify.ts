@@ -26,7 +26,7 @@ import {
 import type { Action } from '../duck/mod.js'
 
 import { typeToClassName }        from './type-to-class-name.js'
-import type { MetaActionCreator } from './meta-action-creator.js'
+import type { MetaActionCreator } from '../cqr-event/meta-action-creator.js'
 
 /**
  * Store the actionCreator & class for cache & singleton
@@ -43,6 +43,10 @@ export type ClassifiedConstructor<
   T extends MetaActionCreator<string>,
 > = {
   new (...args: Parameters<T>): ReturnType<T>
+  /**
+   * Huan(202203): the below call-able definition
+   *  is for compatible with the `isActionOf` typesafe-actions function
+   */
   (...args: Parameters<T>): ReturnType<T>
 } & ActionCreatorTypeMetadata<
   T extends MetaActionCreator<infer TType>
@@ -113,6 +117,10 @@ export function classify <
     this: ReturnType<MetaActionCreator<T>>,
     ...args: Parameters<MetaActionCreator<T>>
   ) {
+    if (!(this as any)) {
+      throw new Error('PojoClass must be called with `new`')
+    }
+
     const {
       type,
       meta,

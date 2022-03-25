@@ -34,6 +34,7 @@ import type { MetaRequest, MetaResponse } from '../cqr-event/meta.js'
 import type { ClassifiedConstructor }     from '../classify/classify.js'
 
 import type { BusObs }  from '../bus.js'
+import type { MetaActionCreator } from '../cqr-event/meta-action-creator.js'
 
 /**
  * Monitor the `source$` to catch the `message` built by `messageActionBuilder` in response to the `commandQuery`
@@ -51,7 +52,7 @@ export const recv = (timeoutMilliseconds: number) =>
     TMetaResponse extends MetaResponse
   >(
     commandQuery  : ActionBuilder<CQType, CQPayload, MetaRequest>,
-    ResponseClass : ClassifiedConstructor<(res: TMetaResponse) => ActionBuilder<RType, RPayload, MetaResponse>>,
+    ResponseClass : ClassifiedConstructor<MetaActionCreator<RType, RPayload, MetaResponse, [TMetaResponse]>>,
   ) => (source$: BusObs) => source$.pipe(
     filter(isActionOf(ResponseClass)),
     tap(message => log.verbose('WechatyCqrs', 'mapCommandQueryToMessage() recv() %s', JSON.stringify(message))),
@@ -62,7 +63,7 @@ export const recv = (timeoutMilliseconds: number) =>
         new ResponseClass({
           ...commandQuery.meta,
           gerror: GError.stringify(err),
-        } as MetaResponse as any),  // Huan(202203): FIXME: remove any
+        } as TMetaResponse),
       ).pipe(
         tap(() => console.error(err)),
       ),

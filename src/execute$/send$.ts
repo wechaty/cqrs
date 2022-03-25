@@ -27,33 +27,27 @@ import {
 }                     from 'rxjs'
 import { log }        from 'wechaty-puppet'
 
-import type {
-  MetaResponse,
-}                   from '../cqr-event/meta.js'
-
+// import type {
+//   MetaResponse,
+// }                   from '../cqr-event/meta.js'
+import type * as duck from '../duck/mod.js'
 import type {
   Bus,
 }                   from '../bus.js'
+// import type { MetaActionCreator } from '../classify/meta-action-creator.js'
 
 /**
  * Send the `commandQuery` to `bus$`
  *
  * @returns `EMPTY` observable
  */
-export const send$ = (bus$: Bus) =>
-  <
-    TType    extends string,
-    TPayload extends {}
-  >(
-    commandQuery: ActionBuilder<TType, TPayload, MetaResponse>,
-  ) => defer(() => {
+export const send$ = (bus$: Bus) => (commandQuery: duck.Action) =>
+  defer(() => {
     log.verbose('WechatyCqrs', 'mapCommandQueryToMessage() send$() defer() bus$.next(%s)', JSON.stringify(commandQuery))
     /**
      * SO: Observable.onSubscribe equivalent in RxJs
      *  @link https://stackoverflow.com/a/48983205/1123955
-     *
-     * FIXME: remove any, Huan(202203)
      */
-    bus$.next(commandQuery as any)
+    bus$.next(commandQuery)
     return EMPTY
   })

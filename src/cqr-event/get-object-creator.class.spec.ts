@@ -26,38 +26,46 @@ import * as PUPPET  from 'wechaty-puppet'
 
 import * as duck from '../duck/mod.js'
 
-import { getCreatorByType } from './get-object-creator-by-type.js'
+import { getClass } from './get-object-creator.js'
 
-test('getCreatorByType() payload', async t => {
+test('getClass() by type & action', async t => {
+  const ByType    = getClass(duck.types.SEND_MESSAGE_COMMAND)
+  const ByAction  = getClass(duck.actions.sendMessageCommand)
+  t.equal(ByType, ByAction, 'should be equal')
+})
+
+test('getClass() payload', async t => {
   const PUPPET_ID = 'puppet-id'
   const SAYABLE = PUPPET.payloads.sayable.text('text')
   const CONVERSATION_ID = 'conversation-id'
 
-  const creator = getCreatorByType(duck.types.SEND_MESSAGE_COMMAND)
+  const SendMessageCommand = getClass(duck.types.SEND_MESSAGE_COMMAND)
 
-  const object = creator(PUPPET_ID, CONVERSATION_ID, SAYABLE)
+  const object = new SendMessageCommand(PUPPET_ID, CONVERSATION_ID, SAYABLE)
   const EXPECTED = duck.actions.sendMessageCommand(PUPPET_ID, CONVERSATION_ID, SAYABLE)
 
   delete (object.meta as any).id
   delete (EXPECTED.meta as any).id
 
-  t.same(object, EXPECTED, 'should set same action')
-})
-
-test('getCreatorByType() typing', async t => {
-  const creator = getCreatorByType(duck.types.SEND_MESSAGE_COMMAND)
-
-  const test: AssertEqual<
-    typeof creator,
-    typeof duck.actions.sendMessageCommand
-  > = true
-  t.ok(test, 'should be same typing')
-})
-
-test('getCreatorByType() reference compare', async t => {
-  t.equal(
-    getCreatorByType(duck.types.SEND_MESSAGE_COMMAND),
-    duck.actions.sendMessageCommand,
-    'should be the same function reference',
+  t.same(
+    JSON.parse(JSON.stringify(object)),
+    JSON.parse(JSON.stringify(EXPECTED)),
+    'should set same action',
   )
+})
+
+test('getClass() typing', async t => {
+  const SendMessageCommand = getClass(duck.types.SEND_MESSAGE_COMMAND)
+
+  const testParameter: AssertEqual<
+    ConstructorParameters<typeof SendMessageCommand>,
+    Parameters<typeof duck.actions.sendMessageCommand>
+  > = true
+  const testObject: AssertEqual<
+    InstanceType<typeof SendMessageCommand>,
+    ReturnType<typeof duck.actions.sendMessageCommand>
+  > = true
+
+  t.ok(testParameter, 'should be same typing for parameters')
+  t.ok(testObject, 'should be same typing for object')
 })

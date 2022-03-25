@@ -25,13 +25,19 @@ import {
 
 import * as duck from '../duck/mod.js'
 
-import { getResponseCreatorByType } from './get-object-creator-by-type.js'
+import { getResponseCreator } from './get-object-creator.js'
 
-test('getResponseCreatorByType() payload', async t => {
+test('getResponseCreator() with type & action', async t => {
+  const byType    = getResponseCreator(duck.types.SEND_MESSAGE_COMMAND)
+  const byAction  = getResponseCreator(duck.actions.sendMessageCommand)
+  t.equal(byType, byAction, 'should be equal')
+})
+
+test('getResponseCreator() payload', async t => {
   const ID = 'id'
   const PUPPET_ID = 'puppet-id'
 
-  const creator = getResponseCreatorByType(duck.types.SEND_MESSAGE_COMMAND)
+  const creator = getResponseCreator(duck.types.SEND_MESSAGE_COMMAND)
 
   const object = creator({
     id: ID,
@@ -42,8 +48,8 @@ test('getResponseCreatorByType() payload', async t => {
   t.same(object, EXPECTED, 'should set same object')
 })
 
-test('getResponseCreatorByType() typing', async t => {
-  const responseCreator = getResponseCreatorByType(duck.types.SEND_MESSAGE_COMMAND)
+test('getResponseCreator() typing', async t => {
+  const responseCreator = getResponseCreator(duck.types.SEND_MESSAGE_COMMAND)
 
   type RESULT   = typeof responseCreator
   type EXPECTED = typeof duck.actions.sendMessageCommandResponse
@@ -55,8 +61,8 @@ test('getResponseCreatorByType() typing', async t => {
   t.ok(test, 'should be same typing')
 })
 
-test('getResponseCreatorByType() reference compare', async t => {
-  const responseCreator = getResponseCreatorByType(duck.types.SEND_MESSAGE_COMMAND)
+test('getResponseCreator() reference compare', async t => {
+  const responseCreator = getResponseCreator(duck.types.SEND_MESSAGE_COMMAND)
 
   t.equal(
     responseCreator,
