@@ -41,7 +41,7 @@ import type {
  *
  * @returns `EMPTY` observable
  */
-export const send$ = (bus$: Bus) => (commandQuery: duck.Action) =>
+export const send$ = (bus$: Bus) => (commandQuery: duck.Payload) =>
   defer(() => {
     log.verbose('WechatyCqrs', 'mapCommandQueryToMessage() send$() defer() bus$.next(%s)', JSON.stringify(commandQuery))
     /**

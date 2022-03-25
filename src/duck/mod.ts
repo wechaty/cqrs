@@ -17,14 +17,13 @@
  *   limitations under the License.
  *
  */
-import type { ActionType } from 'typesafe-actions'
+import type { Action, ActionType } from 'typesafe-actions'
 
 import reducer            from './reducers.js'
 
 import type * as actions  from './actions/mod.js'
-import type * as types    from './types/mod.js'
-export type Action  = ActionType<typeof actions>
-export type Type    = typeof types[keyof typeof types]
+export type Payload  = ActionType<typeof actions>
+export type Type     = ActionType<typeof actions> extends Action<infer T> ? T : never
 
 export default reducer
 export { reducer }

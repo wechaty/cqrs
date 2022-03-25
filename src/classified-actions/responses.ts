@@ -1,6 +1,10 @@
 import { classifyMap }  from '../classify/classify-map.js'
-import * as responses   from '../duck/actions/responses.js'
+import * as commands    from '../duck/actions/commands.js'
+import * as queries     from '../duck/actions/queries.js'
 
+/**
+ * Selective export for `Response` only
+ */
 export const {
   DingCommandResponse,
   GetAuthQrCodeQueryResponse,
@@ -12,4 +16,7 @@ export const {
   SendMessageCommandResponse,
   StartCommandResponse,
   StopCommandResponse,
-} = classifyMap(responses)
+} = classifyMap({
+  ...commands,
+  ...queries,
+})

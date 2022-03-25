@@ -24,6 +24,6 @@ export const {
   text,
   url,
   video,
-}                 = PUPPET.payloads.sayable
+} = PUPPET.payloads.sayable
 
 export const type = PUPPET.types.Sayable

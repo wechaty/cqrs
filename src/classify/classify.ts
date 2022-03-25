@@ -67,7 +67,7 @@ export function classify <T extends MetaActionCreator<string>> (creator: T): Cla
  */
 export function classify <
   TType extends string,
-  A extends duck.Action
+  A extends duck.Payload
 > (type: TType): undefined | ClassifiedConstructor<
   A extends ActionBuilder<TType, infer TPayload, infer TMeta>
     ? TPayload extends {}

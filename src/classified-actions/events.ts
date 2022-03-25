@@ -1,6 +1,9 @@
 import { classifyMap }  from '../classify/classify-map.js'
 import * as events      from '../duck/actions/events.js'
 
+/**
+ * Selective export for `Event` only
+ */
 export const {
   DongReceivedEvent,
   ErrorReceivedEvent,
