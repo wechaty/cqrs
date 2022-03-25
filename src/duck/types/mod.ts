@@ -4,4 +4,3 @@ export * from './queries.js'
 export * from './query-responses.js'
 
 export * from './privates.js'
-export * from './private-responses.js'

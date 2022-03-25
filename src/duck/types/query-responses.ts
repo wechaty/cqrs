@@ -17,7 +17,7 @@
  *   limitations under the License.
  *
  */
-import { responseTypeMap } from '../../cqr-event/response.js'
+import { responseTypeMap } from '../../cqr-event/response-type.js'
 import * as queries from './queries.js'
 
 const responses = responseTypeMap(queries)
