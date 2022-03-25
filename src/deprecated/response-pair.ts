@@ -27,14 +27,18 @@ import {
   metaRequest,
   metaResponse,
   MetaResponse,
-}                 from './meta.js'
+}                 from '../cqr-event/meta.js'
 
 import {
   Responseable,
   RESPONSE,
   responseType,
-}                 from './response.js'
+}                 from '../cqr-event/response-type.js'
 
+/**
+ * @deprecated do not pair actionCreator any more
+ *  use `type` with `responseOf()` instead
+ */
 export type ResponsePair<
   CQ  extends (..._: any) => ActionBuilder<any, any, MetaRequest>,
   R   extends (..._: any) => ActionBuilder<any, any, MetaResponse>,
@@ -42,6 +46,10 @@ export type ResponsePair<
   & CQ
   & Responseable<R>
 
+/**
+ * @deprecated do not pair actionCreator any more
+ *  use `type` with `responseOf()` instead
+ */
 export function createWithResponse <
   TType extends string,
 

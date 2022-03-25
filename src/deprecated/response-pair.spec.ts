@@ -30,7 +30,7 @@ import {
   metaRequest,
   metaResponse,
   MetaResponse,
-}                       from './meta.js'
+}                       from '../cqr-event/meta.js'
 import {
   createWithResponse,
   ResponsePair,
@@ -38,7 +38,7 @@ import {
 import {
   responseOf,
   RESPONSE,
-}                       from './response.js'
+}                       from '../cqr-event/response-type.js'
 
 test('action create smoke testing', async t => {
   const QUERY_TYPE    = 'TEST_QUERY'
