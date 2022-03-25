@@ -23,7 +23,7 @@ import {
   ActionBuilder,
 }                             from 'typesafe-actions'
 
-import type { Action } from '../duck/mod.js'
+import type * as duck from '../duck/mod.js'
 
 import { typeToClassName }        from './type-to-class-name.js'
 import type { MetaActionCreator } from '../cqr-event/meta-action-creator.js'
@@ -55,6 +55,10 @@ export type ClassifiedConstructor<
 >
 
 /**
+ * 0. Nil check
+ */
+export function classify (_?: undefined): undefined
+/**
  * 1. Get the class from the actionCreator
  */
 export function classify <T extends MetaActionCreator<string>> (creator: T): ClassifiedConstructor<T>
@@ -63,7 +67,7 @@ export function classify <T extends MetaActionCreator<string>> (creator: T): Cla
  */
 export function classify <
   TType extends string,
-  A extends Action
+  A extends duck.Action
 > (type: TType): undefined | ClassifiedConstructor<
   A extends ActionBuilder<TType, infer TPayload, infer TMeta>
     ? TPayload extends {}
@@ -84,7 +88,9 @@ export function classify <
  */
 export function classify <
   T extends string,
-> (action: T | MetaActionCreator<T>) {
+> (action?: T | MetaActionCreator<T>) {
+
+  if (!action) return undefined
 
   /**
    * 1. Deal with string type

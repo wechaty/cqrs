@@ -17,28 +17,18 @@
  *   limitations under the License.
  *
  */
-import {
-  merge,
-  EMPTY,
-}                     from 'rxjs'
-import type {
-  ActionBuilder,
-}                     from 'typesafe-actions'
+import { merge, EMPTY }       from 'rxjs'
+import type { ActionBuilder } from 'typesafe-actions'
 
-import type {
-  MetaRequest,
-  MetaResponse,
-}                     from '../cqr-event/meta.js'
-
-import type { Bus }   from '../bus.js'
+import { getResponseClass } from '../cqr-event/get-object-creator.js'
+import type { MetaRequest } from '../cqr-event/meta.js'
+import type * as duck       from '../duck/mod.js'
+import type { Bus }         from '../bus.js'
 
 import { TIMEOUT_MS } from './constants.js'
 import { recv }       from './recv.js'
 import { send$ }      from './send$.js'
-import { responseType } from '../cqr-event/response.js'
-import {
-  classify,
-}                         from '../classify/classify.js'
+import type { MetaActionCreator } from '../cqr-event/meta-action-creator.js'
 
 interface ExecuteOptions {
   timeoutMilliseconds: number,
@@ -47,30 +37,19 @@ interface ExecuteOptions {
 export const execute$ = (
   bus$    : Bus,
   options : ExecuteOptions = { timeoutMilliseconds: TIMEOUT_MS },
-) =>
-<
-  CQArgs extends any[],
-  CQType extends string,
-  CQPayload extends {},
+) => <
+  TType extends duck.Type,
+  TPayload extends {},
+  TMeta extends MetaRequest,
+> (action: ReturnType<MetaActionCreator<TType, TPayload, TMeta>>) => {
 
-  RArgs extends any[],
-  RType extends string,
-  RPayload extends {},
-
-  CQ  extends (..._: CQArgs)  => ActionBuilder <CQType,  CQPayload,  MetaRequest>,
-  R   extends (..._: RArgs)   => ActionBuilder <RType,   RPayload,   MetaResponse>,
-  // (actionPair: ResponsePair<CQ, R>) =>
-> (
-    action: ReturnType<CQ>,
-  ): Observable<CQType extends  => {
-
-  // const rType = responseType(action.type)
-  // console.info('rType', rType)
-
-  const ResponseClass = classify(responseType(action.type))!
-
+  const ResponseClass = getResponseClass(action.type)
   // console.info('ResponseClass', ResponseClass)
-  const recv$ = ResponseClass
+
+  /**
+   * Force check the `ResponseClass` existance
+   */
+  const recv$ = (ResponseClass as any)
     ? bus$.pipe(
       // tap(e => console.info('tap', e)),
       recv(options.timeoutMilliseconds)(

@@ -24,7 +24,7 @@ export const getResponseCreator = <
   typeof type === 'string'
     ? responseType(type)
     : responseType(getType(type))
-] as TypeActionMap[RT extends duck.Type ? RT : never]
+] as RT extends duck.Type ? TypeActionMap[RT] : never
 
 export const getResponseClass = <T extends duck.Type> (
   type: T | MetaActionCreator<T, any, any>,
