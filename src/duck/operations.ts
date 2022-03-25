@@ -31,7 +31,7 @@ const sendMessage = (dispatch: Dispatch) => (
   sayable        : PUPPET.payloads.Sayable,
 ) => dispatch(actions.sendMessageCommand(puppetId, conversationId, sayable))
 
-const nop = (dispatch: Dispatch) => (puppetId: string) => dispatch(actions.nopCommand(puppetId))
+const nop = (dispatch: Dispatch) => (puppetId: string) => dispatch(actions.nop(puppetId))
 
 export {
   ding,
