@@ -17,26 +17,16 @@
  *   limitations under the License.
  *
  */
+import { createAction } from 'typesafe-actions'
+
+import { metaRequest } from '../../cqr-event/meta.js'
+
 import * as types from '../types/mod.js'
-
-import type {
-  MetaResponse,
-}                     from '../../cqr-event/meta.js'
-
-import {
-  createWithResponse,
-}                     from '../../cqr-event/response-pair.js'
 
 /**
  *
  * Private used internally inside this NPM module only
  *
  */
-const payloadNopCommand = (_puppetId: string)   => ({})
-const payloadNopMessage = (_res: MetaResponse)  => ({})
-
-export const nopCommand = createWithResponse(
-  types.NOP_COMMAND,
-  payloadNopCommand,
-  payloadNopMessage,
-)
+const payloadNop = (_puppetId: string) => ({})
+export const nop = createAction(types.NOP, payloadNop, metaRequest)()
