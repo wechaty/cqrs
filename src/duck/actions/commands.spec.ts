@@ -21,7 +21,6 @@
 import { test } from 'tstest'
 
 import * as sayables  from '../../mods/sayables.js'
-import { responseOf } from '../../cqr-event/response.js'
 
 import * as commands  from './commands.js'
 
@@ -37,7 +36,7 @@ test('commands smoke testing', async t => {
   t.equal(c.meta.puppetId, PUPPET_ID, 'should set puppetId to meta')
   t.same(c.payload.sayable, SAYABLE, 'should set sayable to payload')
 
-  const messageSentResponse = responseOf(commands.sendMessageCommand)
+  const messageSentResponse = commands.sendMessageCommandResponse
   const e = messageSentResponse({
     id: ID,
     messageId: MESSAGE_ID,

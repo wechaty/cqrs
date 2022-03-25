@@ -18,73 +18,57 @@
  *
  */
 import type * as PUPPET   from 'wechaty-puppet'
+import { createAction }   from 'typesafe-actions'
 
-import * as types from '../types/mod.js'
-
-import type {
+import {
+  metaRequest,
+  metaResponse,
   MetaResponse,
 }                     from '../../cqr-event/meta.js'
 
-import {
-  createWithResponse,
-}                     from '../../cqr-event/response-pair.js'
-
-const payloadSendMessageCommand = (_puppetId: string, conversationId: string, sayable: PUPPET.payloads.Sayable) => ({ conversationId, sayable })
-const payloadMessageSentMessage = (res: MetaResponse & { messageId?: string })                                  => ({ messageId: res.messageId })
+import * as types from '../types/mod.js'
 
 /**
  * puppet.messageSend()
  */
-export const sendMessageCommand = createWithResponse(
-  types.SEND_MESSAGE_COMMAND,
-  payloadSendMessageCommand,
-  payloadMessageSentMessage,
-)
+const payloadSendMessageCommand         = (_puppetId: string, conversationId: string, sayable: PUPPET.payloads.Sayable) => ({ conversationId, sayable })
+const payloadSendMessageCommandResponse = (res: MetaResponse & { messageId?: string })                                  => ({ messageId: res.messageId })
 
-const payloadDingCommand    = (_puppetId: string, data?: string)  => ({ data })
-const payloadDingedMessage  = (_res: MetaResponse)                => ({})
+export const sendMessageCommand         = createAction(types.SEND_MESSAGE_COMMAND,          payloadSendMessageCommand,          metaRequest)()
+export const sendMessageCommandResponse = createAction(types.SEND_MESSAGE_COMMAND_RESPONSE, payloadSendMessageCommandResponse,  metaResponse)()
 
 /**
  * puppet.ding()
  */
-export const dingCommand = createWithResponse(
-  types.DING_COMMAND,
-  payloadDingCommand,
-  payloadDingedMessage,
-)
+const payloadDingCommand          = (_puppetId: string, data?: string)  => ({ data })
+const payloadDingCommandResponse  = (_res: MetaResponse)                => ({})
 
-const payloadResetCommand = (_puppetId: string, data?: string)  => ({ data })
-const payloadResetMessage = (_res: MetaResponse)                => ({})
+export const dingCommand          = createAction(types.DING_COMMAND,          payloadDingCommand,         metaRequest)()
+export const dingCommandResponse  = createAction(types.DING_COMMAND_RESPONSE, payloadDingCommandResponse, metaResponse)()
 
 /**
  * puppet.reset()
  */
-export const resetCommand = createWithResponse(
-  types.RESET_COMMAND,
-  payloadResetCommand,
-  payloadResetMessage,
-)
+const payloadResetCommand         = (_puppetId: string, data?: string)  => ({ data })
+const payloadResetCommandResponse = (_res: MetaResponse)                => ({})
 
-const payloadStartCommand    = (_puppetId: string)  => ({})
-const payloadStartedMessage  = (_res: MetaResponse) => ({})
+export const resetCommand         = createAction(types.RESET_COMMAND,           payloadResetCommand,          metaRequest)()
+export const resetCommandResponse = createAction(types.RESET_COMMAND_RESPONSE,  payloadResetCommandResponse,  metaResponse)()
 
 /**
  * puppet.start()
  */
-export const startCommand = createWithResponse(
-  types.START_COMMAND,
-  payloadStartCommand,
-  payloadStartedMessage,
-)
+const payloadStartCommand         = (_puppetId: string)  => ({})
+const payloadStartCommandResponse = (_res: MetaResponse) => ({})
 
-const payloadStopCommand    = (_puppetId: string)   => ({})
-const payloadStoppedMessage = (_res: MetaResponse)  => ({})
+export const startCommand         = createAction(types.START_COMMAND,           payloadStartCommand,          metaRequest)()
+export const startCommandResponse = createAction(types.START_COMMAND_RESPONSE,  payloadStartCommandResponse,  metaResponse)()
 
 /**
  * puppet.stop()
  */
-export const stopCommand = createWithResponse(
-  types.STOP_COMMAND,
-  payloadStopCommand,
-  payloadStoppedMessage,
-)
+const payloadStopCommand          = (_puppetId: string)   => ({})
+const payloadStopCommandResponse  = (_res: MetaResponse)  => ({})
+
+export const stopCommand          = createAction(types.STOP_COMMAND,          payloadStopCommand,         metaRequest)()
+export const stopCommandResponse  = createAction(types.STOP_COMMAND_RESPONSE, payloadStopCommandResponse, metaResponse)()
