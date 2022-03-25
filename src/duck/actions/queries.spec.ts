@@ -20,8 +20,6 @@
  */
 import { test } from 'tstest'
 
-import { responseOf } from '../../cqr-event/response-pair.js'
-
 import * as queries from './queries.js'
 
 test('queries smoke testing', async t => {
@@ -33,9 +31,9 @@ test('queries smoke testing', async t => {
   t.ok(q.meta.id, 'should set id to meta')
   t.equal(q.meta.puppetId, PUPPET_ID, 'should set puppetId to meta')
 
-  const currentUserIdGotResponse = responseOf(queries.getCurrentUserIdQuery)
+  const getCurrentUserIdQueryResponse = queries.getCurrentUserIdQueryResponse
 
-  const e = currentUserIdGotResponse({
+  const e = getCurrentUserIdQueryResponse({
     contactId: CONTACT_ID,
     id: ID,
     puppetId: PUPPET_ID,
