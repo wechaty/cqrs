@@ -38,6 +38,14 @@ import type { ActionBuilder } from 'typesafe-actions'
 //   Helper<TType, TPayload, TMeta>['Return']
 // >
 
+/**
+ * Huan(202203): Important to remember that creator is higher-order to builder (think about the creator is an architecture)
+ *  - Creator is to create a Builder
+ *  - Builder is created by Creator
+ *  - Builder is to build an action payload
+ *
+ * ActionCreator<...> = (...args: any[]) => ActionBuilder<...>
+ */
 export type MetaActionCreator <
   TType    extends string = string,
   TPayload extends {}     = {},

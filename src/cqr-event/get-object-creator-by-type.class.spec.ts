@@ -23,7 +23,6 @@ import {
   AssertEqual,
 }                   from 'tstest'
 import * as PUPPET  from 'wechaty-puppet'
-import { classify } from '../classify/classify.js'
 
 import * as duck from '../duck/mod.js'
 
@@ -33,12 +32,6 @@ test('getClassByType() payload', async t => {
   const PUPPET_ID = 'puppet-id'
   const SAYABLE = PUPPET.payloads.sayable.text('text')
   const CONVERSATION_ID = 'conversation-id'
-
-  /**
-   * setup cache
-   */
-  const warmUp = classify(duck.actions.sendMessageCommand)
-  void warmUp
 
   const SendMessageCommand = getClassByType(duck.types.SEND_MESSAGE_COMMAND)
 

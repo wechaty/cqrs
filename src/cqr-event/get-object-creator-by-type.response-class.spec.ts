@@ -22,29 +22,25 @@ import {
   test,
   AssertEqual,
 }                   from 'tstest'
-import * as PUPPET  from 'wechaty-puppet'
-import { classify } from '../classify/classify.js'
 
-import * as duck from '../duck/mod.js'
+import * as duck    from '../duck/mod.js'
 
 import { getResponseClassByType } from './get-object-creator-by-type.js'
 
 test('getResponseClassByType() object payload', async t => {
   const PUPPET_ID = 'puppet-id'
-  const SAYABLE = PUPPET.payloads.sayable.text('text')
-  const CONVERSATION_ID = 'conversation-id'
+  const ID = 'id'
 
-  /**
-   * setup cache
-   */
-  const warmUp = classify(duck.actions.sendMessageCommand)
-  void warmUp
+  const GetIsLoggedInQueryResponse = getResponseClassByType(duck.types.GET_IS_LOGGED_IN_QUERY)
 
-  const SendMessageCommandResponse = getResponseClassByType(duck.types.SEND_MESSAGE_COMMAND)
-
-  const object    = new SendMessageCommandResponse(PUPPET_ID, CONVERSATION_ID, SAYABLE)
-  const EXPECTED  = duck.actions.sendMessageCommandResponse({
+  const object = new GetIsLoggedInQueryResponse({
+    id: ID,
+    isLoggedIn: true,
+    puppetId: PUPPET_ID,
+  })
+  const EXPECTED  = duck.actions.getIsLoggedInQueryResponse({
     ...object.meta,
+    isLoggedIn: object.payload.isLoggedIn,
   })
 
   t.same(
@@ -55,18 +51,18 @@ test('getResponseClassByType() object payload', async t => {
 })
 
 test('getResponseClassByType() typing', async t => {
-  const SendMessageCommand = getResponseClassByType(duck.types.SEND_MESSAGE_COMMAND)
+  const GetIsLoggedInQuery = getResponseClassByType(duck.types.GET_IS_LOGGED_IN_QUERY)
 
-  type ResultParameter    = ConstructorParameters<typeof SendMessageCommand>
-  type ExpectedParameter  = Parameters<typeof duck.actions.sendMessageCommand>
+  type ResultParameter    = ConstructorParameters<typeof GetIsLoggedInQuery>
+  type ExpectedParameter  = Parameters<typeof duck.actions.getIsLoggedInQueryResponse>
   const testParameter: AssertEqual<
     ResultParameter,
     ExpectedParameter
   > = true
   t.ok(testParameter, 'should be same typing for parameters')
 
-  type ResultObject = InstanceType<typeof SendMessageCommand>
-  type ExpectedObject = ReturnType<typeof duck.actions.sendMessageCommand>
+  type ResultObject = InstanceType<typeof GetIsLoggedInQuery>
+  type ExpectedObject = ReturnType<typeof duck.actions.getIsLoggedInQueryResponse>
   const testObject: AssertEqual<
     ResultObject,
     ExpectedObject
