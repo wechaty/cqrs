@@ -23,4 +23,4 @@
  * Private used internally inside this NPM module only
  *
  */
-export const NOP_COMMAND = 'cqrs-wechaty/NOP_COMMAND'
+export const NOP = 'cqrs-wechaty/NOP'
