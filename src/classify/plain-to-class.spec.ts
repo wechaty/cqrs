@@ -25,9 +25,9 @@ test('plainToClass smoke testing', async t => {
   )
 })
 
-test('plainToClass ignore the unknown object and return the original one', async t => {
+test('plainToClass return `undefined` for the unknown object', async t => {
   const plainObject     = { type: 'unknown' } as any
   const returnedObject  = plainToClass(plainObject)
 
-  t.same(plainObject, returnedObject, 'should be return original object if it can not be recongnized')
+  t.equal(returnedObject, undefined, 'should be return `undefined` if it can not be recongnized')
 })

@@ -18,11 +18,15 @@ export const plainToClass = (object: ActionBuilder<string, any, any>) => {
   if (Object.getPrototypeOf(object) !== Object.prototype) return object
 
   /**
-   * 2. plain object
+   * 2. plain object (with supported type)
    */
   const Klass = classify(object.type)
-  if (!Klass) { // not found
-    return object
+  if (Klass) { // not found
+    return classTransformer(Klass, object)
   }
-  return classTransformer(Klass, object)
+
+  /**
+   * type is not classifiable
+   */
+  return undefined
 }
