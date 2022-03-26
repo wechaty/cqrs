@@ -24,10 +24,10 @@ import {
 }                             from 'rxjs'
 import type { ActionBuilder } from 'typesafe-actions'
 
-import { getObjectResponseClass }   from '../cqr-event/get-object-response-class.js'
-import type { MetaRequest }         from '../cqr-event/meta.js'
-import type { CQType }              from '../classified/mod.js'
-import type { Bus }                 from '../bus.js'
+import { dtoResponseClass }   from '../cqr-event/dto-response-class.js'
+import type { MetaRequest }   from '../cqr-event/meta.js'
+import type { CQType }        from '../classified/mod.js'
+import type { Bus }           from '../bus.js'
 
 import { TIMEOUT_MS }   from './constants.js'
 import { recv }         from './recv.js'
@@ -44,7 +44,7 @@ export const execute$ = (
   T extends ActionBuilder<CQType, {}, MetaRequest>,
 > (action: T) => {
 
-  const ResponseClass = getObjectResponseClass(action.type)
+  const ResponseClass = dtoResponseClass(action.type)
   // console.info('ResponseClass', ResponseClass)
 
   /**

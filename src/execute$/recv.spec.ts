@@ -32,12 +32,12 @@ import {
 }                         from 'rxjs/operators'
 import { isActionOf }     from 'typesafe-actions'
 
-import * as CqrsDuck                from '../duck/mod.js'
-import { getObjectResponseClass }   from '../cqr-event/get-object-response-class.js'
-import { getObjectResponseCreator } from '../cqr-event/get-object-response-creator.js'
-import type { ResponseOf }          from '../cqr-event/response-of.js'
-import * as classified              from '../classified/mod.js'
-import type { BusObs }              from '../bus.js'
+import * as CqrsDuck            from '../duck/mod.js'
+import { dtoResponseClass }     from '../cqr-event/dto-response-class.js'
+import { dtoResponseFactory }   from '../cqr-event/dto-response-factory.js'
+import type { ResponseOf }      from '../cqr-event/response-of.js'
+import * as classified          from '../classified/mod.js'
+import type { BusObs }          from '../bus.js'
 
 import { recv }     from './recv.js'
 
@@ -46,7 +46,7 @@ test('recv() in time', testSchedulerRunner(m => {
   const CONTACT_ID  = 'contact-id'
 
   const query     = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
-  const response  = getObjectResponseCreator(CqrsDuck.actions.getCurrentUserIdQuery)({
+  const response  = dtoResponseFactory(CqrsDuck.actions.getCurrentUserIdQuery)({
     ...query.meta,
     contactId : CONTACT_ID,
   })
@@ -62,7 +62,7 @@ test('recv() in time', testSchedulerRunner(m => {
 
   const bus$ = m.hot(source, values)
 
-  const Response = getObjectResponseClass(CqrsDuck.actions.getCurrentUserIdQuery)
+  const Response = dtoResponseClass(CqrsDuck.actions.getCurrentUserIdQuery)
 
   const result$ = bus$.pipe(
     recv(TIMEOUT_MS)(
@@ -78,7 +78,7 @@ test('recv() timeout', testSchedulerRunner(m => {
   const PUPPET_ID = 'puppet-id'
   const GERROR    = 'Timeout has occurred'
 
-  const Response = getObjectResponseClass(CqrsDuck.actions.getCurrentUserIdQuery)
+  const Response = dtoResponseClass(CqrsDuck.actions.getCurrentUserIdQuery)
 
   const query     = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
   const response  = new Response({
