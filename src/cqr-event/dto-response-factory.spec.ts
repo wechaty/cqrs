@@ -25,19 +25,19 @@ import {
 
 import * as duck from '../duck/mod.js'
 
-import { getObjectResponseCreator } from './get-object-response-creator.js'
+import { dtoResponseFactory } from './dto-response-factory.js'
 
-test('getObjectResponseCreator() with type & action', async t => {
-  const byType    = getObjectResponseCreator(duck.types.SEND_MESSAGE_COMMAND)
-  const byAction  = getObjectResponseCreator(duck.actions.sendMessageCommand)
+test('dtoResponseFactory() with type & action', async t => {
+  const byType    = dtoResponseFactory(duck.types.SEND_MESSAGE_COMMAND)
+  const byAction  = dtoResponseFactory(duck.actions.sendMessageCommand)
   t.equal(byType, byAction, 'should be equal')
 })
 
-test('getObjectResponseCreator() payload', async t => {
+test('dtoResponseFactory() payload', async t => {
   const ID        = 'id'
   const PUPPET_ID = 'puppet-id'
 
-  const responseCreator = getObjectResponseCreator(duck.types.SEND_MESSAGE_COMMAND)
+  const responseCreator = dtoResponseFactory(duck.types.SEND_MESSAGE_COMMAND)
 
   const object = responseCreator({
     id: ID,
@@ -48,8 +48,8 @@ test('getObjectResponseCreator() payload', async t => {
   t.same(object, EXPECTED, 'should set same object')
 })
 
-test('getObjectResponseCreator() typing', async t => {
-  const responseCreator = getObjectResponseCreator(duck.types.SEND_MESSAGE_COMMAND)
+test('dtoResponseFactory() typing', async t => {
+  const responseCreator = dtoResponseFactory(duck.types.SEND_MESSAGE_COMMAND)
 
   type RESULT   = typeof responseCreator
   type EXPECTED = typeof duck.actions.sendMessageCommandResponse
@@ -61,8 +61,8 @@ test('getObjectResponseCreator() typing', async t => {
   t.ok(test, 'should be same typing')
 })
 
-test('getObjectResponseCreator() reference compare', async t => {
-  const responseCreator = getObjectResponseCreator(duck.types.SEND_MESSAGE_COMMAND)
+test('dtoResponseFactory() reference compare', async t => {
+  const responseCreator = dtoResponseFactory(duck.types.SEND_MESSAGE_COMMAND)
 
   t.equal(
     responseCreator,

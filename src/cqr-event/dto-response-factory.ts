@@ -6,21 +6,21 @@ import type { MetaActionCreator }         from './meta-action-creator.js'
 import { ResponseType, responseType }     from './response-type.js'
 import { TypeActionMap, typeActionMap }   from './type-action-map.js'
 
-export function getObjectResponseCreator <
+export function dtoResponseFactory <
   T extends CQType,
   RT extends ResponseType<T>
 > (
   type: T,
 ):  TypeActionMap[RT]
 
-export function getObjectResponseCreator <
+export function dtoResponseFactory <
   T extends CQType,
   RT extends ResponseType<T>
 > (
   creator: MetaActionCreator<T, any, any, any>,
 ): TypeActionMap[RT]
 
-export function getObjectResponseCreator <
+export function dtoResponseFactory <
   T extends CQType,
   RT extends ResponseType<T>
 > (type: T | MetaActionCreator<T, any, any, any>) {

@@ -25,23 +25,23 @@ import {
 
 import * as duck    from '../duck/mod.js'
 
-import { getObjectClass }   from './get-object-class.js'
-import { getObjectResponseClass } from './get-object-response-class.js'
+import { dtoClass }   from './dto-class.js'
+import { dtoResponseClass } from './dto-response-class.js'
 
-test('getObjectResponseClass() by type, creator, and class', async t => {
-  const ByType    = getObjectResponseClass(duck.types.GET_IS_LOGGED_IN_QUERY)
-  const ByCreator = getObjectResponseClass(duck.actions.getIsLoggedInQuery)
-  const byClass   = getObjectResponseClass(getObjectClass(duck.types.GET_IS_LOGGED_IN_QUERY))
+test('dtoResponseClass() by type, creator, and class', async t => {
+  const ByType    = dtoResponseClass(duck.types.GET_IS_LOGGED_IN_QUERY)
+  const ByCreator = dtoResponseClass(duck.actions.getIsLoggedInQuery)
+  const byClass   = dtoResponseClass(dtoClass(duck.types.GET_IS_LOGGED_IN_QUERY))
 
   t.equal(ByType, ByCreator, 'should be equal by type & creator')
   t.equal(ByType, byClass, 'should be equal by type & class')
 })
 
-test('getObjectResponseClass() object payload', async t => {
+test('dtoResponseClass() object payload', async t => {
   const PUPPET_ID = 'puppet-id'
   const ID = 'id'
 
-  const GetIsLoggedInQueryResponse = getObjectResponseClass(duck.types.GET_IS_LOGGED_IN_QUERY)
+  const GetIsLoggedInQueryResponse = dtoResponseClass(duck.types.GET_IS_LOGGED_IN_QUERY)
 
   const object = new GetIsLoggedInQueryResponse({
     id: ID,
@@ -60,8 +60,8 @@ test('getObjectResponseClass() object payload', async t => {
   )
 })
 
-test('getObjectResponseClass() typing', async t => {
-  const GetIsLoggedInQuery = getObjectResponseClass(duck.types.GET_IS_LOGGED_IN_QUERY)
+test('dtoResponseClass() typing', async t => {
+  const GetIsLoggedInQuery = dtoResponseClass(duck.types.GET_IS_LOGGED_IN_QUERY)
 
   type ResultParameter    = ConstructorParameters<typeof GetIsLoggedInQuery>
   type ExpectedParameter  = Parameters<typeof duck.actions.getIsLoggedInQueryResponse>

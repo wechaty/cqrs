@@ -25,7 +25,6 @@ import type {
   ActionType,
 }                   from 'typesafe-actions'
 
-// import type * as CqrsDuck  from './duck/mod.js'
 import type * as classified from './classified/mod.js'
 
 // type BusSubject<T> = Subject<
