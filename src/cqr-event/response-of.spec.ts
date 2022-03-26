@@ -59,9 +59,9 @@ test('responseOf() args with type & creator', async t => {
   t.equal(byType, byCreator, 'should be equal by type & creator')
 })
 
-test('responseOf() args with type & creator typings', async t => {
-  const byType    = responseOf(duck.types.SEND_MESSAGE_COMMAND)
-  const byCreator = responseOf(duck.actions.sendMessageCommand)
+test('responseOf() typing: args with type & creator', async t => {
+  const byType    = responseOf(duck.types.GET_MESSAGE_PAYLOAD_QUERY)
+  const byCreator = responseOf(duck.actions.getMessagePayloadQuery)
 
   const typingTest: AssertEqual<typeof byType, typeof byCreator> = true
   t.ok(typingTest, 'should be equal typing by type & creator')
