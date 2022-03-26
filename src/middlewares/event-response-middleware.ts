@@ -31,13 +31,12 @@ export const eventResponseMiddleware: (erBus$: Bus) => Middleware = erBus$ =>
     next =>
       action => {
         log.verbose('WechatyCqrs', 'eventResponseMiddleware() erBus$.next(%s)', JSON.stringify(action))
+
         /**
          * Convert the object from a Plain Object to a Class Object (and compatible with the Plain Object)
          */
-        const classObject = plainToClass(action)
-        /**
-         * Huan(202203): is there any way to remove `as any` here?
-         */
-        erBus$.next(classObject as any)
+        const classOrPlainObject = plainToClass(action) || action
+
+        erBus$.next(classOrPlainObject)
         next(action)
       }
