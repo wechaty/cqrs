@@ -1,31 +1,5 @@
-import { getType } from 'typesafe-actions'
-import { classify }   from '../classify/classify.js'
-import type { MetaActionCreator } from './meta-action-creator.js'
-import type * as duck from '../duck/mod.js'
+import type { Type }  from '../classified/mod.js'
 
-import {
-  ResponseType,
-  responseType,
-}                     from './response-type.js'
+import { typeActionMap }  from './type-action-map.js'
 
-import { TypeActionMap, typeActionMap } from './type-action-map.js'
-
-export const getCreator = <T extends duck.Type> (type: T) => typeActionMap[type]
-export const getClass   = <T extends duck.Type> (
-  type: T | MetaActionCreator<T, any, any>,
-) => typeof type === 'string'
-    ? classify(typeActionMap[type])
-    : classify(typeActionMap[getType(type)])
-
-export const getResponseCreator = <
-  T extends duck.Type,
-  RT extends ResponseType<T>
-> (type: T | MetaActionCreator<T, any, any>) => (typeActionMap as any)[
-  typeof type === 'string'
-    ? responseType(type)
-    : responseType(getType(type))
-] as RT extends duck.Type ? TypeActionMap[RT] : never
-
-export const getResponseClass = <T extends duck.Type> (
-  type: T | MetaActionCreator<T, any, any>,
-) => classify(getResponseCreator(type))
+export const getObjectCreator = <T extends Type> (type: T) => typeActionMap[type]

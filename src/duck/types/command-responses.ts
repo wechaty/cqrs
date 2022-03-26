@@ -18,11 +18,19 @@
  *
  */
 import { responseTypeMap } from '../../cqr-event/response-type.js'
+
 import * as commands from './commands.js'
 
 const responses = responseTypeMap(commands)
 
 export const {
+  /**
+   * @internal
+   */
+  NOP_COMMAND_RESPONSE,
+  /**
+   * @public
+   */
   DING_COMMAND_RESPONSE,
   RESET_COMMAND_RESPONSE,
   SEND_MESSAGE_COMMAND_RESPONSE,

@@ -26,14 +26,14 @@ import * as PUPPET  from 'wechaty-puppet'
 
 import * as duck from '../duck/mod.js'
 
-import { getCreator } from './get-object-creator.js'
+import { getObjectCreator } from './get-object-creator.js'
 
-test('getCreatorByType() payload', async t => {
+test('getObjectCreator() payload', async t => {
   const PUPPET_ID = 'puppet-id'
   const SAYABLE = PUPPET.payloads.sayable.text('text')
   const CONVERSATION_ID = 'conversation-id'
 
-  const creator = getCreator(duck.types.SEND_MESSAGE_COMMAND)
+  const creator = getObjectCreator(duck.types.SEND_MESSAGE_COMMAND)
 
   const object = creator(PUPPET_ID, CONVERSATION_ID, SAYABLE)
   const EXPECTED = duck.actions.sendMessageCommand(PUPPET_ID, CONVERSATION_ID, SAYABLE)
@@ -44,8 +44,8 @@ test('getCreatorByType() payload', async t => {
   t.same(object, EXPECTED, 'should set same action')
 })
 
-test('getCreatorByType() typing', async t => {
-  const creator = getCreator(duck.types.SEND_MESSAGE_COMMAND)
+test('getObjectCreator() typing', async t => {
+  const creator = getObjectCreator(duck.types.SEND_MESSAGE_COMMAND)
 
   const test: AssertEqual<
     typeof creator,
@@ -54,9 +54,9 @@ test('getCreatorByType() typing', async t => {
   t.ok(test, 'should be same typing')
 })
 
-test('getCreatorByType() reference compare', async t => {
+test('getObjectCreator() reference compare', async t => {
   t.equal(
-    getCreator(duck.types.SEND_MESSAGE_COMMAND),
+    getObjectCreator(duck.types.SEND_MESSAGE_COMMAND),
     duck.actions.sendMessageCommand,
     'should be the same function reference',
   )

@@ -18,7 +18,7 @@
  *
  */
 import { getType } from 'typesafe-actions'
-import type { Type } from '../duck/mod.js'
+import type { CQType, Type } from '../classified/mod.js'
 
 import type { MetaActionCreator }         from './meta-action-creator.js'
 import { responseType, ResponseType }     from './response-type.js'
@@ -28,15 +28,15 @@ import { TypeActionMap, typeActionMap }   from './type-action-map.js'
  * Support both `type` and `MetaActionCreator<type>` as parameter
  */
 export type ResponseOf<
-  T extends string | MetaActionCreator<Type, any, any>,
-> = T extends string
+  T extends CQType | MetaActionCreator<CQType, any, any>,
+> = T extends CQType
   ? ResponseType<T> extends Type ? TypeActionMap[ResponseType<T>] : never
   : T extends MetaActionCreator<infer TType, any, any>
     ? ResponseType<TType> extends Type ? TypeActionMap[ResponseType<TType>] : never
     : never
 
 export const responseOf = <
-  T extends string | MetaActionCreator<Type, any, any>,
+  T extends CQType | MetaActionCreator<CQType, any, any>,
 > (type: T) => typeof type === 'string'
-    ? (typeActionMap as any)[responseType(type)] as ResponseOf<T>
+    ? (typeActionMap as any)[responseType(type)]          as ResponseOf<T>
     : (typeActionMap as any)[responseType(getType(type))] as ResponseOf<T>

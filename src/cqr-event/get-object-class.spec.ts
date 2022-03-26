@@ -26,20 +26,20 @@ import * as PUPPET  from 'wechaty-puppet'
 
 import * as duck from '../duck/mod.js'
 
-import { getClass } from './get-object-creator.js'
+import { getObjectClass } from './get-object-class.js'
 
-test('getClass() by type & action', async t => {
-  const ByType    = getClass(duck.types.SEND_MESSAGE_COMMAND)
-  const ByAction  = getClass(duck.actions.sendMessageCommand)
+test('getObjectClass() by type & action', async t => {
+  const ByType    = getObjectClass(duck.types.SEND_MESSAGE_COMMAND)
+  const ByAction  = getObjectClass(duck.actions.sendMessageCommand)
   t.equal(ByType, ByAction, 'should be equal')
 })
 
-test('getClass() payload', async t => {
+test('getObjectClass() payload', async t => {
   const PUPPET_ID = 'puppet-id'
   const SAYABLE = PUPPET.payloads.sayable.text('text')
   const CONVERSATION_ID = 'conversation-id'
 
-  const SendMessageCommand = getClass(duck.types.SEND_MESSAGE_COMMAND)
+  const SendMessageCommand = getObjectClass(duck.types.SEND_MESSAGE_COMMAND)
 
   const object = new SendMessageCommand(PUPPET_ID, CONVERSATION_ID, SAYABLE)
   const EXPECTED = duck.actions.sendMessageCommand(PUPPET_ID, CONVERSATION_ID, SAYABLE)
@@ -54,8 +54,8 @@ test('getClass() payload', async t => {
   )
 })
 
-test('getClass() typing', async t => {
-  const SendMessageCommand = getClass(duck.types.SEND_MESSAGE_COMMAND)
+test('getObjectClass() typing', async t => {
+  const SendMessageCommand = getObjectClass(duck.types.SEND_MESSAGE_COMMAND)
 
   const testParameter: AssertEqual<
     ConstructorParameters<typeof SendMessageCommand>,

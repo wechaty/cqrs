@@ -1,1 +1,1 @@
-export * from '../classified-actions/commands.js'
+export * from '../classified/actions/commands.js'

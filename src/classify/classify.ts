@@ -23,10 +23,10 @@ import {
   ActionBuilder,
 }                             from 'typesafe-actions'
 
-import type * as duck from '../duck/mod.js'
+import type * as duck             from '../duck/mod.js'
+import type { MetaActionCreator } from '../cqr-event/meta-action-creator.js'
 
 import { typeToClassName }        from './type-to-class-name.js'
-import type { MetaActionCreator } from '../cqr-event/meta-action-creator.js'
 
 /**
  * Store the actionCreator & class for cache & singleton
@@ -55,10 +55,6 @@ export type ClassifiedConstructor<
 >
 
 /**
- * 0. Nil check
- */
-export function classify (_?: undefined): undefined
-/**
  * 1. Get the class from the actionCreator
  */
 export function classify <T extends MetaActionCreator<string>> (creator: T): ClassifiedConstructor<T>
@@ -67,7 +63,7 @@ export function classify <T extends MetaActionCreator<string>> (creator: T): Cla
  */
 export function classify <
   TType extends string,
-  A extends duck.Payload
+  A extends duck.Event
 > (type: TType): undefined | ClassifiedConstructor<
   A extends ActionBuilder<TType, infer TPayload, infer TMeta>
     ? TPayload extends {}
@@ -90,7 +86,7 @@ export function classify <
   T extends string,
 > (action?: T | MetaActionCreator<T>) {
 
-  if (!action) return undefined
+  if (!action) throw new Error('missing action parameter')
 
   /**
    * 1. Deal with string type
@@ -99,7 +95,7 @@ export function classify <
     if (singletonCache.has(action)) {
       return singletonCache.get(action) as ClassifiedConstructor<MetaActionCreator<T>>
     }
-    return undefined
+    throw new Error('missing action parameter')
   }
 
   /**

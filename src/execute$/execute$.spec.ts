@@ -23,42 +23,42 @@ import {
   test,
   testSchedulerRunner,
   AssertEqual,
-}                         from 'tstest'
-import { GError }         from 'gerror'
+}                               from 'tstest'
 import {
   Observable,
   of,
   Subject,
   tap,
-}                         from 'rxjs'
-import {
-  map,
-  mergeMap,
-}                         from 'rxjs/operators'
+}                               from 'rxjs'
+import type { ActionBuilder }   from 'typesafe-actions'
+import { GError }               from 'gerror'
+import { map, mergeMap }        from 'rxjs/operators'
 
-import {
-  ResponseOf,
-  responseOf,
-}                     from '../cqr-event/response-pair.js'
-import * as CqrsDuck  from '../duck/mod.js'
+import * as duck              from '../duck/mod.js'
+import * as classified        from '../classified/mod.js'
+import type { MetaResponse }  from '../cqr-event/meta.js'
+import type { ResponseOf }    from '../cqr-event/response-of.js'
 
 import { TIMEOUT_MS } from './constants.js'
 import { execute$ }   from './execute$.js'
-import { classify } from '../classify/classify.js'
-import type { ActionBuilder } from 'typesafe-actions'
-import type { MetaResponse } from '../cqr-event/meta.js'
 
-test('execute$() message creator / in time', testSchedulerRunner(m => {
+test('execute$() typing', async t => {
+  const dummyBus$ = new Subject<any>()
+  const execute1 = execute$(dummyBus$)
+  const exe2  = execute1(new classified.actions.GetCurrentUserIdQuery(''))
+
+  type RESULT = typeof execute
+  type EXPECTED = InstanceType<typeof classified.actions.GetCurrentUserIdQueryResponse>
+  const typingTest: AssertEqual<RESULT, EXPECTED> = true
+  t.ok(typingTest, 'should match typing')
+})
+
+test('execute$() query & response in time', testSchedulerRunner(m => {
   const PUPPET_ID   = 'puppet-id'
   const CONTACT_ID  = 'contact-id'
 
-  /**
-   * Save to cache/register for future usage
-   */
-  const Response = classify(responseOf(CqrsDuck.actions.getCurrentUserIdQuery))
-
-  const query = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
-  const response = new Response({
+  const query = new classified.actions.GetCurrentUserIdQuery(PUPPET_ID)
+  const response = new classified.actions.GetCurrentUserIdQueryResponse({
     ...query.meta,
     contactId : CONTACT_ID,
   })
@@ -72,25 +72,20 @@ test('execute$() message creator / in time', testSchedulerRunner(m => {
   const bus       = '---r'
   const expected  = '---r'
 
-  const mockBus$ = m.hot(bus, values)
-  const result$ = m.hot(source, { q: values.q }).pipe(
+  const mockBus$  = m.hot(bus, values)
+  const result$   = m.hot(source, { q: values.q }).pipe(
     mergeMap(execute$(mockBus$)),
   )
 
   m.expectObservable(result$).toBe(expected, values)
 }))
 
-test('execute$() with message creator / timeout', testSchedulerRunner(m => {
+test('execute$() query & response timeout', testSchedulerRunner(m => {
   const PUPPET_ID = 'puppet-id'
   const GERROR    = 'Timeout has occurred'
 
-  /**
-   * Save to cache/register for future usage
-   */
-  const Response = classify(responseOf(CqrsDuck.actions.getCurrentUserIdQuery))
-
-  const query     = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
-  const response  = new Response({
+  const query     = new classified.actions.GetCurrentUserIdQuery(PUPPET_ID)
+  const response  = new classified.actions.GetCurrentUserIdQueryResponse({
     gerror    : GERROR,
     id        : query.meta.id,
     puppetId  : query.meta.puppetId,
@@ -106,7 +101,7 @@ test('execute$() with message creator / timeout', testSchedulerRunner(m => {
 
   const dummyBus$ = new Subject<any>()
 
-  const normalizeMessage = (response: ReturnType<ResponseOf<typeof CqrsDuck.actions.getCurrentUserIdQuery>>) => ({
+  const normalizeMessage = (response: InstanceType<typeof classified.actions.GetCurrentUserIdQueryResponse>) => ({
     ...response,
     meta: {
       ...response.meta,
@@ -115,7 +110,7 @@ test('execute$() with message creator / timeout', testSchedulerRunner(m => {
   })
 
   const execute = execute$(dummyBus$)
-  type T = ReturnType<typeof execute>
+  type T = typeof execute
 
   const result$ = m.hot(source, { q: values.q }).pipe(
     tap(e => console.info(e)),
@@ -129,7 +124,7 @@ test('execute$() with message creator / timeout', testSchedulerRunner(m => {
 test('execute$() ReturnType typing', async t => {
   const bus$ = new Subject<any>()
 
-  const query = CqrsDuck.actions.getCurrentUserIdQuery('PUPPET_ID')
+  const query = duck.actions.getCurrentUserIdQuery('PUPPET_ID')
 
   const $ = of(query).pipe(
     execute$(bus$),
@@ -137,7 +132,7 @@ test('execute$() ReturnType typing', async t => {
 
   const test: AssertEqual<
     ReturnType<typeof execute>,
-    Observable<ReturnType<ResponseOf<typeof CqrsDuck.actions.getCurrentUserIdQuery>>>
+    Observable<ReturnType<ResponseOf<typeof duck.actions.getCurrentUserIdQuery>>>
   > = true
 
   t.ok(test, 'should get the right return type of message')

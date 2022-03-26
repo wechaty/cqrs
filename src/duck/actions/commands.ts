@@ -29,6 +29,17 @@ import {
 import * as types from '../types/mod.js'
 
 /**
+ *
+ * Private used internally inside this NPM module only
+ *
+ */
+const payloadNopCommand         = (_puppetId: string)   => ({})
+const payloadNopCommandResponse = (_res: MetaResponse)  => ({})
+
+export const nopCommand         = createAction(types.NOP_COMMAND,           payloadNopCommand,          metaRequest)()
+export const nopCommandResponse = createAction(types.NOP_COMMAND_RESPONSE,  payloadNopCommandResponse,  metaResponse)()
+
+/**
  * puppet.messageSend()
  */
 const payloadSendMessageCommand         = (_puppetId: string, conversationId: string, sayable: PUPPET.payloads.Sayable) => ({ conversationId, sayable })

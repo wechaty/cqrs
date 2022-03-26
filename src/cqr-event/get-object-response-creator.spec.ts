@@ -25,21 +25,21 @@ import {
 
 import * as duck from '../duck/mod.js'
 
-import { getResponseCreator } from './get-object-creator.js'
+import { getObjectResponseCreator } from './get-object-response-creator.js'
 
-test('getResponseCreator() with type & action', async t => {
-  const byType    = getResponseCreator(duck.types.SEND_MESSAGE_COMMAND)
-  const byAction  = getResponseCreator(duck.actions.sendMessageCommand)
+test('getObjectResponseCreator() with type & action', async t => {
+  const byType    = getObjectResponseCreator(duck.types.SEND_MESSAGE_COMMAND)
+  const byAction  = getObjectResponseCreator(duck.actions.sendMessageCommand)
   t.equal(byType, byAction, 'should be equal')
 })
 
-test('getResponseCreator() payload', async t => {
-  const ID = 'id'
+test('getObjectResponseCreator() payload', async t => {
+  const ID        = 'id'
   const PUPPET_ID = 'puppet-id'
 
-  const creator = getResponseCreator(duck.types.SEND_MESSAGE_COMMAND)
+  const responseCreator = getObjectResponseCreator(duck.types.SEND_MESSAGE_COMMAND)
 
-  const object = creator({
+  const object = responseCreator({
     id: ID,
     puppetId: PUPPET_ID,
   })
@@ -48,8 +48,8 @@ test('getResponseCreator() payload', async t => {
   t.same(object, EXPECTED, 'should set same object')
 })
 
-test('getResponseCreator() typing', async t => {
-  const responseCreator = getResponseCreator(duck.types.SEND_MESSAGE_COMMAND)
+test('getObjectResponseCreator() typing', async t => {
+  const responseCreator = getObjectResponseCreator(duck.types.SEND_MESSAGE_COMMAND)
 
   type RESULT   = typeof responseCreator
   type EXPECTED = typeof duck.actions.sendMessageCommandResponse
@@ -61,8 +61,8 @@ test('getResponseCreator() typing', async t => {
   t.ok(test, 'should be same typing')
 })
 
-test('getResponseCreator() reference compare', async t => {
-  const responseCreator = getResponseCreator(duck.types.SEND_MESSAGE_COMMAND)
+test('getObjectResponseCreator() reference compare', async t => {
+  const responseCreator = getObjectResponseCreator(duck.types.SEND_MESSAGE_COMMAND)
 
   t.equal(
     responseCreator,

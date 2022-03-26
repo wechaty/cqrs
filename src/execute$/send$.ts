@@ -18,36 +18,30 @@
  *   limitations under the License.
  *
  */
-import type {
-  ActionBuilder,
-}                     from 'typesafe-actions'
-import {
-  defer,
-  EMPTY,
-}                     from 'rxjs'
-import { log }        from 'wechaty-puppet'
+import { defer, EMPTY }   from 'rxjs'
+import type { ActionBuilder } from 'typesafe-actions'
+import { log }            from 'wechaty-puppet'
 
-// import type {
-//   MetaResponse,
-// }                   from '../cqr-event/meta.js'
+import type { Bus } from '../bus.js'
+import type { MetaRequest } from '../cqr-event/meta.js'
+
 import type * as duck from '../duck/mod.js'
-import type {
-  Bus,
-}                   from '../bus.js'
-// import type { MetaActionCreator } from '../classify/meta-action-creator.js'
 
 /**
  * Send the `commandQuery` to `bus$`
  *
  * @returns `EMPTY` observable
  */
-export const send$ = (bus$: Bus) => (commandQuery: duck.Payload) =>
-  defer(() => {
-    log.verbose('WechatyCqrs', 'mapCommandQueryToMessage() send$() defer() bus$.next(%s)', JSON.stringify(commandQuery))
+export const send$ = (bus$: Bus) => <
+  TType extends duck.Type,
+  T extends ActionBuilder<TType, {}, MetaRequest>
+> (commandQuery: T) => defer(() => {
+    log.verbose('WechatyCqrs', 'execute$ send$() defer() bus$.next(%s)', JSON.stringify(commandQuery))
     /**
      * SO: Observable.onSubscribe equivalent in RxJs
      *  @link https://stackoverflow.com/a/48983205/1123955
      */
-    bus$.next(commandQuery)
+    // Huan(202203): FIXME: remove any
+    bus$.next(commandQuery as any)
     return EMPTY
   })

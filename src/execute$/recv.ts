@@ -18,23 +18,23 @@
  *   limitations under the License.
  *
  */
-import { isActionOf, ActionBuilder }      from 'typesafe-actions'
-import { of }                             from 'rxjs'
+import { ActionBuilder, isActionOf }   from 'typesafe-actions'
+import { of }           from 'rxjs'
 import {
   catchError,
   filter,
   take,
   tap,
   timeout,
-}                                         from 'rxjs/operators'
-import { log }                            from 'wechaty-puppet'
-import { GError }                         from 'gerror'
+}                       from 'rxjs/operators'
+import { log }          from 'wechaty-puppet'
+import { GError }       from 'gerror'
 
 import type { MetaRequest, MetaResponse } from '../cqr-event/meta.js'
+import type { MetaActionCreator }         from '../cqr-event/meta-action-creator.js'
 import type { ClassifiedConstructor }     from '../classify/classify.js'
-
-import type { BusObs }  from '../bus.js'
-import type { MetaActionCreator } from '../cqr-event/meta-action-creator.js'
+import type * as duck                     from '../duck/mod.js'
+import type { BusObs }                    from '../bus.js'
 
 /**
  * Monitor the `source$` to catch the `message` built by `messageActionBuilder` in response to the `commandQuery`
@@ -43,19 +43,19 @@ import type { MetaActionCreator } from '../cqr-event/meta-action-creator.js'
  */
 export const recv = (timeoutMilliseconds: number) =>
   <
-    CQType extends string,
-    CQPayload extends {},
+    CQType extends duck.Type,
+    CQ extends ActionBuilder<CQType, {},  MetaRequest>,
 
     RType extends string,
     RPayload extends {},
-
-    TMetaResponse extends MetaResponse
+    RArg0 extends MetaResponse,
+    RC extends ClassifiedConstructor<MetaActionCreator<RType, RPayload, MetaResponse, [RArg0]>>,
   >(
-    commandQuery  : ActionBuilder<CQType, CQPayload, MetaRequest>,
-    ResponseClass : ClassifiedConstructor<MetaActionCreator<RType, RPayload, MetaResponse, [TMetaResponse]>>,
+    commandQuery  : CQ,
+    ResponseClass : RC,
   ) => (source$: BusObs) => source$.pipe(
     filter(isActionOf(ResponseClass)),
-    tap(message => log.verbose('WechatyCqrs', 'mapCommandQueryToMessage() recv() %s', JSON.stringify(message))),
+    tap(message => log.verbose('WechatyCqrs', 'execute$ recv() %s', JSON.stringify(message))),
     filter(message => message.meta.id === commandQuery.meta.id),
     timeout(timeoutMilliseconds),
     catchError(err =>
@@ -63,7 +63,7 @@ export const recv = (timeoutMilliseconds: number) =>
         new ResponseClass({
           ...commandQuery.meta,
           gerror: GError.stringify(err),
-        } as TMetaResponse),
+        } as RArg0),
       ).pipe(
         tap(() => console.error(err)),
       ),

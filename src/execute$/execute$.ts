@@ -17,18 +17,22 @@
  *   limitations under the License.
  *
  */
-import { merge, EMPTY }       from 'rxjs'
+import {
+  merge,
+  EMPTY,
+  Observable,
+}                             from 'rxjs'
 import type { ActionBuilder } from 'typesafe-actions'
 
-import { getResponseClass } from '../cqr-event/get-object-creator.js'
-import type { MetaRequest } from '../cqr-event/meta.js'
-import type * as duck       from '../duck/mod.js'
-import type { Bus }         from '../bus.js'
+import { getResponseClass }   from '../cqr-event/get-object-response-class.js'
+import type { MetaRequest }   from '../cqr-event/meta.js'
+import type { CQType }        from '../classified/mod.js'
+
+import type { Bus } from '../bus.js'
 
 import { TIMEOUT_MS } from './constants.js'
 import { recv }       from './recv.js'
 import { send$ }      from './send$.js'
-import type { MetaActionCreator } from '../cqr-event/meta-action-creator.js'
 
 interface ExecuteOptions {
   timeoutMilliseconds: number,
@@ -38,10 +42,9 @@ export const execute$ = (
   bus$    : Bus,
   options : ExecuteOptions = { timeoutMilliseconds: TIMEOUT_MS },
 ) => <
-  TType extends duck.Type,
-  TPayload extends {},
-  TMeta extends MetaRequest,
-> (action: ReturnType<MetaActionCreator<TType, TPayload, TMeta>>) => {
+  TType extends CQType,
+  T extends ActionBuilder<TType, {}, MetaRequest>,
+> (action: T) => {
 
   const ResponseClass = getResponseClass(action.type)
   // console.info('ResponseClass', ResponseClass)
@@ -49,14 +52,14 @@ export const execute$ = (
   /**
    * Force check the `ResponseClass` existance
    */
-  const recv$ = (ResponseClass as any)
+  const recv$ = ResponseClass as undefined | typeof ResponseClass
     ? bus$.pipe(
       // tap(e => console.info('tap', e)),
       recv(options.timeoutMilliseconds)(
         action,
         ResponseClass,
       ),
-    )
+    ) as Observable<InstanceType<typeof ResponseClass>>
     : EMPTY
 
   return merge(
@@ -68,12 +71,7 @@ export const execute$ = (
      *  because it need to subscribe the bus before sending any events
      */
     recv$,
-    // bus$.pipe(
-    //   recv(options.timeoutMilliseconds)(
-    //     action,
-    //     responseOf(actionPair),
-    //   ),
-    // ),
+
     /**
      * Send
      *

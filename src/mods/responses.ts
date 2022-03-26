@@ -1,1 +1,1 @@
-export * from '../classified-actions/responses.js'
+export * from '../classified/actions/responses.js'
