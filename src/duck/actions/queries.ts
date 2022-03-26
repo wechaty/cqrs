@@ -67,7 +67,7 @@ export const getIsLoggedInQueryResponse = createAction(types.GET_IS_LOGGED_IN_QU
  * puppet.sayablePayload()
  */
 const payloadGetSayablePayloadQuery         = (_puppetId: string, sayableId: string)                      => ({ sayableId })
-const payloadGetSayablePayloadQueryResponse = (res: MetaResponse & { sayable?: PUPPET.payloads.Sayable }) => res.sayable || ({})
+const payloadGetSayablePayloadQueryResponse = (res: MetaResponse & { sayable?: PUPPET.payloads.Sayable }) => ({ sayable: res.sayable })
 
 export const getSayablePayloadQuery         = createAction(types.GET_SAYABLE_PAYLOAD_QUERY,           payloadGetSayablePayloadQuery,          metaRequest)()
 export const getSayablePayloadQueryResponse = createAction(types.GET_SAYABLE_PAYLOAD_QUERY_RESPONSE,  payloadGetSayablePayloadQueryResponse,  metaResponse)()
@@ -76,7 +76,7 @@ export const getSayablePayloadQueryResponse = createAction(types.GET_SAYABLE_PAY
  * puppet.messagePayload()
  */
 const payloadGetMessagePayloadQuery         = (_puppetId: string, messageId: string)                      => ({ messageId })
-const payloadGetMessagePayloadQueryResponse = (res: MetaResponse & { message?: PUPPET.payloads.Message }) => res.message || ({})
+const payloadGetMessagePayloadQueryResponse = (res: MetaResponse & { message?: PUPPET.payloads.Message }) => ({ message: res.message })
 
 export const getMessagePayloadQuery         = createAction(types.GET_MESSAGE_PAYLOAD_QUERY,           payloadGetMessagePayloadQuery,          metaRequest)()
 export const getMessagePayloadQueryResponse = createAction(types.GET_MESSAGE_PAYLOAD_QUERY_RESPONSE,  payloadGetMessagePayloadQueryResponse,  metaResponse)()
