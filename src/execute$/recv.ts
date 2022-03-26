@@ -43,13 +43,15 @@ import type { BusObs }                    from '../bus.js'
  */
 export const recv = (timeoutMilliseconds: number) =>
   <
-    CQ extends ActionBuilder<CQType, {},  MetaRequest>,
+    TCQType extends CQType,
+    TCQPayload extends {},
 
     TResArg extends MetaResponse,
-    RC extends ClassifiedConstructor<MetaActionCreator<Type, {}, MetaResponse, [TResArg]>>,
+    TResType extends Type,
+    TResPayload extends {},
   >(
-    commandQuery  : CQ,
-    ResponseClass : RC,
+    commandQuery  : ActionBuilder<TCQType, TCQPayload, MetaRequest>,
+    ResponseClass : ClassifiedConstructor<MetaActionCreator<TResType, TResPayload, MetaResponse, [TResArg]>>,
   ) => (source$: BusObs) => source$.pipe(
     filter(isActionOf(ResponseClass)),
     tap(message => log.verbose('WechatyCqrs', 'execute$ recv() %s', JSON.stringify(message))),

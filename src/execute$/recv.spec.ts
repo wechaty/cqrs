@@ -110,7 +110,7 @@ test('recv() timeout', testSchedulerRunner(m => {
     filter(isActionOf(CqrsDuck.actions.getCurrentUserIdQuery)),
     recv(TIMEOUT_MS)(
       query,
-      Response as any,
+      Response,
     ),
     map(normalizeMessage),
   )
@@ -124,9 +124,17 @@ test('recv() typing', async t => {
     classified.actions.GetCurrentUserIdQueryResponse,
   )
 
-  type RESULT   = typeof r
   type EXPECTED = (source$: BusObs) => Observable<InstanceType<typeof classified.actions.GetCurrentUserIdQueryResponse>>
 
-  const typingTest: AssertEqual<RESULT, EXPECTED> = true
-  t.ok(typingTest, 'should match typing')
+  type PARAMETERS           = Parameters<typeof r>
+  type EXPECTED_PARAMETERS  = Parameters<EXPECTED>
+
+  type RETURN           = ReturnType<typeof r>
+  type EXPECTED_RETURN  = ReturnType<EXPECTED>
+
+  const parametersTest: AssertEqual<PARAMETERS, EXPECTED_PARAMETERS> = true
+  const returnTest:     AssertEqual<RETURN,     EXPECTED_RETURN>     = true
+
+  t.ok(parametersTest, 'should match typing for parameters')
+  t.ok(returnTest, 'should match typing for return')
 })
