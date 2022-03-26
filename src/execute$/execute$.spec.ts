@@ -23,20 +23,20 @@ import {
   test,
   testSchedulerRunner,
   AssertEqual,
-}                               from 'tstest'
+}                                 from 'tstest'
 import {
   Observable,
   of,
   Subject,
   tap,
-}                               from 'rxjs'
-import type { ActionBuilder }   from 'typesafe-actions'
-import { GError }               from 'gerror'
-import { map, mergeMap }        from 'rxjs/operators'
+}                                 from 'rxjs'
+import type { PayloadMetaAction } from 'typesafe-actions'
+import { GError }                 from 'gerror'
+import { map, mergeMap }          from 'rxjs/operators'
 
 import * as duck              from '../duck/mod.js'
 import * as classified        from '../classified/mod.js'
-import type { MetaResponse }  from '../cqr-event/meta.js'
+import type { MetaRequest }   from '../cqr-event/meta.js'
 import type { ResponseOf }    from '../cqr-event/response-of.js'
 
 import { TIMEOUT_MS } from './constants.js'
@@ -44,11 +44,17 @@ import { execute$ }   from './execute$.js'
 
 test('execute$() typing', async t => {
   const dummyBus$ = new Subject<any>()
-  const execute1 = execute$(dummyBus$)
-  const exe2  = execute1(new classified.actions.GetCurrentUserIdQuery(''))
 
-  type RESULT = typeof execute
-  type EXPECTED = InstanceType<typeof classified.actions.GetCurrentUserIdQueryResponse>
+  const execute1  = execute$(dummyBus$)
+  const execute2  = execute1(new classified.actions.GetCurrentUserIdQuery(''))
+  type RESULT     = typeof execute2
+
+  type EXPECTED = Observable<
+    InstanceType<
+      typeof classified.actions.GetCurrentUserIdQueryResponse
+    >
+  >
+
   const typingTest: AssertEqual<RESULT, EXPECTED> = true
   t.ok(typingTest, 'should match typing')
 })
@@ -110,7 +116,6 @@ test('execute$() query & response timeout', testSchedulerRunner(m => {
   })
 
   const execute = execute$(dummyBus$)
-  type T = typeof execute
 
   const result$ = m.hot(source, { q: values.q }).pipe(
     tap(e => console.info(e)),
@@ -126,15 +131,14 @@ test('execute$() ReturnType typing', async t => {
 
   const query = duck.actions.getCurrentUserIdQuery('PUPPET_ID')
 
-  const $ = of(query).pipe(
-    execute$(bus$),
+  const stream$ = of(query).pipe(
+    mergeMap(action => execute$(bus$)(action)),
   )
 
-  const test: AssertEqual<
-    ReturnType<typeof execute>,
-    Observable<ReturnType<ResponseOf<typeof duck.actions.getCurrentUserIdQuery>>>
-  > = true
+  type RESULT = typeof stream$
+  type EXPECTED = Observable<ReturnType<ResponseOf<typeof duck.actions.getCurrentUserIdQuery>>>
 
+  const test: AssertEqual<RESULT, EXPECTED> = true
   t.ok(test, 'should get the right return type of message')
 })
 
@@ -143,10 +147,14 @@ test('execute$() ReturnType typing without input', async t => {
 
   const execute = execute$(bus$)
 
-  const test: AssertEqual<
-    ReturnType<typeof execute>,
-    Observable<ActionBuilder<string, {}, MetaResponse>>
-  > = true
+  type RESULT   = typeof execute
+  type EXPECTED = <
+    TType extends classified.CQType,
+    TPayload extends {}
+  >(
+    action: PayloadMetaAction<TType, TPayload, MetaRequest>
+  ) => Observable<ReturnType<ResponseOf<TType>>>
 
+  const test: AssertEqual<RESULT, EXPECTED> = true
   t.ok(test, 'should get the right return type of response')
 })

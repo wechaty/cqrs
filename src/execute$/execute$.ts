@@ -41,8 +41,9 @@ export const execute$ = (
   bus$    : Bus,
   options : ExecuteOptions = { timeoutMilliseconds: TIMEOUT_MS },
 ) => <
-  T extends ActionBuilder<CQType, {}, MetaRequest>,
-> (action: T) => {
+  TType extends CQType,
+  TPayload extends {}
+> (action: ActionBuilder<TType, TPayload, MetaRequest>) => {
 
   const ResponseClass = dtoResponseClass(action.type)
   // console.info('ResponseClass', ResponseClass)
@@ -55,7 +56,10 @@ export const execute$ = (
       // tap(e => console.info('tap', e)),
       recv(options.timeoutMilliseconds)(
         action,
-        ResponseClass,
+        /**
+         * Huan(202203) FIXME: remove `as any`
+         */
+        ResponseClass as any,
       ),
     ) as Observable<InstanceType<typeof ResponseClass>>
     : EMPTY

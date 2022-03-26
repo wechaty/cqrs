@@ -32,14 +32,16 @@ import type { Bus }           from '../bus.js'
  * @returns `EMPTY` observable
  */
 export const send$ = (bus$: Bus) => <
-  T extends ActionBuilder<classified.Type, {}, MetaRequest>
-> (commandQuery: T) => defer(() => {
-    log.verbose('WechatyCqrs', 'execute$ send$() defer() bus$.next(%s)', JSON.stringify(commandQuery))
-    /**
-     * SO: Observable.onSubscribe equivalent in RxJs
-     *  @link https://stackoverflow.com/a/48983205/1123955
-     */
-    // Huan(202203): FIXME: remove any
-    bus$.next(commandQuery as any)
-    return EMPTY
-  })
+  TType extends classified.CQType,
+  TPayload extends {},
+> (commandQuery: ActionBuilder<TType, TPayload, MetaRequest>) =>
+    defer(() => {
+      log.verbose('WechatyCqrs', 'execute$ send$() defer() bus$.next(%s)', JSON.stringify(commandQuery))
+      /**
+       * SO: Observable.onSubscribe equivalent in RxJs
+       *  @link https://stackoverflow.com/a/48983205/1123955
+       */
+      // Huan(202203): FIXME: remove any
+      bus$.next(commandQuery as any)
+      return EMPTY
+    })
