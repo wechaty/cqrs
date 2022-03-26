@@ -24,15 +24,14 @@ import {
 }                             from 'rxjs'
 import type { ActionBuilder } from 'typesafe-actions'
 
-import { getResponseClass }   from '../cqr-event/get-object-response-class.js'
-import type { MetaRequest }   from '../cqr-event/meta.js'
-import type { CQType }        from '../classified/mod.js'
+import { getObjectResponseClass }   from '../cqr-event/get-object-response-class.js'
+import type { MetaRequest }         from '../cqr-event/meta.js'
+import type { CQType }              from '../classified/mod.js'
+import type { Bus }                 from '../bus.js'
 
-import type { Bus } from '../bus.js'
-
-import { TIMEOUT_MS } from './constants.js'
-import { recv }       from './recv.js'
-import { send$ }      from './send$.js'
+import { TIMEOUT_MS }   from './constants.js'
+import { recv }         from './recv.js'
+import { send$ }        from './send$.js'
 
 interface ExecuteOptions {
   timeoutMilliseconds: number,
@@ -42,11 +41,10 @@ export const execute$ = (
   bus$    : Bus,
   options : ExecuteOptions = { timeoutMilliseconds: TIMEOUT_MS },
 ) => <
-  TType extends CQType,
-  T extends ActionBuilder<TType, {}, MetaRequest>,
+  T extends ActionBuilder<CQType, {}, MetaRequest>,
 > (action: T) => {
 
-  const ResponseClass = getResponseClass(action.type)
+  const ResponseClass = getObjectResponseClass(action.type)
   // console.info('ResponseClass', ResponseClass)
 
   /**

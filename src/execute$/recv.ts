@@ -33,7 +33,7 @@ import { GError }       from 'gerror'
 import type { MetaRequest, MetaResponse } from '../cqr-event/meta.js'
 import type { MetaActionCreator }         from '../cqr-event/meta-action-creator.js'
 import type { ClassifiedConstructor }     from '../classify/classify.js'
-import type * as duck                     from '../duck/mod.js'
+import type { Type, CQType }              from '../classified/mod.js'
 import type { BusObs }                    from '../bus.js'
 
 /**
@@ -43,13 +43,10 @@ import type { BusObs }                    from '../bus.js'
  */
 export const recv = (timeoutMilliseconds: number) =>
   <
-    CQType extends duck.Type,
     CQ extends ActionBuilder<CQType, {},  MetaRequest>,
 
-    RType extends string,
-    RPayload extends {},
-    RArg0 extends MetaResponse,
-    RC extends ClassifiedConstructor<MetaActionCreator<RType, RPayload, MetaResponse, [RArg0]>>,
+    TResArg extends MetaResponse,
+    RC extends ClassifiedConstructor<MetaActionCreator<Type, {}, MetaResponse, [TResArg]>>,
   >(
     commandQuery  : CQ,
     ResponseClass : RC,
@@ -63,7 +60,7 @@ export const recv = (timeoutMilliseconds: number) =>
         new ResponseClass({
           ...commandQuery.meta,
           gerror: GError.stringify(err),
-        } as RArg0),
+        } as TResArg),
       ).pipe(
         tap(() => console.error(err)),
       ),

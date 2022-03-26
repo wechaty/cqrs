@@ -18,14 +18,13 @@
  *   limitations under the License.
  *
  */
-import { defer, EMPTY }   from 'rxjs'
-import type { ActionBuilder } from 'typesafe-actions'
-import { log }            from 'wechaty-puppet'
+import { defer, EMPTY }         from 'rxjs'
+import type { ActionBuilder }   from 'typesafe-actions'
+import { log }                  from 'wechaty-puppet'
 
-import type { Bus } from '../bus.js'
-import type { MetaRequest } from '../cqr-event/meta.js'
-
-import type * as duck from '../duck/mod.js'
+import type { MetaRequest }   from '../cqr-event/meta.js'
+import type * as classified   from '../classified/mod.js'
+import type { Bus }           from '../bus.js'
 
 /**
  * Send the `commandQuery` to `bus$`
@@ -33,8 +32,7 @@ import type * as duck from '../duck/mod.js'
  * @returns `EMPTY` observable
  */
 export const send$ = (bus$: Bus) => <
-  TType extends duck.Type,
-  T extends ActionBuilder<TType, {}, MetaRequest>
+  T extends ActionBuilder<classified.Type, {}, MetaRequest>
 > (commandQuery: T) => defer(() => {
     log.verbose('WechatyCqrs', 'execute$ send$() defer() bus$.next(%s)', JSON.stringify(commandQuery))
     /**

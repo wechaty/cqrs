@@ -12,6 +12,7 @@ export const {
   GetIsLoggedInQueryResponse,
   GetMessagePayloadQueryResponse,
   GetSayablePayloadQueryResponse,
+  NopCommandResponse,
   ResetCommandResponse,
   SendMessageCommandResponse,
   StartCommandResponse,

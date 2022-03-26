@@ -7,6 +7,7 @@ import * as commands    from '../../duck/actions/commands.js'
 export const {
   DingCommand,
   ResetCommand,
+  NopCommand,
   SendMessageCommand,
   StartCommand,
   StopCommand,
