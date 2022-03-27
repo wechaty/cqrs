@@ -5,7 +5,7 @@ import {
   ClassifiedConstructor,
 }                           from './classify.js'
 
-import type { PayloadMetaCreator } from '../cqr-event/payload-meta-creator.js'
+import type { PayloadMetaActionFactory } from '../cqr-event/payload-meta-action-factory.js'
 
 /**
  * Convert an actionMap to a classMap
@@ -13,7 +13,7 @@ import type { PayloadMetaCreator } from '../cqr-event/payload-meta-creator.js'
 export const classifyMap = <
   T extends Record<
     string,
-    PayloadMetaCreator<string>
+    PayloadMetaActionFactory<string>
   >
 > (actionMap: T) =>
   Object.entries(actionMap).reduce((acc, [key, creator]) => {

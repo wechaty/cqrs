@@ -20,8 +20,8 @@
 import { log }              from 'wechaty-puppet'
 import type { Middleware }  from 'redux'
 
-import type { Bus }         from '../bus.js'
 import { plainToInstance }  from '../classify/plain-to-instance.js'
+import type { Bus }         from '../bus.js'
 
 /**
  * Output: Events & Response

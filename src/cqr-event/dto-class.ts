@@ -4,7 +4,7 @@ import { ClassifiedConstructor, classify }     from '../classify/classify.js'
 
 import type { Type }  from '../classified/mod.js'
 
-import type { PayloadMetaCreator }        from './payload-meta-creator.js'
+import type { PayloadMetaActionFactory }  from './payload-meta-action-factory.js'
 import { TypeActionMap, typeActionMap }   from './type-action-map.js'
 
 export function dtoClass <T extends Type> (
@@ -12,11 +12,11 @@ export function dtoClass <T extends Type> (
 ): ClassifiedConstructor<TypeActionMap[T]>
 
 export function dtoClass <T extends Type> (
-  creator: PayloadMetaCreator<T>,
+  creator: PayloadMetaActionFactory<T>,
 ): ClassifiedConstructor<TypeActionMap[T]>
 
 export function dtoClass <T extends Type> (
-  type: T | PayloadMetaCreator<T>,
+  type: T | PayloadMetaActionFactory<T>,
 ) {
   return typeof type === 'string'
     ? classify(typeActionMap[type])

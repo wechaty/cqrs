@@ -23,8 +23,8 @@ import {
 }                             from 'typesafe-actions'
 import { log }                from 'wechaty-puppet'
 
-import type * as duck             from '../duck/mod.js'
-import type { PayloadMetaCreator } from '../cqr-event/payload-meta-creator.js'
+import type * as duck                     from '../duck/mod.js'
+import type { PayloadMetaActionFactory }  from '../cqr-event/payload-meta-action-factory.js'
 
 import { typeToClassName }        from './type-to-class-name.js'
 
@@ -40,7 +40,7 @@ const singletonCache = new Map<
  * The typed ReturnType for `classify`
  */
 export type ClassifiedConstructor<
-  T extends PayloadMetaCreator<string> = PayloadMetaCreator<string>,
+  T extends PayloadMetaActionFactory<string> = PayloadMetaActionFactory<string>,
 > = {
   new (...args: Parameters<T>): ReturnType<T>
   /**
@@ -49,7 +49,7 @@ export type ClassifiedConstructor<
    */
   (...args: Parameters<T>): ReturnType<T>
 } & ActionCreatorTypeMetadata<
-  T extends PayloadMetaCreator<infer TType>
+  T extends PayloadMetaActionFactory<infer TType>
     ? TType
     : never
 >
@@ -58,7 +58,7 @@ export type ClassifiedConstructor<
  * 1. Get the class from the actionCreator
  */
 export function classify <
-  T extends PayloadMetaCreator
+  T extends PayloadMetaActionFactory
 > (
   creator: T,
 ): ClassifiedConstructor<T>
@@ -72,11 +72,11 @@ export function classify <
 > (
   type: TType,
 ): undefined | ClassifiedConstructor<
-  A extends PayloadMetaCreator<TType, infer TPayload, infer TMeta, infer TArgs>
+  A extends PayloadMetaActionFactory<TType, infer TPayload, infer TMeta, infer TArgs>
     ? TPayload extends {}
       ? TMeta extends {}
         ? TArgs extends any[]
-          ? PayloadMetaCreator<TType, TPayload, TMeta, TArgs>
+          ? PayloadMetaActionFactory<TType, TPayload, TMeta, TArgs>
           : never
         : never
       : never
@@ -96,7 +96,7 @@ export function classify <
   TPayload extends {},
   TMeta extends {},
   // TArgs extends any[],
-  C extends PayloadMetaCreator<T, TPayload, TMeta>
+  C extends PayloadMetaActionFactory<T, TPayload, TMeta>
 > (typeOrActionCreator?: T | C) {
 
   if (!typeOrActionCreator) {
@@ -109,7 +109,7 @@ export function classify <
    */
   if (typeof typeOrActionCreator === 'string') {
     if (singletonCache.has(typeOrActionCreator)) {
-      return singletonCache.get(typeOrActionCreator) as ClassifiedConstructor<PayloadMetaCreator<T>>
+      return singletonCache.get(typeOrActionCreator) as ClassifiedConstructor<PayloadMetaActionFactory<T>>
     }
     // throw new Error(`[${action}] action not exist in singletonCache, please check whether the module has been imported before use`)
     log.warn('WechatyCqrs', 'classify(%s) not exist in cache, please check whether the module has been imported before use', typeOrActionCreator)
@@ -125,7 +125,7 @@ export function classify <
    * Check the cache for always return the same value for a creator
    */
   if (singletonCache.has(type)) {
-    return singletonCache.get(type) as ClassifiedConstructor<PayloadMetaCreator<T>>
+    return singletonCache.get(type) as ClassifiedConstructor<PayloadMetaActionFactory<T>>
   }
 
   /**
@@ -170,5 +170,5 @@ export function classify <
   singletonCache.set(type, PojoClass)
   log.silly('WechatyCqrs', 'classify(%s) cache set', type)
 
-  return PojoClass as unknown as ClassifiedConstructor<PayloadMetaCreator<T>>
+  return PojoClass as unknown as ClassifiedConstructor<PayloadMetaActionFactory<T>>
 }

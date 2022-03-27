@@ -21,7 +21,7 @@ import { getType } from 'typesafe-actions'
 
 import type { CQType, Type }  from '../classified/mod.js'
 
-import type { PayloadMetaCreator }        from './payload-meta-creator.js'
+import type { PayloadMetaActionFactory }  from './payload-meta-action-factory.js'
 import { ResponseType, responseType }     from './response-type.js'
 import { TypeActionMap, typeActionMap }   from './type-action-map.js'
 
@@ -29,15 +29,15 @@ import { TypeActionMap, typeActionMap }   from './type-action-map.js'
  * Support both `type` and `MetaActionCreator<type>` as parameter
  */
 export type ResponseOf<
-  T extends CQType | PayloadMetaCreator<CQType>,
+  T extends CQType | PayloadMetaActionFactory<CQType>,
 > = T extends CQType
   ? ResponseType<T> extends Type ? TypeActionMap[ResponseType<T>] : never
-  : T extends PayloadMetaCreator<infer TType>
+  : T extends PayloadMetaActionFactory<infer TType>
     ? ResponseType<TType> extends Type ? TypeActionMap[ResponseType<TType>] : never
     : never
 
 export const responseOf = <
-  T extends CQType | PayloadMetaCreator<CQType>,
+  T extends CQType | PayloadMetaActionFactory<CQType>,
 > (type: T) => typeof type === 'string'
     ? (typeActionMap as any)[responseType(type)]          as ResponseOf<T>
     : (typeActionMap as any)[responseType(getType(type))] as ResponseOf<T>

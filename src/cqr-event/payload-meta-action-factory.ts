@@ -2,11 +2,11 @@ import type { PayloadMetaAction } from 'typesafe-actions'
 
 /**
  * Huan(202203): We should use the below two Types for creating actions:
- *  1. PayloadMetaCreator: factory of `PayloadMetaAction`
+ *  1. PayloadMetaActionFactory: factory of `PayloadMetaAction`
  *  2. PayloadMetaAction(ActionBuilder): the payload interface of the action
  *    (this name is very confusing but its from the `typesafe-action` library)
  */
-export type PayloadMetaCreator <
+export type PayloadMetaActionFactory <
   TType    extends string = string,
   TPayload extends {}     = {},
   TMeta    extends {}     = {},
