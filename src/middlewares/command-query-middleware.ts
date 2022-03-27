@@ -21,6 +21,7 @@ import { log }            from 'wechaty-puppet'
 import type {
   Middleware,
 }                         from 'redux'
+import _ from 'lodash'
 
 import type {
   Bus,
@@ -32,7 +33,11 @@ import type {
 export const commandQueryMiddleware: (cqBus$: Bus) => Middleware = cqBus$ => _store => next => {
   cqBus$.subscribe(cq => {
     log.verbose('WechatyCqrs', 'commandQueryMiddleware() cqBus$.subscribe(%s)', JSON.stringify(cq))
-    next(cq)
+
+    if (_.isPlainObject(cq)) next(cq)
+
+    else next(_.toPlainObject(cq))
+
   })
   return action => next(action)
 }

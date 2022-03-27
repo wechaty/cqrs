@@ -171,3 +171,26 @@ test('classify cache & singleton', async t => {
 
   t.equal(first, second, 'should be the same of class constructor when we classify multiple times as we are using cache & singleton')
 })
+
+test('classify class compatible new & call', async t => {
+  const PUPPET_ID = 'puppet-id'
+  const DATA = 'data'
+
+  const DingCommand = classify(duck.actions.dingCommand)
+  const that = { DingCommand }
+
+  const c = DingCommand(PUPPET_ID, DATA)
+  const m = that.DingCommand(PUPPET_ID, DATA)
+  const n = new DingCommand(PUPPET_ID, DATA)
+
+  t.ok(c instanceof DingCommand, 'should be instance of DingCommand for c')
+  t.ok(m instanceof DingCommand, 'should be instance of DingCommand for m')
+  t.ok(n instanceof DingCommand, 'should be instance of DingCommand for n')
+
+  delete (c as any).meta.id
+  delete (m as any).meta.id
+  delete (n as any).meta.id
+
+  t.same(c, m, 'should be the same of class instance when we call new & module class constructor')
+  t.same(c, n, 'should be the same of class instance when we call new & class constructor')
+})

@@ -32,13 +32,13 @@ test('mod export packageJson', async t => {
 
 test('mod export Commands, Queries, Responses, and Events', async t => {
   t.ok(mod.commands, 'should export commands')
-  t.ok(mod.commands.dingCommand, 'should export commands.dingCommand')
+  t.ok(mod.commands.DingCommand, 'should export commands.dingCommand')
   t.ok(mod.queries, 'should export queries')
-  t.ok(mod.queries.getIsLoggedInQuery, 'should export queries.getIsLoggedInQuery')
+  t.ok(mod.queries.GetIsLoggedInQuery, 'should export queries.getIsLoggedInQuery')
   t.ok(mod.responses, 'should export responses')
-  t.ok(mod.responses.getIsLoggedInQueryResponse, 'should export responses.getIsLoggedInQueryResponse')
+  t.ok(mod.responses.GetIsLoggedInQueryResponse, 'should export responses.getIsLoggedInQueryResponse')
   t.ok(mod.events, 'should export event')
-  t.ok(mod.events.startedEvent, 'should export events.startedEvent')
+  t.ok(mod.events.StartedEvent, 'should export events.startedEvent')
 })
 
 test('mod export Bus and BusObs', async t => {

@@ -64,12 +64,12 @@ const onMessage$ = (bus$: CQRS.Bus) => CQRS.events$.messageReceivedEvent$(bus$).
     /**
      * message -> sayable
      */
-    map(messageId => new CQRS.queries.GetSayablePayloadQuery(
+    map(messageId => CQRS.queries.GetSayablePayloadQuery(
       messageReceivedEvent.meta.puppetId,
       messageId,
     )),
-    mergeMap(CQRS.execute$(bus$)(CQRS.queries.GetSayablePayloadQuery)),
-    map(sayablePayloadGotMessage => sayablePayloadGotMessage.payload),
+    mergeMap(CQRS.execute$(bus$)),
+    map(sayablePayloadGotMessage => sayablePayloadGotMessage.payload.sayable),
     filter(Boolean),
     tap(sayable => console.info('sayable:', sayable)),
 
@@ -85,19 +85,19 @@ const onMessage$ = (bus$: CQRS.Bus) => CQRS.events$.messageReceivedEvent$(bus$).
       /**
        * ding -> talkerId
        */
-      map(messageReceivedEvent => CQRS.queries.getMessagePayloadQuery(messageReceivedEvent.meta.puppetId, messageReceivedEvent.payload.messageId)),
-      mergeMap(CQRS.execute$(bus$)(CQRS.queries.getMessagePayloadQuery)),
+      map(messageReceivedEvent => CQRS.queries.GetMessagePayloadQuery(messageReceivedEvent.meta.puppetId, messageReceivedEvent.payload.messageId)),
+      mergeMap(CQRS.execute$(bus$)),
       /**
        * Huan(202203): `.fromId` deprecated, will be removed after v2.0
        */
-      map(messagePayloadGotMmessage => messagePayloadGotMmessage.payload?.talkerId || messagePayloadGotMmessage.payload?.fromId),
+      map(messagePayloadGotMmessage => messagePayloadGotMmessage.payload.message?.talkerId || messagePayloadGotMmessage.payload.message?.fromId),
       filter(Boolean),
       tap(talkerId => console.info('talkerId:', talkerId)),
 
       /**
        * talkerId -> command
        */
-      map(talkerId => CQRS.commands.sendMessageCommand(
+      map(talkerId => CQRS.commands.SendMessageCommand(
         messageReceivedEvent.meta.puppetId,
         talkerId,
         CQRS.sayables.text('dong'),
@@ -107,7 +107,7 @@ const onMessage$ = (bus$: CQRS.Bus) => CQRS.events$.messageReceivedEvent$(bus$).
       /**
        * execute command (return MessageSentMessage)
        */
-      mergeMap(CQRS.execute$(bus$)(CQRS.commands.sendMessageCommand)),
+      mergeMap(CQRS.execute$(bus$)),
     )),
   )),
 )
@@ -141,13 +141,13 @@ async function main () {
     )),
   )
 
-  const main$ = defer(() => of(CQRS.commands.startCommand(puppetId))).pipe(
+  const main$ = defer(() => of(CQRS.commands.StartCommand(puppetId))).pipe(
     mergeMap(startCommand => merge(
       onStartedEvent$(bus$),
-      CQRS.execute$(bus$)(CQRS.commands.startCommand)(startCommand),
+      CQRS.execute$(bus$)(startCommand),
     )),
     ignoreElements(),
-    finalize(() => bus$.next(CQRS.commands.stopCommand(puppetId))),
+    finalize(() => bus$.next(CQRS.commands.StopCommand(puppetId))),
   )
 
   /**

@@ -44,15 +44,15 @@ test('integration testing', async t => {
   const bus$ = CQRS.from(wechaty)
 
   const startedEventFuture = firstValueFrom(bus$.pipe(
-    filter(CQRS.isEventOf(CQRS.events.startedEvent)),
+    filter(CQRS.isEventOf(CQRS.events.StartedEvent)),
   ))
-  bus$.next(CQRS.commands.startCommand(puppet.id))
+  bus$.next(CQRS.commands.StartCommand(puppet.id))
   await t.resolves(startedEventFuture, 'should get started after the start command')
 
   const stoppedEventFuture = firstValueFrom(bus$.pipe(
-    filter(CQRS.isEventOf(CQRS.events.stoppedEvent)),
+    filter(CQRS.isEventOf(CQRS.events.StoppedEvent)),
   ))
-  bus$.next(CQRS.commands.stopCommand(puppet.id))
+  bus$.next(CQRS.commands.StopCommand(puppet.id))
   await t.resolves(stoppedEventFuture, 'should get stopped after the stopp command')
 })
 
@@ -66,17 +66,17 @@ test('ding/dong', async t => {
   const eventList: any[] = []
   bus$.subscribe(e => eventList.push(e))
 
-  const command = CQRS.commands.dingCommand(wechaty.puppet.id, DING_DATA)
+  const command = CQRS.commands.DingCommand(wechaty.puppet.id, DING_DATA)
   bus$.next(command)
 
   await firstValueFrom(bus$.pipe(
-    filter(CQRS.isEventOf(CQRS.events.dongReceivedEvent)),
+    filter(CQRS.isEventOf(CQRS.events.DongReceivedEvent)),
     take(1),
   ))
 
   t.same(eventList, [
     command,
-    CQRS.responses.dingCommandResponse(command.meta),
-    CQRS.events.dongReceivedEvent(command.meta.puppetId, { data: DING_DATA }),
+    CQRS.responses.DingCommandResponse(command.meta),
+    CQRS.events.DongReceivedEvent(command.meta.puppetId, { data: DING_DATA }),
   ], 'should get dingCommand & dingedMessage & dingReceivedEvent')
 })

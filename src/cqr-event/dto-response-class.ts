@@ -17,7 +17,7 @@ export function dtoResponseClass <T extends CQType> (
  * Get Response Class by action creator (factory)
  */
 export function dtoResponseClass <T extends CQType> (
-  creator: PayloadMetaActionFactory
+  creator: PayloadMetaActionFactory<T>
 ): ClassifiedConstructor<ResponseOf<T>>
 
 export function dtoResponseClass <T extends CQType> (

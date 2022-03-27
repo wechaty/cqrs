@@ -57,10 +57,12 @@ test('snakeToCamelCase() fixture testing', async t => {
 
   for (const [snakeCase, expectedCamelCase] of fixtures) {
     const result = snakeToUpperCamelCase(snakeCase)
-    const test: AssertEqual<
-      typeof result,
-      typeof expectedCamelCase
-    > = true
+
+    type RESULT   = typeof result
+    type EXPECTED = typeof expectedCamelCase
+
+    const test: AssertEqual<RESULT, EXPECTED> = true
+
     t.ok(test, `should match typing ${snakeCase} -> ${expectedCamelCase}`)
     t.equal(result, expectedCamelCase, `should convert ${result} -> ${expectedCamelCase}`)
   }

@@ -16,7 +16,7 @@ import _ from 'lodash'
 export type SnakeToUpperCamelCase<S extends string> =
   S extends `${infer T}_${infer U}`
     ? `${Capitalize<Lowercase<T>>}${Capitalize<SnakeToUpperCamelCase<Lowercase<U>>>}`
-    : S
+    : Capitalize<Lowercase<S>>
 
 /**
  * Convert `SNAKE_CASE` -> `CamelCase` with static typing

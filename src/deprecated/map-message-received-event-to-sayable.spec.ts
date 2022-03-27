@@ -50,7 +50,7 @@ test('mapMessageReceivedEventToSayable()', testSchedulerRunner(m => {
 
   const values = {
     e: event,
-    s: sayable,
+    s: { sayable },
   }
 
   const source    = 'e'
@@ -76,7 +76,7 @@ test('mapMessageReceivedEventToSayable()', testSchedulerRunner(m => {
     })),
   ).subscribe(bus$)
 
-  const source$ = m.hot(source, values)
+  const source$ = m.hot(source, { e: values.e })
 
   const result$ = source$.pipe(
     filter(isActionOf(CqrsDuck.actions.messageReceivedEvent)),

@@ -134,11 +134,20 @@ export function classify <
    *  @example  `function () {} as unknown as { new (layerName: string): TestVectorLayer; }`
    */
   const PojoClass = function (
-    this: ReturnType<C>,
+    this: undefined | ReturnType<C>,
     ...args: Parameters<C>
   ) {
-    if (!(this as any)) {
-      throw new Error('PojoClass must be called with `new`')
+    /**
+     * Huan(202203): Compatible with `PojoClass(...args)` call
+     *  with the same effect as the `new PojoClass(...args)`
+     *
+     * The below three lines are equivalent:
+     *  1. const instance = new PojoClass(...args)
+     *  2. const instance = PojoClass(...args)
+     *  3. const instance = commands.PojoClass(...args) // this has an invalid `this` passed in
+     */
+    if (!this || !(this instanceof PojoClass)) {
+      return new (PojoClass as any)(...args)
     }
 
     const {
@@ -146,8 +155,8 @@ export function classify <
       payload,
     } = typeOrActionCreator(...args)
 
-    this.type = type
-    this.meta = meta
+    this.type    = type
+    this.meta    = meta
     this.payload = payload
 
     this.toString = function toString () { return type }
