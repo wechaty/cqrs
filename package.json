@@ -131,7 +131,7 @@
     "glob": "^7.2.0",
     "tstest": "^1.2.8",
     "wechaty-puppet-mock": "^1.18.2",
-    "wechaty-puppet-wechat": "^1.12.2"
+    "wechaty-puppet-wechat": "^1.18.1"
   },
   "files": [
     "bin/",

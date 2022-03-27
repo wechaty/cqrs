@@ -112,7 +112,7 @@ export function classify <
       return singletonCache.get(typeOrActionCreator) as ClassifiedConstructor<PayloadMetaActionFactory<T>>
     }
     // throw new Error(`[${action}] action not exist in singletonCache, please check whether the module has been imported before use`)
-    log.warn('WechatyCqrs', 'classify(%s) not exist in cache, please check whether the module has been imported before use', typeOrActionCreator)
+    log.verbose('WechatyCqrs', 'classify(%s) not exist in cache, please check whether the module has been imported before use', typeOrActionCreator)
     return undefined
   }
 
