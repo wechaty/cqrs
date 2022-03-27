@@ -20,11 +20,11 @@
 import {
   ActionCreatorTypeMetadata,
   getType,
-  ActionBuilder,
 }                             from 'typesafe-actions'
+import { log }                from 'wechaty-puppet'
 
 import type * as duck             from '../duck/mod.js'
-import type { MetaActionCreator } from '../cqr-event/meta-action-creator.js'
+import type { PayloadMetaCreator } from '../cqr-event/payload-meta-creator.js'
 
 import { typeToClassName }        from './type-to-class-name.js'
 
@@ -40,7 +40,7 @@ const singletonCache = new Map<
  * The typed ReturnType for `classify`
  */
 export type ClassifiedConstructor<
-  T extends MetaActionCreator<string>,
+  T extends PayloadMetaCreator<string> = PayloadMetaCreator<string>,
 > = {
   new (...args: Parameters<T>): ReturnType<T>
   /**
@@ -49,7 +49,7 @@ export type ClassifiedConstructor<
    */
   (...args: Parameters<T>): ReturnType<T>
 } & ActionCreatorTypeMetadata<
-  T extends MetaActionCreator<infer TType>
+  T extends PayloadMetaCreator<infer TType>
     ? TType
     : never
 >
@@ -57,21 +57,30 @@ export type ClassifiedConstructor<
 /**
  * 1. Get the class from the actionCreator
  */
-export function classify <T extends MetaActionCreator<string>> (creator: T): ClassifiedConstructor<T>
+export function classify <
+  T extends PayloadMetaCreator
+> (
+  creator: T,
+): ClassifiedConstructor<T>
+
 /**
  * 2. Get the class from the type string
  */
 export function classify <
   TType extends string,
-  A extends duck.Event
-> (type: TType): undefined | ClassifiedConstructor<
-  A extends ActionBuilder<TType, infer TPayload, infer TMeta>
+  A extends typeof duck.actions[keyof typeof duck.actions]
+> (
+  type: TType,
+): undefined | ClassifiedConstructor<
+  A extends PayloadMetaCreator<TType, infer TPayload, infer TMeta, infer TArgs>
     ? TPayload extends {}
       ? TMeta extends {}
-        ? MetaActionCreator<TType, TPayload, TMeta>
-        : MetaActionCreator<TType>
-      : MetaActionCreator<TType>
-    : MetaActionCreator<TType>
+        ? TArgs extends any[]
+          ? PayloadMetaCreator<TType, TPayload, TMeta, TArgs>
+          : never
+        : never
+      : never
+    : never
 >
 
 /**
@@ -84,30 +93,39 @@ export function classify <
  */
 export function classify <
   T extends string,
-> (action?: T | MetaActionCreator<T>) {
+  TPayload extends {},
+  TMeta extends {},
+  // TArgs extends any[],
+  C extends PayloadMetaCreator<T, TPayload, TMeta>
+> (typeOrActionCreator?: T | C) {
 
-  if (!action) throw new Error('missing action parameter')
+  if (!typeOrActionCreator) {
+    log.warn('WechatyCqrs', 'classify() no action provided')
+    return undefined
+  }
 
   /**
    * 1. Deal with string type
    */
-  if (typeof action === 'string') {
-    if (singletonCache.has(action)) {
-      return singletonCache.get(action) as ClassifiedConstructor<MetaActionCreator<T>>
+  if (typeof typeOrActionCreator === 'string') {
+    if (singletonCache.has(typeOrActionCreator)) {
+      return singletonCache.get(typeOrActionCreator) as ClassifiedConstructor<PayloadMetaCreator<T>>
     }
-    throw new Error('missing action parameter')
+    // throw new Error(`[${action}] action not exist in singletonCache, please check whether the module has been imported before use`)
+    log.warn('WechatyCqrs', 'classify(%s) not exist in cache, please check whether the module has been imported before use', typeOrActionCreator)
+    return undefined
   }
 
   /**
    * 2. Deal with Typesafe Actions type
    */
-  const type = getType(action)
+  const type = getType(typeOrActionCreator)
 
   /**
    * Check the cache for always return the same value for a creator
    */
   if (singletonCache.has(type)) {
-    return singletonCache.get(type) as ClassifiedConstructor<MetaActionCreator<T>>
+    return singletonCache.get(type) as ClassifiedConstructor<PayloadMetaCreator<T>>
   }
 
   /**
@@ -116,18 +134,18 @@ export function classify <
    *  @example  `function () {} as unknown as { new (layerName: string): TestVectorLayer; }`
    */
   const PojoClass = function (
-    this: ReturnType<MetaActionCreator<T>>,
-    ...args: Parameters<MetaActionCreator<T>>
+    this: ReturnType<C>,
+    ...args: Parameters<C>
   ) {
     if (!(this as any)) {
       throw new Error('PojoClass must be called with `new`')
     }
 
+    console.info('type:', type)
     const {
-      type,
       meta,
       payload,
-    } = (action as any)(...args) // <- FIXME: remove `any` Huan(202203)
+    } = typeOrActionCreator(...args) // as ActionBuilder<T, TPayload, TMeta>
 
     this.type = type
     this.meta = meta
@@ -150,6 +168,7 @@ export function classify <
    * Set cache for the future singleton
    */
   singletonCache.set(type, PojoClass)
+  log.silly('WechatyCqrs', 'classify(%s) cache set', type)
 
-  return PojoClass as unknown as ClassifiedConstructor<MetaActionCreator<T>>
+  return PojoClass as unknown as ClassifiedConstructor<PayloadMetaCreator<T>>
 }
