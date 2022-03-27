@@ -197,13 +197,15 @@ Read CQRS Wechaty API Reference at: <https://paka.dev/npm/wechaty-cqrs>
 
 ## History
 
-### main v1.12
+### main v1.12 (Mar 27, 2022)
 
 1. Classify action builders so that they will be compatible with Class events
   with NestJS [#1](https://github.com/wechaty/cqrs/issues/1)
 1. `execute$()` helper function for sending the events to the bus
   and get back the response, with automatically type inferring.
 1. lots of typing enhancements.
+
+Learn more from [PR #3](https://github.com/wechaty/cqrs/pull/3)
 
 ## v0.10 (Mar 17) Beta release
 
