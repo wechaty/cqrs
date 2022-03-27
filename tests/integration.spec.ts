@@ -44,13 +44,13 @@ test('integration testing', async t => {
   const bus$ = CQRS.from(wechaty)
 
   const startedEventFuture = firstValueFrom(bus$.pipe(
-    filter(CQRS.isEventOf(CQRS.events.StartedEvent)),
+    filter(CQRS.is(CQRS.events.StartedEvent)),
   ))
   bus$.next(CQRS.commands.StartCommand(puppet.id))
   await t.resolves(startedEventFuture, 'should get started after the start command')
 
   const stoppedEventFuture = firstValueFrom(bus$.pipe(
-    filter(CQRS.isEventOf(CQRS.events.StoppedEvent)),
+    filter(CQRS.is(CQRS.events.StoppedEvent)),
   ))
   bus$.next(CQRS.commands.StopCommand(puppet.id))
   await t.resolves(stoppedEventFuture, 'should get stopped after the stopp command')
@@ -70,7 +70,7 @@ test('ding/dong', async t => {
   bus$.next(command)
 
   await firstValueFrom(bus$.pipe(
-    filter(CQRS.isEventOf(CQRS.events.DongReceivedEvent)),
+    filter(CQRS.is(CQRS.events.DongReceivedEvent)),
     take(1),
   ))
 

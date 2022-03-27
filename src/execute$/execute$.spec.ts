@@ -38,8 +38,8 @@ import * as duck              from '../duck/mod.js'
 import * as classified        from '../classified/mod.js'
 import type { MetaRequest }   from '../cqr-event/meta.js'
 import type { ResponseOf }    from '../cqr-event/response-of.js'
+import { TIMEOUT_MS }         from '../config.js'
 
-import { TIMEOUT_MS } from './constants.js'
 import { execute$ }   from './execute$.js'
 
 test('execute$() typing', async t => {
