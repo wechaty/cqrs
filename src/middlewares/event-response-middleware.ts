@@ -37,7 +37,7 @@ export const eventResponseMiddleware: (erBus$: Bus) => Middleware = erBus$ =>
          *  Convert the object from a Plain Object to a Instance Object (and compatible with the Plain Object)
          */
         const instanceOrPlainObject = plainToInstance(action) || action
-
         erBus$.next(instanceOrPlainObject)
+
         next(action)
       }

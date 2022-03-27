@@ -18,16 +18,12 @@
  *   limitations under the License.
  *
  */
-import * as CQRS          from 'wechaty-cqrs'
-import { WechatyBuilder } from 'wechaty'
-import {
-  firstValueFrom,
-}                         from 'rxjs'
-import {
-  filter,
-  take,
-}                         from 'rxjs/operators'
-import assert             from 'assert'
+import * as CQRS            from 'wechaty-cqrs'
+
+import { WechatyBuilder }   from 'wechaty'
+import { firstValueFrom }   from 'rxjs'
+import { filter, take }     from 'rxjs/operators'
+import assert               from 'assert'
 
 async function main () {
   const wechaty = WechatyBuilder.build({ puppet: 'wechaty-puppet-mock' })
@@ -38,19 +34,27 @@ async function main () {
   const eventList: any[] = []
   bus$.subscribe(e => eventList.push(e))
 
-  const command = CQRS.commands.dingCommand(wechaty.puppet.id, 'ding-data')
-  bus$.next(command)
-
-  await firstValueFrom(bus$.pipe(
-    filter(CQRS.isEventOf(CQRS.events.dongReceivedEvent)),
+  const future = firstValueFrom(bus$.pipe(
+    filter(CQRS.is(CQRS.events.DongReceivedEvent)),
     take(1),
   ))
 
+  const command = CQRS.commands.DingCommand(wechaty.puppet.id, 'ding-data')
+  bus$.next(command)
+
+  await future
+
   assert.deepEqual(eventList, [
-    command,
-    CQRS.responses.dingCommandResponse(command.meta),
-    CQRS.events.dongReceivedEvent(command.meta.puppetId, { data: command.payload.data }),
-  ], 'should get dingCommand & dingedMessage & dingReceivedEvent')
+    JSON.parse(JSON.stringify(
+      command,
+    )),
+    JSON.parse(JSON.stringify(
+      CQRS.responses.DingCommandResponse(command.meta),
+    )),
+    JSON.parse(JSON.stringify(
+      CQRS.events.DongReceivedEvent(command.meta.puppetId, { data: command.payload.data }),
+    )),
+  ], 'should get DingCommand & DingedMessage & DingReceivedEvent')
 
   assert.notEqual(CQRS.VERSION, '0.0.0', 'version should be set before publishing')
 }
