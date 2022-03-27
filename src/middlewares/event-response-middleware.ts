@@ -20,8 +20,8 @@
 import { log }              from 'wechaty-puppet'
 import type { Middleware }  from 'redux'
 
-import type { Bus }     from '../bus.js'
-import { plainToClass } from '../classify/plain-to-class.js'
+import type { Bus }         from '../bus.js'
+import { plainToInstance }  from '../classify/plain-to-instance.js'
 
 /**
  * Output: Events & Response
@@ -35,7 +35,7 @@ export const eventResponseMiddleware: (erBus$: Bus) => Middleware = erBus$ =>
         /**
          * Convert the object from a Plain Object to a Class Object (and compatible with the Plain Object)
          */
-        const classOrPlainObject = plainToClass(action) || action
+        const classOrPlainObject = plainToInstance(action) || action
 
         erBus$.next(classOrPlainObject)
         next(action)
