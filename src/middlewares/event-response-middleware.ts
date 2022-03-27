@@ -33,10 +33,11 @@ export const eventResponseMiddleware: (erBus$: Bus) => Middleware = erBus$ =>
         log.verbose('WechatyCqrs', 'eventResponseMiddleware() erBus$.next(%s)', JSON.stringify(action))
 
         /**
-         * Convert the object from a Plain Object to a Class Object (and compatible with the Plain Object)
+         * Data Transfer Object (DTO) transision:
+         *  Convert the object from a Plain Object to a Instance Object (and compatible with the Plain Object)
          */
-        const classOrPlainObject = plainToInstance(action) || action
+        const instanceOrPlainObject = plainToInstance(action) || action
 
-        erBus$.next(classOrPlainObject)
+        erBus$.next(instanceOrPlainObject)
         next(action)
       }

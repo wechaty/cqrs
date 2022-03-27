@@ -13,21 +13,21 @@ test('plainToClass smoke testing', async t => {
 
   const DingCommand = classify(actions.dingCommand)
 
-  const plainObject = actions.dingCommand(PUPPET_ID, DATA)
-  const classObject = plainToInstance(plainObject)
+  const plainObject     = actions.dingCommand(PUPPET_ID, DATA)
+  const instanceObject  = plainToInstance(plainObject)
 
-  t.ok(classObject instanceof DingCommand, 'should convert to class object')
-  t.same(plainObject, classObject, 'should be equal for all payloads')
+  t.ok(instanceObject instanceof DingCommand, 'should convert to class object')
+  t.same(plainObject, instanceObject, 'should be equal for all payloads')
   t.same(
     JSON.parse(JSON.stringify(plainObject)),
-    JSON.parse(JSON.stringify(classObject)),
+    JSON.parse(JSON.stringify(instanceObject)),
     'should be equal for all payloads (JSON)',
   )
 })
 
 test('plainToClass return `undefined` for the unknown object', async t => {
   const plainObject     = { type: 'unknown' } as any
-  const returnedObject  = plainToInstance(plainObject)
+  const instanceObject  = plainToInstance(plainObject)
 
-  t.equal(returnedObject, undefined, 'should be return `undefined` if it can not be recongnized')
+  t.equal(instanceObject, undefined, 'should be return `undefined` if it can not be recongnized')
 })
