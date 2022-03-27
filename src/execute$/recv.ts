@@ -31,7 +31,7 @@ import { log }          from 'wechaty-puppet'
 import { GError }       from 'gerror'
 
 import type { MetaRequest, MetaResponse } from '../cqr-event/meta.js'
-import type { MetaActionCreator }         from '../cqr-event/meta-action-creator.js'
+import type { PayloadMetaCreator }         from '../cqr-event/payload-meta-creator.js'
 import type { ClassifiedConstructor }     from '../classify/classify.js'
 import type { Type, CQType }              from '../classified/mod.js'
 import type { BusObs }                    from '../bus.js'
@@ -51,7 +51,7 @@ export const recv = (timeoutMilliseconds: number) =>
     TResPayload extends {},
   >(
     commandQuery  : ActionBuilder<TCQType, TCQPayload, MetaRequest>,
-    ResponseClass : ClassifiedConstructor<MetaActionCreator<TResType, TResPayload, MetaResponse, [TResArg]>>,
+    ResponseClass : ClassifiedConstructor<PayloadMetaCreator<TResType, TResPayload, MetaResponse, [TResArg]>>,
   ) => (source$: BusObs) => source$.pipe(
     filter(isActionOf(ResponseClass)),
     tap(message => log.verbose('WechatyCqrs', 'execute$ recv() %s', JSON.stringify(message))),

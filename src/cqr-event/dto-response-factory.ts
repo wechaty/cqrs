@@ -2,7 +2,7 @@ import { getType } from 'typesafe-actions'
 
 import type { CQType }  from '../classified/mod.js'
 
-import type { MetaActionCreator }         from './meta-action-creator.js'
+import type { PayloadMetaCreator }        from './payload-meta-creator.js'
 import { ResponseType, responseType }     from './response-type.js'
 import { TypeActionMap, typeActionMap }   from './type-action-map.js'
 
@@ -17,13 +17,13 @@ export function dtoResponseFactory <
   T extends CQType,
   RT extends ResponseType<T>
 > (
-  creator: MetaActionCreator<T, any, any, any>,
+  creator: PayloadMetaCreator<T>,
 ): TypeActionMap[RT]
 
 export function dtoResponseFactory <
   T extends CQType,
   RT extends ResponseType<T>
-> (type: T | MetaActionCreator<T, any, any, any>) {
+> (type: T | PayloadMetaCreator<T>) {
   return (typeActionMap as any)[
     typeof type === 'string'
       ? responseType(type)

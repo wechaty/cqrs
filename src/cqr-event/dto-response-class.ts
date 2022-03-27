@@ -2,7 +2,7 @@ import { ClassifiedConstructor, classify }     from '../classify/classify.js'
 
 import type { CQType }  from '../classified/mod.js'
 
-import type { MetaActionCreator }   from './meta-action-creator.js'
+import type { PayloadMetaCreator }  from './payload-meta-creator.js'
 import type { ResponseOf }          from './response-of.js'
 import { dtoResponseFactory } from './dto-response-factory.js'
 
@@ -17,11 +17,11 @@ export function dtoResponseClass <T extends CQType> (
  * Get Response Class by action creator (factory)
  */
 export function dtoResponseClass <T extends CQType> (
-  creator: MetaActionCreator<T, any, any>,
+  creator: PayloadMetaCreator
 ): ClassifiedConstructor<ResponseOf<T>>
 
 export function dtoResponseClass <T extends CQType> (
-  type: T | MetaActionCreator<T, any, any>,
+  type: T | PayloadMetaCreator<T>,
 ): ClassifiedConstructor<ResponseOf<T>> {
   return typeof type === 'string'
     ? classify(dtoResponseFactory(type))

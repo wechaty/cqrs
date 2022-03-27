@@ -1,6 +1,6 @@
 import { getType } from 'typesafe-actions'
 
-import type { MetaActionCreator } from './meta-action-creator'
+import type { PayloadMetaCreator } from './payload-meta-creator'
 
 import * as duck from '../duck/mod.js'
 
@@ -14,7 +14,7 @@ type ActionMap = typeof duck.actions
  *  actions[types.DING_COMMAND] = ActionCreator
  */
 export type TypeActionMap = {
-  [K in keyof ActionMap as ActionMap[K] extends MetaActionCreator<infer TType> ? TType : never]: ActionMap[K]
+  [K in keyof ActionMap as ActionMap[K] extends PayloadMetaCreator<infer TType> ? TType : never]: ActionMap[K]
 }
 
 /**
