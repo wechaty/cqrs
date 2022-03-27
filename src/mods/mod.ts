@@ -17,7 +17,6 @@
  *   limitations under the License.
  *
  */
-export { isActionOf as is }   from 'typesafe-actions'
 
 /**
  * Classified: Command, Query, Response, and Event
@@ -35,3 +34,5 @@ export { execute$ }           from '../execute$/mod.js'
 export * as events$     from './events$.js'
 export * as sayables    from './sayables.js'
 export * as duck        from './duck.js'
+
+export { is } from './helpers.js'
