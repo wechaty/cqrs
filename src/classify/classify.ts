@@ -141,11 +141,10 @@ export function classify <
       throw new Error('PojoClass must be called with `new`')
     }
 
-    console.info('type:', type)
     const {
       meta,
       payload,
-    } = typeOrActionCreator(...args) // as ActionBuilder<T, TPayload, TMeta>
+    } = typeOrActionCreator(...args)
 
     this.type = type
     this.meta = meta

@@ -22,7 +22,14 @@ export const plainToInstance = <
   const Klass = classify(object.type)
 
   if (Klass) {
-    return Object.setPrototypeOf(object, Klass.prototype)
+    /**
+     * Create an new object for converting it to the class object
+     *  and keep the original object to be immutable.
+     *
+     * Or the redux will claim: "Actions must be plain objects."
+     *
+     */
+    return Object.setPrototypeOf({ ...object }, Klass.prototype)
   }
 
   /**

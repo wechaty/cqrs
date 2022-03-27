@@ -100,7 +100,7 @@ test('smoke testing', async t => {
   )
 })
 
-test.only('bus$.next(e) -> bus$.subscribe(e)', async t => {
+test('bus$.next(e) -> bus$.subscribe(e)', async t => {
   const mocker  = new mock.Mocker()
   const puppet  = new PuppetMock({ mocker })
   const wechaty = WechatyBuilder.build({ puppet })
@@ -115,11 +115,15 @@ test.only('bus$.next(e) -> bus$.subscribe(e)', async t => {
   bus$.next(testCommand)
 
   t.same(
-    JSON.parse(JSON.stringify(eventList.filter(isActionOf(CqrsDuck.actions.dingCommand)))),
+    JSON.parse(JSON.stringify(
+      eventList.filter(
+        isActionOf(CqrsDuck.actions.dingCommand),
+      ),
+    )),
     JSON.parse(JSON.stringify([
       testCommand,
     ])),
-    'should emit the event which has been next()-ed on bus$',
+    'should received the event from bus$ as same as the next()-ed one to bus$',
   )
 })
 
@@ -431,7 +435,7 @@ test('MessageReceivedEvent', async t => {
   )
 
   const EXPECTED_PAYLOAD: PUPPET.payloads.Message = {
-    id            : messagePayloadMessage.meta.id,
+    id            : messagePayloadMessage.payload.message!.id,
     listenerId    : user.id,
     talkerId      : mary.id,
     text          : TEXT,
@@ -439,8 +443,5 @@ test('MessageReceivedEvent', async t => {
     type          : PUPPET.types.Message.Text,
   }
 
-  // Huan(202006) Workaround for puppet payload mismatch
-  // delete (EXPECTED_PAYLOAD as any).mentionIdList
-
-  t.same(messagePayloadMessage.payload, EXPECTED_PAYLOAD, 'should receive message with expected payload')
+  t.same(messagePayloadMessage.payload, { message: EXPECTED_PAYLOAD }, 'should receive message with expected payload')
 })
