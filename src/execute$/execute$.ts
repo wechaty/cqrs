@@ -19,26 +19,19 @@
  */
 import {
   merge,
-}                     from 'rxjs'
-import type {
-  PayloadMetaAction,
-}                     from 'typesafe-actions'
+  EMPTY,
+  Observable,
+}                             from 'rxjs'
+import type { ActionBuilder } from 'typesafe-actions'
 
-import type {
-  MetaRequest,
-  MetaResponse,
-}                     from '../duck/actions/meta.js'
+import { dtoResponseClass }   from '../cqr-event/dto-response-class.js'
+import type { MetaRequest }   from '../cqr-event/meta.js'
+import type { CQType }        from '../classified/mod.js'
+import type { Bus }           from '../bus.js'
+import { TIMEOUT_MS }         from '../config.js'
 
-import type { Bus }   from '../bus.js'
-
-import {
-  Pair,
-  responseOf,
-}                     from '../duck/actions/action-pair.js'
-
-import { TIMEOUT_MS } from './constants.js'
-import { recv }       from './recv.js'
-import { send$ }      from './send$.js'
+import { recv }         from './recv.js'
+import { send$ }        from './send$.js'
 
 interface ExecuteOptions {
   timeoutMilliseconds: number,
@@ -47,21 +40,31 @@ interface ExecuteOptions {
 export const execute$ = (
   bus$    : Bus,
   options : ExecuteOptions = { timeoutMilliseconds: TIMEOUT_MS },
-) =>
-<
-  CQArgs extends any[],
-  CQType extends string,
-  CQPayload extends {},
+) => <
+  TType extends CQType,
+  TPayload extends {}
+> (action: ActionBuilder<TType, TPayload, MetaRequest>) => {
 
-  RArgs extends any[],
-  RType extends string,
-  RPayload extends {},
+  const ResponseClass = dtoResponseClass(action.type)
+  // console.info('ResponseClass', ResponseClass)
 
-  CQ  extends (..._: CQArgs)  => PayloadMetaAction <CQType,  CQPayload,  MetaRequest>,
-  R   extends (..._: RArgs)   => PayloadMetaAction <RType,   RPayload,   MetaResponse>,
-> (actionPair: Pair<CQ, R>) => (
-    action: ReturnType<CQ>,
-  ) => merge(
+  /**
+   * Force check the `ResponseClass` existance
+   */
+  const recv$ = ResponseClass as undefined | typeof ResponseClass
+    ? bus$.pipe(
+      // tap(e => console.info('tap', e)),
+      recv(options.timeoutMilliseconds)(
+        action,
+        /**
+         * Huan(202203) FIXME: remove `as any`
+         */
+        ResponseClass as any,
+      ),
+    ) as Observable<InstanceType<typeof ResponseClass>>
+    : EMPTY
+
+  return merge(
     /**
      * Recv
      *
@@ -69,12 +72,8 @@ export const execute$ = (
      *  `recv` should be put before(at the leftest) the `send$`
      *  because it need to subscribe the bus before sending any events
      */
-    bus$.pipe(
-      recv(options.timeoutMilliseconds)(
-        action,
-        responseOf(actionPair),
-      ),
-    ),
+    recv$,
+
     /**
      * Send
      *
@@ -84,3 +83,4 @@ export const execute$ = (
      */
     send$(bus$)(action),
   )
+}

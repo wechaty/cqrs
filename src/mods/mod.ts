@@ -17,28 +17,21 @@
  *   limitations under the License.
  *
  */
-import { packageJson }  from '../package-json.js'
+export { isActionOf as is }   from 'typesafe-actions'
 
 /**
- * Command, Query, Response, and Event
+ * Classified: Command, Query, Response, and Event
  */
 export * as commands    from './commands.js'
 export * as queries     from './queries.js'
 export * as events      from './events.js'
 export * as responses   from './responses.js'
 
-export {
-  type Bus,
-  type BusObs,
-}                       from '../bus.js'
-export { from }         from '../cqrs.js'
-export { execute$ }     from '../execute$/mod.js'
+export type { Bus, BusObs }   from '../bus.js'
+export { NAME, VERSION }      from '../config.js'
+export { from }               from '../cqrs.js'
+export { execute$ }           from '../execute$/mod.js'
 
 export * as events$     from './events$.js'
 export * as sayables    from './sayables.js'
-// export * as duck        from './duck.js'
-
-export { isActionOf as isEventOf }   from 'typesafe-actions'
-
-export const VERSION = packageJson.version || '0.0.0'
-export const NAME    = packageJson.name    || 'NONAME'
+export * as duck        from './duck.js'

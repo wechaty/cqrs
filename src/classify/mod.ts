@@ -17,10 +17,5 @@
  *   limitations under the License.
  *
  */
-
-/**
- *
- * Private used internally inside this NPM module only
- *
- */
-export const NOP_COMMAND = 'cqrs-wechaty/NOP_COMMAND'
+export { classify }     from './classify.js'
+export { classifyMap }  from './classify-map.js'

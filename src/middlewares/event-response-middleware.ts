@@ -17,20 +17,27 @@
  *   limitations under the License.
  *
  */
-import { log }            from 'wechaty-puppet'
-import type {
-  Middleware,
-}                         from 'redux'
+import { log }              from 'wechaty-puppet'
+import type { Middleware }  from 'redux'
 
-import type {
-  Bus,
-}                     from '../bus.js'
+import { plainToInstance }  from '../classify/plain-to-instance.js'
+import type { Bus }         from '../bus.js'
 
 /**
  * Output: Events & Response
  */
-export const eventResponseMiddleware: (erBus$: Bus) => Middleware = erBus$ => _store => next => action => {
-  log.verbose('WechatyCqrs', 'eventResponseMiddleware() emBus$.next(%s)', JSON.stringify(action))
-  erBus$.next(action)
-  next(action)
-}
+export const eventResponseMiddleware: (erBus$: Bus) => Middleware = erBus$ =>
+  _store =>
+    next =>
+      action => {
+        log.verbose('WechatyCqrs', 'eventResponseMiddleware() erBus$.next(%s)', JSON.stringify(action))
+
+        /**
+         * Data Transfer Object (DTO) transision:
+         *  Convert the object from a Plain Object to a Instance Object (and compatible with the Plain Object)
+         */
+        const instanceOrPlainObject = plainToInstance(action) || action
+        erBus$.next(instanceOrPlainObject)
+
+        next(action)
+      }

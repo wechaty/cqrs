@@ -19,9 +19,9 @@
  *
  */
 import { test } from 'tstest'
-import { responseOf } from '../duck/actions/action-pair.js'
 
-import * as Duck from '../duck/mod.js'
+import { responseOf } from '../cqr-event/response-of.js'
+import * as Duck      from '../duck/mod.js'
 
 import * as filterActionCreator from './action-creator-filter.js'
 

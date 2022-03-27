@@ -18,31 +18,23 @@
  *   limitations under the License.
  *
  */
-import {
-  isActionOf,
-  PayloadMetaAction,
-}                     from 'typesafe-actions'
-import {
-  of,
-}                     from 'rxjs'
+import { ActionBuilder, isActionOf }   from 'typesafe-actions'
+import { of }           from 'rxjs'
 import {
   catchError,
   filter,
   take,
   tap,
   timeout,
-}                     from 'rxjs/operators'
-import { log }        from 'wechaty-puppet'
-import { GError }     from 'gerror'
+}                       from 'rxjs/operators'
+import { log }          from 'wechaty-puppet'
+import { GError }       from 'gerror'
 
-import type {
-  MetaRequest,
-  MetaResponse,
-}                   from '../duck/actions/meta.js'
-
-import type {
-  BusObs,
-}                   from '../bus.js'
+import type { MetaRequest, MetaResponse } from '../cqr-event/meta.js'
+import type { PayloadMetaActionFactory }  from '../cqr-event/payload-meta-action-factory.js'
+import type { ClassifiedConstructor }     from '../classify/classify.js'
+import type { Type, CQType }              from '../classified/mod.js'
+import type { BusObs }                    from '../bus.js'
 
 /**
  * Monitor the `source$` to catch the `message` built by `messageActionBuilder` in response to the `commandQuery`
@@ -51,27 +43,26 @@ import type {
  */
 export const recv = (timeoutMilliseconds: number) =>
   <
-    CQType extends string,
-    CQPayload extends {},
+    TCQType extends CQType,
+    TCQPayload extends {},
 
-    RType extends string,
-    RPayload extends {},
-
-    TMetaResponse extends MetaResponse
+    TResArg extends MetaResponse,
+    TResType extends Type,
+    TResPayload extends {},
   >(
-    commandQuery    : PayloadMetaAction<CQType, CQPayload, MetaRequest>,
-    responseBuilder : (res: TMetaResponse) => PayloadMetaAction<RType, RPayload, MetaResponse>,
+    commandQuery  : ActionBuilder<TCQType, TCQPayload, MetaRequest>,
+    ResponseClass : ClassifiedConstructor<PayloadMetaActionFactory<TResType, TResPayload, MetaResponse, [TResArg]>>,
   ) => (source$: BusObs) => source$.pipe(
-    filter(isActionOf(responseBuilder)),
-    tap(message => log.verbose('WechatyCqrs', 'mapCommandQueryToMessage() recv() %s', JSON.stringify(message))),
+    filter(isActionOf(ResponseClass)),
+    tap(message => log.verbose('WechatyCqrs', 'execute$ recv() %s', JSON.stringify(message))),
     filter(message => message.meta.id === commandQuery.meta.id),
     timeout(timeoutMilliseconds),
     catchError(err =>
       of(
-        responseBuilder({
+        new ResponseClass({
           ...commandQuery.meta,
           gerror: GError.stringify(err),
-        } as MetaResponse as any),  // Huan(202203): FIXME: remove any
+        } as TResArg),
       ).pipe(
         tap(() => console.error(err)),
       ),

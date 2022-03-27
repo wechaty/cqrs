@@ -1,5 +1,5 @@
-
 const rules = {
+  'no-redeclare': 'off',
 }
 
 module.exports = {

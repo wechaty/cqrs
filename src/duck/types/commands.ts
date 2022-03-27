@@ -17,6 +17,15 @@
  *   limitations under the License.
  *
  */
+
+/**
+ * @internal
+ */
+export const NOP_COMMAND  = 'cqrs-wechaty/NOP_COMMAND'  // internal NOP
+
+/**
+ * @public
+ */
 export const DING_COMMAND         = 'cqrs-wechaty/DING_COMMAND'          // ding()
 export const RESET_COMMAND        = 'cqrs-wechaty/RESET_COMMAND'         // reset()
 export const SEND_MESSAGE_COMMAND = 'cqrs-wechaty/SEND_MESSAGE_COMMAND'  // messageSend()

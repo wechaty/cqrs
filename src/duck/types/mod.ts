@@ -1,4 +1,4 @@
 export * from './commands.js'
+export * from './command-responses.js'
 export * from './queries.js'
-
-export * from './private.js'
+export * from './query-responses.js'

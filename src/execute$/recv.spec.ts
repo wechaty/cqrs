@@ -20,30 +20,32 @@
  *
  */
 import {
+  AssertEqual,
   test,
   testSchedulerRunner,
 }                         from 'tstest'
 import { GError }         from 'gerror'
+import type { Observable } from 'rxjs'
 import {
   map,
   filter,
 }                         from 'rxjs/operators'
 import { isActionOf }     from 'typesafe-actions'
 
-import {
-  ResponseOf,
-  responseOf,
-}                     from '../duck/actions/action-pair.js'
-import * as CqrsDuck  from '../duck/mod.js'
+import * as CqrsDuck            from '../duck/mod.js'
+import { dtoResponseClass }     from '../cqr-event/dto-response-class.js'
+import { dtoResponseFactory }   from '../cqr-event/dto-response-factory.js'
+import * as classified          from '../classified/mod.js'
+import type { BusObs }          from '../bus.js'
 
-import { recv } from './recv.js'
+import { recv }     from './recv.js'
 
 test('recv() in time', testSchedulerRunner(m => {
   const PUPPET_ID   = 'puppet-id'
   const CONTACT_ID  = 'contact-id'
 
-  const query   = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
-  const response = responseOf(CqrsDuck.actions.getCurrentUserIdQuery)({
+  const query     = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
+  const response  = dtoResponseFactory(CqrsDuck.actions.getCurrentUserIdQuery)({
     ...query.meta,
     contactId : CONTACT_ID,
   })
@@ -59,10 +61,12 @@ test('recv() in time', testSchedulerRunner(m => {
 
   const bus$ = m.hot(source, values)
 
+  const Response = dtoResponseClass(CqrsDuck.actions.getCurrentUserIdQuery)
+
   const result$ = bus$.pipe(
     recv(TIMEOUT_MS)(
       query,
-      responseOf(CqrsDuck.actions.getCurrentUserIdQuery),
+      Response,
     ),
   )
 
@@ -73,10 +77,12 @@ test('recv() timeout', testSchedulerRunner(m => {
   const PUPPET_ID = 'puppet-id'
   const GERROR    = 'Timeout has occurred'
 
+  const Response = dtoResponseClass(CqrsDuck.actions.getCurrentUserIdQuery)
+
   const query     = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
-  const response  = responseOf(CqrsDuck.actions.getCurrentUserIdQuery)({
+  const response  = new Response({
     ...query.meta,
-    gerror    : GERROR,
+    gerror: GERROR,
   })
 
   const values = {
@@ -91,7 +97,7 @@ test('recv() timeout', testSchedulerRunner(m => {
 
   const bus$ = m.hot(source, values)
 
-  const normalizeMessage = (message: ReturnType<ResponseOf<typeof CqrsDuck.actions.getCurrentUserIdQuery>>) => ({
+  const normalizeMessage = (message: InstanceType<typeof classified.actions.GetCurrentUserIdQueryResponse>) => ({
     ...message,
     meta: {
       ...message.meta,
@@ -103,10 +109,31 @@ test('recv() timeout', testSchedulerRunner(m => {
     filter(isActionOf(CqrsDuck.actions.getCurrentUserIdQuery)),
     recv(TIMEOUT_MS)(
       query,
-      responseOf(CqrsDuck.actions.getCurrentUserIdQuery),
+      Response,
     ),
     map(normalizeMessage),
   )
 
   m.expectObservable(result$).toBe(expected, values)
 }))
+
+test('recv() typing', async t => {
+  const r = recv(1)(
+    new classified.actions.GetCurrentUserIdQuery(''),
+    classified.actions.GetCurrentUserIdQueryResponse,
+  )
+
+  type EXPECTED = (source$: BusObs) => Observable<InstanceType<typeof classified.actions.GetCurrentUserIdQueryResponse>>
+
+  type PARAMETERS           = Parameters<typeof r>
+  type EXPECTED_PARAMETERS  = Parameters<EXPECTED>
+
+  type RETURN           = ReturnType<typeof r>
+  type EXPECTED_RETURN  = ReturnType<EXPECTED>
+
+  const parametersTest: AssertEqual<PARAMETERS, EXPECTED_PARAMETERS> = true
+  const returnTest:     AssertEqual<RETURN,     EXPECTED_RETURN>     = true
+
+  t.ok(parametersTest, 'should match typing for parameters')
+  t.ok(returnTest, 'should match typing for return')
+})

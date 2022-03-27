@@ -18,11 +18,13 @@
  *
  */
 import type { ActionType } from 'typesafe-actions'
-import reducer from './reducers.js'
 
-import type * as actions     from './actions/mod.js'
+import reducer            from './reducers.js'
 
-export type Action = ActionType<typeof actions>
+import type * as actions  from './actions/mod.js'
+import type * as types    from './types/mod.js'
+export type Event = ActionType<typeof actions>
+export type Type  = typeof types[keyof typeof types]
 
 export default reducer
 export { reducer }

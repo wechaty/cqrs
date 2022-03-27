@@ -17,26 +17,23 @@
  *   limitations under the License.
  *
  */
-import * as types from '../types/mod.js'
-
-import type {
-  MetaResponse,
-}                     from './meta.js'
-
-import {
-  create,
-}                     from './action-pair.js'
+/**
+ * We add `_RESPONSE` to the end of the `type` for the Response Event for Command/Query
+ */
+const _RESPONSE = '_RESPONSE'
+export type ResponseType<T extends string> = `${T}${typeof _RESPONSE}`
+export const responseType = <T extends string> (type: T) => `${type}${_RESPONSE}` as ResponseType<T>
 
 /**
- *
- * Private used internally inside this NPM module only
- *
+ * Deal with a map object {}
  */
-const payloadNopCommand = (_puppetId: string)   => ({})
-const payloadNopMessage = (_res: MetaResponse)  => ({})
-
-export const nopCommand = create(
-  types.NOP_COMMAND,
-  payloadNopCommand,
-  payloadNopMessage,
-)
+export type ResponseTypeMap<T extends { [key: string]: string }> = {
+  [K in keyof T as ResponseType<string & K>]: ResponseType<T[K]>
+}
+export const responseTypeMap = <T extends { [key: string]: string }> (o: T) =>
+  Object.entries(o).reduce((acc, [key, val]) => {
+    const k = responseType(key)
+    const v = responseType(val)
+    acc[k] = v
+    return acc
+  }, {} as any) as ResponseTypeMap<T>

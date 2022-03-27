@@ -20,9 +20,7 @@
  */
 import { test } from 'tstest'
 
-import {
-  metaRequest,
-}                 from './meta.js'
+import { metaRequest } from './meta.js'
 
 test('metaRequest smoke testing', async t => {
   const PUPPET_ID = 'puppet-id'

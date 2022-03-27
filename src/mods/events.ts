@@ -1,1 +1,1 @@
-export * from '../duck/actions/events.js'
+export * from '../classified/actions/events.js'
