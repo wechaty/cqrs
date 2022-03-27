@@ -127,10 +127,7 @@ async function cqrsWechaty () {
 }
 
 async function main () {
-  const {
-    bus$,
-    puppetId,
-  }             = await cqrsWechaty()
+  const { bus$, puppetId } = await cqrsWechaty()
 
   const onStartedEvent$ = (bus$: CQRS.Bus) => CQRS.events$.startedEvent$(bus$).pipe(
     switchMap(() => merge(

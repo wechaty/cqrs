@@ -44,17 +44,21 @@ async function main () {
 
   await future
 
-  assert.deepEqual(eventList, [
-    JSON.parse(JSON.stringify(
-      command,
-    )),
-    JSON.parse(JSON.stringify(
-      CQRS.responses.DingCommandResponse(command.meta),
-    )),
-    JSON.parse(JSON.stringify(
-      CQRS.events.DongReceivedEvent(command.meta.puppetId, { data: command.payload.data }),
-    )),
-  ], 'should get DingCommand & DingedMessage & DingReceivedEvent')
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(eventList)),
+    [
+      JSON.parse(JSON.stringify(
+        command,
+      )),
+      JSON.parse(JSON.stringify(
+        CQRS.responses.DingCommandResponse(command.meta),
+      )),
+      JSON.parse(JSON.stringify(
+        CQRS.events.DongReceivedEvent(command.meta.puppetId, { data: command.payload.data }),
+      )),
+    ],
+    'should get DingCommand & DingedMessage & DingReceivedEvent',
+  )
 
   assert.notEqual(CQRS.VERSION, '0.0.0', 'version should be set before publishing')
 }
