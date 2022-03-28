@@ -1,3 +1,5 @@
-import { isActionOf }   from 'typesafe-actions'
+import { isActionOf as is }   from 'typesafe-actions'
 
-export const is = isActionOf
+export {
+  is,
+}
