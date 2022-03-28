@@ -39,3 +39,5 @@ export * as duck        from './duck.js'
 
 export * as events$     from './events$.js'
 export * as sayables    from './sayables.js'
+
+export * as uuid from 'uuid'

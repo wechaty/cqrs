@@ -65,6 +65,11 @@ test('mod export `is` (alias of isActionOf)', async t => {
   t.ok(mod.is, 'should export `is`')
 })
 
-// test('mod export duck', async t => {
-//   t.ok(mod.duck, 'should export duck')
-// })
+test('mod export duck', async t => {
+  t.ok(mod.duck, 'should export duck')
+})
+
+test('mod export uuid', async t => {
+  t.ok(mod.uuid, 'should export uuid')
+  t.ok(mod.uuid.validate(mod.uuid.v4()), 'should validate uuid.v4()')
+})
