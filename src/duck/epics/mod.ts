@@ -17,29 +17,12 @@
  *   limitations under the License.
  *
  */
-import {
-  isActionOf,
-}               from 'typesafe-actions'
-import {
-  filter,
-  mergeMap,
-}               from 'rxjs/operators'
-import type {
-  Epic,
-}               from 'redux-observable'
+import type { Epic }  from 'redux-observable'
+import { mergeMap }   from 'rxjs/operators'
 
-import * as actions from '../actions/mod.js'
-// import * as utils   from './utils.js'
+import { debug$ } from './debug$.js'
 
-import { debug$ }         from './debug$.js'
-
-import { ding$ }            from './ding$.js'
-import { messagePayload$ }  from './message-payload$.js'
-import { reset$ }           from './reset$.js'
-import { sendMessage$ }     from './send-message$.js'
-import { start$ }           from './start$.js'
-import { stop$ }            from './stop$.js'
-
+export * from './commands/mod.js'
 export * from './queries/mod.js'
 
 /**
@@ -49,44 +32,4 @@ export * from './queries/mod.js'
  */
 export const debugEpic: Epic = actions$ => actions$.pipe(
   mergeMap(debug$),
-)
-
-/**
- *
- * Commands
- *
- */
-export const dingEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.dingCommand)),
-  mergeMap(ding$),
-)
-
-export const resetEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.resetCommand)),
-  mergeMap(reset$),
-)
-
-export const sendMessageEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.sendMessageCommand)),
-  mergeMap(sendMessage$),
-)
-
-export const starEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.startCommand)),
-  mergeMap(start$),
-)
-
-export const stopEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.stopCommand)),
-  mergeMap(stop$),
-)
-
-/**
- *
- * Queries
- *
- */
-export const messagePayloadEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.getMessagePayloadQuery)),
-  mergeMap(messagePayload$),
 )

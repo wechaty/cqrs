@@ -19,30 +19,13 @@
  *   limitations under the License.
  *
  */
-import {
-  test,
-  sinon,
-}                   from 'tstest'
-import {
-  of,
-  firstValueFrom,
-}                   from 'rxjs'
-import {
-  filter,
-  mergeMap,
-}                   from 'rxjs/operators'
-import {
-  WechatyBuilder,
-}                   from 'wechaty'
-import * as PUPPET  from 'wechaty-puppet'
-
-import {
-  mock,
-  PuppetMock,
-}                     from 'wechaty-puppet-mock'
-import {
-  isActionOf,
-}                     from 'typesafe-actions'
+import { test, sinon }          from 'tstest'
+import { of, firstValueFrom }   from 'rxjs'
+import { filter, mergeMap }     from 'rxjs/operators'
+import { WechatyBuilder }       from 'wechaty'
+import * as PUPPET              from 'wechaty-puppet'
+import { mock, PuppetMock }     from 'wechaty-puppet-mock'
+import { isActionOf }           from 'typesafe-actions'
 
 /**
  * Initialize the classified actions

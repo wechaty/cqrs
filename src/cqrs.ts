@@ -17,23 +17,16 @@
  *   limitations under the License.
  *
  */
-import type * as WECHATY  from 'wechaty'
-import { log }            from 'wechaty-puppet'
-import {
-  Ducks,
-  nopReducer,
-}                         from 'ducks'
-import {
-  Subject,
-}                         from 'rxjs'
 import {
   createStore,
   compose,
   applyMiddleware,
-}                         from 'redux'
-import {
-  WechatyRedux,
-}                         from 'wechaty-redux'
+}                               from 'redux'
+import type * as WECHATY        from 'wechaty'
+import { log }                  from 'wechaty-puppet'
+import { Ducks, nopReducer }    from 'ducks'
+import { Subject }              from 'rxjs'
+import { WechatyRedux }         from 'wechaty-redux'
 
 import {
   commandQueryMiddleware,
@@ -41,9 +34,7 @@ import {
 }                           from './middlewares/mod.js'
 import * as CqrsDuck        from './duck/mod.js'
 
-import type {
-  Bus,
-}                     from './bus.js'
+import type { Bus }   from './bus.js'
 
 export function from (
   wechaty: WECHATY.impls.WechatyInterface,

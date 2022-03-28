@@ -89,7 +89,7 @@
     "wechaty-redux": "^1.19.2"
   },
   "peerDependencies": {
-    "wechaty": "^1.18.1"
+    "wechaty": "^1.19.10"
   },
   "devDependencies": {
     "@chatie/eslint-config": "^1.0.4",

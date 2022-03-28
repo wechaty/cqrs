@@ -19,26 +19,15 @@
  *   limitations under the License.
  *
  */
-import {
-  test,
-}                     from 'tstest'
-import {
-  firstValueFrom,
-}                     from 'rxjs'
-import {
-  filter,
-  take,
-}                     from 'rxjs/operators'
-import {
-  WechatyBuilder,
-}                     from 'wechaty'
-import { PuppetMock } from 'wechaty-puppet-mock'
+import { test }             from 'tstest'
+import { firstValueFrom }   from 'rxjs'
+import { filter, take }     from 'rxjs/operators'
+import { WechatyBuilder }   from 'wechaty'
 
 import * as CQRS from '../src/mods/mod.js'
 
 test('integration testing', async t => {
-  const puppet = new PuppetMock()
-  const wechaty = WechatyBuilder.build({ puppet })
+  const wechaty = WechatyBuilder.build({ puppet: 'wechaty-puppet-mock' })
 
   await wechaty.init()
   const bus$ = CQRS.from(wechaty)
@@ -46,13 +35,13 @@ test('integration testing', async t => {
   const startedEventFuture = firstValueFrom(bus$.pipe(
     filter(CQRS.is(CQRS.events.StartedEvent)),
   ))
-  bus$.next(CQRS.commands.StartCommand(puppet.id))
+  bus$.next(CQRS.commands.StartCommand(wechaty.puppet.id))
   await t.resolves(startedEventFuture, 'should get started after the start command')
 
   const stoppedEventFuture = firstValueFrom(bus$.pipe(
     filter(CQRS.is(CQRS.events.StoppedEvent)),
   ))
-  bus$.next(CQRS.commands.StopCommand(puppet.id))
+  bus$.next(CQRS.commands.StopCommand(wechaty.puppet.id))
   await t.resolves(stoppedEventFuture, 'should get stopped after the stopp command')
 })
 

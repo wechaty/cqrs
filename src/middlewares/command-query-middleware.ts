@@ -17,15 +17,11 @@
  *   limitations under the License.
  *
  */
-import { log }            from 'wechaty-puppet'
-import type {
-  Middleware,
-}                         from 'redux'
-import _ from 'lodash'
+import _                    from 'lodash'
+import { log }              from 'wechaty-puppet'
+import type { Middleware }  from 'redux'
 
-import type {
-  Bus,
-}                 from '../bus.js'
+import type { Bus } from '../bus.js'
 
 /**
  * Input: Commands & Queries
