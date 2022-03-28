@@ -37,11 +37,21 @@ interface ExecuteOptions {
   timeoutMilliseconds: number,
 }
 
+/**
+ * @description Execute a command and get the response.
+ * @param {Bus} bus$ - The bus instance.
+ * @param {ExecuteOptions} options
+ * @param {dto.CommandQuery} commandQuery - the command to execute
+ * @returns {Observable<dto.Response>} - the response of the command
+ * @example
+ * const command = new CQRS.dto.commands.DingCommand('puppet-id', 'data')
+ * const response$ = execute$(bus$)(command)
+ */
 export const execute$ = (
   bus$    : Bus,
   options : ExecuteOptions = { timeoutMilliseconds: TIMEOUT_MS },
 ) => <
-  TType extends dto.types.CQ,
+  TType extends dto.types.CommandQuery,
   TPayload extends {}
 > (action: ActionBuilder<TType, TPayload, MetaRequest>) => {
 

@@ -32,7 +32,7 @@ import type { Bus }           from '../bus.js'
  * @returns `EMPTY` observable
  */
 export const send$ = (bus$: Bus) => <
-  TType extends dto.types.CQ,
+  TType extends dto.types.CommandQuery,
   TPayload extends {},
 > (commandQuery: ActionBuilder<TType, TPayload, MetaRequest>) =>
     defer(() => {

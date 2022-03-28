@@ -149,7 +149,7 @@ test('execute$() ReturnType typing without input', async t => {
 
   type RESULT   = typeof execute
   type EXPECTED = <
-    TType extends dto.types.CQ,
+    TType extends dto.types.CommandQuery,
     TPayload extends {}
   >(
     action: PayloadMetaAction<TType, TPayload, MetaRequest>

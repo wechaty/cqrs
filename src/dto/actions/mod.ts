@@ -4,4 +4,4 @@ export * as responses   from './responses.js'
 export * as events      from './events.js'
 
 export * from './actions.js'
-export * from './cq.js'
+export * from './cqr-event.js'

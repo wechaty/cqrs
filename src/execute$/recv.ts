@@ -43,7 +43,7 @@ import type { BusObs }                    from '../bus.js'
  */
 export const recv = (timeoutMilliseconds: number) =>
   <
-    TCQType extends dto.types.CQ,
+    TCQType extends dto.types.CommandQuery,
     TCQPayload extends {},
 
     TResArg extends MetaResponse,

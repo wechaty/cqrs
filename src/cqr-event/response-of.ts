@@ -29,15 +29,15 @@ import { TypeActionMap, typeActionMap }   from './type-action-map.js'
  * Support both `type` and `MetaActionCreator<type>` as parameter
  */
 export type ResponseOf<
-  T extends dto.types.CQ | PayloadMetaActionFactory<dto.types.CQ>,
-> = T extends dto.types.CQ
+  T extends dto.types.CommandQuery | PayloadMetaActionFactory<dto.types.CommandQuery>,
+> = T extends dto.types.CommandQuery
   ? ResponseType<T> extends dto.types.Type ? TypeActionMap[ResponseType<T>] : never
   : T extends PayloadMetaActionFactory<infer TType>
     ? ResponseType<TType> extends dto.types.Type ? TypeActionMap[ResponseType<TType>] : never
     : never
 
 export const responseOf = <
-  T extends dto.types.CQ | PayloadMetaActionFactory<dto.types.CQ>,
+  T extends dto.types.CommandQuery | PayloadMetaActionFactory<dto.types.CommandQuery>,
 > (type: T) => typeof type === 'string'
     ? (typeActionMap as any)[responseType(type)]          as ResponseOf<T>
     : (typeActionMap as any)[responseType(getType(type))] as ResponseOf<T>

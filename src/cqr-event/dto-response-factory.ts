@@ -7,21 +7,21 @@ import { ResponseType, responseType }     from './response-type.js'
 import { TypeActionMap, typeActionMap }   from './type-action-map.js'
 
 export function dtoResponseFactory <
-  T extends dto.types.CQ,
+  T extends dto.types.CommandQuery,
   RT extends ResponseType<T>
 > (
   type: T,
 ):  TypeActionMap[RT]
 
 export function dtoResponseFactory <
-  T extends dto.types.CQ,
+  T extends dto.types.CommandQuery,
   RT extends ResponseType<T>
 > (
   creator: PayloadMetaActionFactory<T>,
 ): TypeActionMap[RT]
 
 export function dtoResponseFactory <
-  T extends dto.types.CQ,
+  T extends dto.types.CommandQuery,
   RT extends ResponseType<T>
 > (type: T | PayloadMetaActionFactory<T>) {
   return (typeActionMap as any)[
