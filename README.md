@@ -78,19 +78,19 @@ await wechaty.init()
 const bus$ = CQRS.from(wechaty)
 
 bus$.pipe(
-  filter(CQRS.isActionOf(CQRS.actions.messageReceivedEvent)),
+  filter(CQRS.is(CQRS.events.MessageReceivedEvent)),
   // MessageReceivedEvent -> Sayable
-  map(messageId => CQRS.duck.actions.getSayablePayloadQuery(
+  map(messageId => CQRS.queries.getSayablePayloadQuery(
     messageReceivedEvent.meta.puppetId,
     messageId,
   )),
-  mergeMap(CQRS.execute$(bus$)(CQRS.duck.actions.getSayablePayloadQueryResponse)),
+  mergeMap(CQRS.execute$(bus$)),
   // Log `sayable` to console
 ).subscribe(sayable =>
   console.info('Sayable:', sayable),
 )
 
-bus$.next(CQRS.duck.actions.startCommand(wechaty.puppet.id))
+bus$.next(CQRS.commands.StartCommand(wechaty.puppet.id))
 ```
 
 ## Getting Started
