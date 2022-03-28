@@ -80,7 +80,7 @@ const bus$ = CQRS.from(wechaty)
 bus$.pipe(
   filter(CQRS.is(CQRS.events.MessageReceivedEvent)),
   // MessageReceivedEvent -> Sayable
-  map(messageId => CQRS.queries.getSayablePayloadQuery(
+  map(messageId => CQRS.queries.GetSayablePayloadQuery(
     messageReceivedEvent.meta.puppetId,
     messageId,
   )),
