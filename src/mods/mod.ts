@@ -32,11 +32,10 @@ export type { Bus, BusObs }   from '../bus.js'
 export { NAME, VERSION }      from '../config.js'
 export { from }               from '../cqrs.js'
 export { execute$ }           from '../execute$/mod.js'
+export { is }                 from '../is.js'
 
 export * as dto         from '../dto/mod.js'
 export * as duck        from './duck.js'
 
 export * as events$     from './events$.js'
 export * as sayables    from './sayables.js'
-
-export { is } from './helpers.js'
