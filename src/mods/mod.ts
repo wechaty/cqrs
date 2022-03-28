@@ -19,22 +19,24 @@
  */
 
 /**
- * Classified: Command, Query, Response, and Event
+ * Data Transfer Object (DTO): Command, Query, Response, and Event
  */
 export {
   commands,
   queries,
   responses,
   events,
-}             from '../classified/actions/mod.js'
+}               from '../dto/actions/mod.js'
 
 export type { Bus, BusObs }   from '../bus.js'
 export { NAME, VERSION }      from '../config.js'
 export { from }               from '../cqrs.js'
 export { execute$ }           from '../execute$/mod.js'
 
+export * as dto         from '../dto/mod.js'
+export * as duck        from './duck.js'
+
 export * as events$     from './events$.js'
 export * as sayables    from './sayables.js'
-export * as duck        from './duck.js'
 
 export { is } from './helpers.js'

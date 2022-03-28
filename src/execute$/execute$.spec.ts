@@ -35,7 +35,7 @@ import { GError }                 from 'gerror'
 import { map, mergeMap }          from 'rxjs/operators'
 
 import * as duck              from '../duck/mod.js'
-import * as classified        from '../classified/mod.js'
+import * as dto               from '../dto/mod.js'
 import type { MetaRequest }   from '../cqr-event/meta.js'
 import type { ResponseOf }    from '../cqr-event/response-of.js'
 import { TIMEOUT_MS }         from '../config.js'
@@ -46,12 +46,12 @@ test('execute$() typing', async t => {
   const dummyBus$ = new Subject<any>()
 
   const execute1  = execute$(dummyBus$)
-  const execute2  = execute1(new classified.actions.GetCurrentUserIdQuery(''))
+  const execute2  = execute1(new dto.actions.queries.GetCurrentUserIdQuery(''))
   type RESULT     = typeof execute2
 
   type EXPECTED = Observable<
     InstanceType<
-      typeof classified.actions.GetCurrentUserIdQueryResponse
+      typeof dto.actions.responses.GetCurrentUserIdQueryResponse
     >
   >
 
@@ -63,8 +63,8 @@ test('execute$() query & response in time', testSchedulerRunner(m => {
   const PUPPET_ID   = 'puppet-id'
   const CONTACT_ID  = 'contact-id'
 
-  const query = new classified.actions.GetCurrentUserIdQuery(PUPPET_ID)
-  const response = new classified.actions.GetCurrentUserIdQueryResponse({
+  const query = new dto.actions.queries.GetCurrentUserIdQuery(PUPPET_ID)
+  const response = new dto.actions.responses.GetCurrentUserIdQueryResponse({
     ...query.meta,
     contactId : CONTACT_ID,
   })
@@ -90,8 +90,8 @@ test('execute$() query & response timeout', testSchedulerRunner(m => {
   const PUPPET_ID = 'puppet-id'
   const GERROR    = 'Timeout has occurred'
 
-  const query     = new classified.actions.GetCurrentUserIdQuery(PUPPET_ID)
-  const response  = new classified.actions.GetCurrentUserIdQueryResponse({
+  const query     = new dto.actions.queries.GetCurrentUserIdQuery(PUPPET_ID)
+  const response  = new dto.actions.responses.GetCurrentUserIdQueryResponse({
     gerror    : GERROR,
     id        : query.meta.id,
     puppetId  : query.meta.puppetId,
@@ -107,7 +107,7 @@ test('execute$() query & response timeout', testSchedulerRunner(m => {
 
   const dummyBus$ = new Subject<any>()
 
-  const normalizeMessage = (response: InstanceType<typeof classified.actions.GetCurrentUserIdQueryResponse>) => ({
+  const normalizeMessage = (response: InstanceType<typeof dto.actions.responses.GetCurrentUserIdQueryResponse>) => ({
     ...response,
     meta: {
       ...response.meta,
@@ -149,7 +149,7 @@ test('execute$() ReturnType typing without input', async t => {
 
   type RESULT   = typeof execute
   type EXPECTED = <
-    TType extends classified.CQType,
+    TType extends dto.types.CQ,
     TPayload extends {}
   >(
     action: PayloadMetaAction<TType, TPayload, MetaRequest>

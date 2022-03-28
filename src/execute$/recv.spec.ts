@@ -35,7 +35,7 @@ import { isActionOf }     from 'typesafe-actions'
 import * as CqrsDuck            from '../duck/mod.js'
 import { dtoResponseClass }     from '../cqr-event/dto-response-class.js'
 import { dtoResponseFactory }   from '../cqr-event/dto-response-factory.js'
-import * as classified          from '../classified/mod.js'
+import * as dto                 from '../dto/mod.js'
 import type { BusObs }          from '../bus.js'
 
 import { recv }     from './recv.js'
@@ -97,7 +97,7 @@ test('recv() timeout', testSchedulerRunner(m => {
 
   const bus$ = m.hot(source, values)
 
-  const normalizeMessage = (message: InstanceType<typeof classified.actions.GetCurrentUserIdQueryResponse>) => ({
+  const normalizeMessage = (message: InstanceType<typeof dto.actions.responses.GetCurrentUserIdQueryResponse>) => ({
     ...message,
     meta: {
       ...message.meta,
@@ -119,11 +119,11 @@ test('recv() timeout', testSchedulerRunner(m => {
 
 test('recv() typing', async t => {
   const r = recv(1)(
-    new classified.actions.GetCurrentUserIdQuery(''),
-    classified.actions.GetCurrentUserIdQueryResponse,
+    new dto.actions.queries.GetCurrentUserIdQuery(''),
+    dto.actions.responses.GetCurrentUserIdQueryResponse,
   )
 
-  type EXPECTED = (source$: BusObs) => Observable<InstanceType<typeof classified.actions.GetCurrentUserIdQueryResponse>>
+  type EXPECTED = (source$: BusObs) => Observable<InstanceType<typeof dto.actions.responses.GetCurrentUserIdQueryResponse>>
 
   type PARAMETERS           = Parameters<typeof r>
   type EXPECTED_PARAMETERS  = Parameters<EXPECTED>

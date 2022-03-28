@@ -33,7 +33,7 @@ import { GError }       from 'gerror'
 import type { MetaRequest, MetaResponse } from '../cqr-event/meta.js'
 import type { PayloadMetaActionFactory }  from '../cqr-event/payload-meta-action-factory.js'
 import type { ClassifiedConstructor }     from '../classify/classify.js'
-import type { Type, CQType }              from '../classified/mod.js'
+import type * as dto                      from '../dto/mod.js'
 import type { BusObs }                    from '../bus.js'
 
 /**
@@ -43,11 +43,11 @@ import type { BusObs }                    from '../bus.js'
  */
 export const recv = (timeoutMilliseconds: number) =>
   <
-    TCQType extends CQType,
+    TCQType extends dto.types.CQ,
     TCQPayload extends {},
 
     TResArg extends MetaResponse,
-    TResType extends Type,
+    TResType extends dto.types.Type,
     TResPayload extends {},
   >(
     commandQuery  : ActionBuilder<TCQType, TCQPayload, MetaRequest>,

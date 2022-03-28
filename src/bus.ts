@@ -25,7 +25,7 @@ import type {
   ActionType,
 }                   from 'typesafe-actions'
 
-import type * as classified from './classified/mod.js'
+import type * as dto from './dto/mod.js'
 
 // type BusSubject<T> = Subject<
 //   ActionType<T>
@@ -34,7 +34,7 @@ import type * as classified from './classified/mod.js'
 /**
  * Huan(202203): Use a simplified interface for Bus
  */
-export interface Bus<T = ActionType<typeof classified.actions>> {
+export interface Bus<T = ActionType<typeof dto.actions>> {
   asObservable : Subject<T>['asObservable']
   next         : Subject<T>['next']
   // complete     : Subject<T>['complete']

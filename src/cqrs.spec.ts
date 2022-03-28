@@ -47,7 +47,7 @@ import {
 /**
  * Initialize the classified actions
  */
-import './classified/mod.js'
+import './dto/mod.js'
 
 import * as CqrsDuck    from './duck/mod.js'
 import * as sayables    from './mods/sayables.js'

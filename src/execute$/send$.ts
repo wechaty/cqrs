@@ -23,7 +23,7 @@ import type { ActionBuilder }   from 'typesafe-actions'
 import { log }                  from 'wechaty-puppet'
 
 import type { MetaRequest }   from '../cqr-event/meta.js'
-import type * as classified   from '../classified/mod.js'
+import type * as dto          from '../dto/mod.js'
 import type { Bus }           from '../bus.js'
 
 /**
@@ -32,7 +32,7 @@ import type { Bus }           from '../bus.js'
  * @returns `EMPTY` observable
  */
 export const send$ = (bus$: Bus) => <
-  TType extends classified.CQType,
+  TType extends dto.types.CQ,
   TPayload extends {},
 > (commandQuery: ActionBuilder<TType, TPayload, MetaRequest>) =>
     defer(() => {
