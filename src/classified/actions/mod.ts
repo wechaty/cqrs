@@ -1,4 +1,7 @@
-export * from './commands.js'
-export * from './events.js'
-export * from './queries.js'
-export * from './responses.js'
+export * as commands    from './commands.js'
+export * as queries     from './queries.js'
+export * as responses   from './responses.js'
+export * as events      from './events.js'
+
+export * from './actions.js'
+export * from './cq.js'

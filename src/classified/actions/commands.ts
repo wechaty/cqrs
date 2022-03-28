@@ -1,5 +1,5 @@
 import { classifyMap }  from '../../classify/classify-map.js'
-import * as commands    from '../../duck/actions/commands.js'
+import * as duckCommands    from '../../duck/actions/commands.js'
 
 /**
  * Selective export `Command` only
@@ -11,4 +11,4 @@ export const {
   SendMessageCommand,
   StartCommand,
   StopCommand,
-} = classifyMap(commands)
+} = classifyMap(duckCommands)

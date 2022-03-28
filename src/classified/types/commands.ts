@@ -1,9 +1,5 @@
-import { types } from './types.js'
+import * as actions  from '../actions/commands.js'
 
-export const {
-  DING_COMMAND,
-  RESET_COMMAND,
-  SEND_MESSAGE_COMMAND,
-  START_COMMAND,
-  STOP_COMMAND,
-} = types
+import { getTypes }   from './get-types.js'
+
+export const commands = getTypes(actions)

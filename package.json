@@ -8,22 +8,6 @@
       "import": "./dist/esm/src/mods/mod.js",
       "require": "./dist/cjs/src/mods/mod.js"
     },
-    "./commands": {
-      "import": "./dist/esm/src/mods/commands.js",
-      "require": "./dist/cjs/src/mods/commands.js"
-    },
-    "./queries": {
-      "import": "./dist/esm/src/mods/queries.js",
-      "require": "./dist/cjs/src/mods/queries.js"
-    },
-    "./responses": {
-      "import": "./dist/esm/src/mods/responses.js",
-      "require": "./dist/cjs/src/mods/responses.js"
-    },
-    "./events": {
-      "import": "./dist/esm/src/mods/events.js",
-      "require": "./dist/cjs/src/mods/events.js"
-    },
     "./event$": {
       "import": "./dist/esm/src/mods/event$.js",
       "require": "./dist/cjs/src/mods/event$.js"
@@ -43,18 +27,6 @@
   },
   "typesVersions": {
     "*": {
-      "commands": [
-        "./dist/esm/src/mods/commands.d.ts"
-      ],
-      "queries": [
-        "./dist/esm/src/mods/queries.d.ts"
-      ],
-      "responses": [
-        "./dist/esm/src/mods/responses.d.ts"
-      ],
-      "events": [
-        "./dist/esm/src/mods/events.d.ts"
-      ],
       "sayables": [
         "./dist/esm/src/mods/sayables.d.ts"
       ],

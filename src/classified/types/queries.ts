@@ -1,9 +1,5 @@
-import { types } from './types.js'
+import * as actions  from '../actions/queries.js'
 
-export const {
-  GET_AUTH_QR_CODE_QUERY,
-  GET_CURRENT_USER_ID_QUERY,
-  GET_IS_LOGGED_IN_QUERY,
-  GET_MESSAGE_PAYLOAD_QUERY,
-  GET_SAYABLE_PAYLOAD_QUERY,
-} = types
+import { getTypes }   from './get-types.js'
+
+export const queries = getTypes(actions)

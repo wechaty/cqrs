@@ -21,10 +21,12 @@
 /**
  * Classified: Command, Query, Response, and Event
  */
-export * as commands    from './commands.js'
-export * as queries     from './queries.js'
-export * as events      from './events.js'
-export * as responses   from './responses.js'
+export {
+  commands,
+  queries,
+  responses,
+  events,
+}             from '../classified/actions/mod.js'
 
 export type { Bus, BusObs }   from '../bus.js'
 export { NAME, VERSION }      from '../config.js'

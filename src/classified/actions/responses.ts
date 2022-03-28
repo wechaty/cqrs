@@ -6,17 +6,23 @@ import * as queries     from '../../duck/actions/queries.js'
  * Selective export for `Response` only
  */
 export const {
+  /**
+   * Command Responses
+   */
   DingCommandResponse,
-  GetAuthQrCodeQueryResponse,
-  GetCurrentUserIdQueryResponse,
-  GetIsLoggedInQueryResponse,
-  GetMessagePayloadQueryResponse,
-  GetSayablePayloadQueryResponse,
   NopCommandResponse,
   ResetCommandResponse,
   SendMessageCommandResponse,
   StartCommandResponse,
   StopCommandResponse,
+  /**
+   * Query Responses
+   */
+  GetAuthQrCodeQueryResponse,
+  GetCurrentUserIdQueryResponse,
+  GetIsLoggedInQueryResponse,
+  GetMessagePayloadQueryResponse,
+  GetSayablePayloadQueryResponse,
 } = classifyMap({
   ...commands,
   ...queries,

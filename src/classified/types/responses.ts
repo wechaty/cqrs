@@ -1,14 +1,5 @@
-import { types } from './types.js'
+import * as actions  from '../actions/responses.js'
 
-export const {
-  DING_COMMAND_RESPONSE,
-  GET_AUTH_QR_CODE_QUERY_RESPONSE,
-  GET_CURRENT_USER_ID_QUERY_RESPONSE,
-  GET_IS_LOGGED_IN_QUERY_RESPONSE,
-  GET_MESSAGE_PAYLOAD_QUERY_RESPONSE,
-  GET_SAYABLE_PAYLOAD_QUERY_RESPONSE,
-  RESET_COMMAND_RESPONSE,
-  SEND_MESSAGE_COMMAND_RESPONSE,
-  START_COMMAND_RESPONSE,
-  STOP_COMMAND_RESPONSE,
-} = types
+import { getTypes }   from './get-types.js'
+
+export const responses = getTypes(actions)
