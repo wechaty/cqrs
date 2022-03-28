@@ -22,9 +22,9 @@ import {
   test,
   AssertEqual,
 }                     from 'tstest'
-import UUID           from 'uuid'
-import { isActionOf } from 'typesafe-actions'
+import * as UUID      from 'uuid'
 import * as PUPPET    from 'wechaty-puppet'
+import { isActionOf } from 'typesafe-actions'
 
 import * as duck    from '../duck/mod.js'
 

@@ -86,6 +86,7 @@
     "time-constants": "^1.0.3",
     "typesafe-actions": "^5.1.0",
     "utility-types": "^3.10.0",
+    "uuid": "^8.3.2",
     "wechaty-redux": "^1.19.2"
   },
   "peerDependencies": {

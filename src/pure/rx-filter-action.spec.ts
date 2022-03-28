@@ -18,15 +18,10 @@
  *   limitations under the License.
  *
  */
-import { test } from 'tstest'
-import {
-  of,
-  firstValueFrom,
-}                   from 'rxjs'
-import {
-  count,
-}                   from 'rxjs/operators'
-
+import { test }                 from 'tstest'
+import { of, firstValueFrom }   from 'rxjs'
+import { count }                from 'rxjs/operators'
+import * as UUID                from 'uuid'
 import * as Duck from '../duck/mod.js'
 
 import * as rxFilterAction from './rx-filter-action.js'
@@ -38,7 +33,7 @@ test('rx filter action smoke testing', async t => {
   const COMMAND   = Duck.actions.sendMessageCommand(PUPPET_ID, CONVERSATION_ID, {} as any)
   const EVENT     = Duck.actions.dongReceivedEvent(PUPPET_ID, { data: 'data' })
   const RESPONSE  = Duck.actions.dingCommandResponse({
-    id: 'uuid',
+    id: UUID.v4(),
     puppetId: PUPPET_ID,
   })
   const QUERY   = Duck.actions.getIsLoggedInQuery(PUPPET_ID)

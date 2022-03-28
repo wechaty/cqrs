@@ -18,7 +18,7 @@
  *
  */
 /* eslint-disable sort-keys */
-import UUID from 'uuid'
+import * as UUID from 'uuid'
 
 /**
  * 1. Request
