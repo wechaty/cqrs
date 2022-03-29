@@ -38,7 +38,8 @@ interface ExecuteOptions {
 }
 
 /**
- * @description Execute a command and get the response.
+ * Execute a `command` or `query` and get the `response` from `bus$` with a timeout option.
+ *
  * @param {Bus} bus$ - The bus instance.
  * @param {ExecuteOptions} options
  * @param {dto.CommandQuery} commandQuery - the command to execute

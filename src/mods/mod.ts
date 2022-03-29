@@ -30,9 +30,9 @@ export {
 
 export type { Bus, BusObs }   from '../bus.js'
 export { NAME, VERSION }      from '../config.js'
-export { from }               from '../cqrs.js'
+export { from }               from '../from.js'
 export { execute$ }           from '../execute$/mod.js'
-export { is }                 from '../is.js'
+export { isActionOf as is }   from 'typesafe-actions'
 
 export * as dto         from '../dto/mod.js'
 export * as duck        from './duck.js'

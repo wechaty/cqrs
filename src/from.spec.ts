@@ -36,7 +36,7 @@ import * as CqrsDuck    from './duck/mod.js'
 import * as sayables    from './mods/sayables.js'
 import { execute$ }     from './execute$/mod.js'
 
-import { from }       from './cqrs.js'
+import { from }       from './from.js'
 
 test('smoke testing', async t => {
   const mocker  = new mock.Mocker()

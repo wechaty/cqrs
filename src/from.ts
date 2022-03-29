@@ -37,7 +37,8 @@ import * as CqrsDuck        from './duck/mod.js'
 import type { Bus }   from './bus.js'
 
 /**
- * @description Create a bus$ RxJS Subject for a Wechaty instance.
+ * Create a bus$ RxJS Subject for a Wechaty instance.
+ *
  * @param wechaty
  * @returns bus$
  */
