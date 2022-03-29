@@ -82,7 +82,7 @@ bus$.pipe(
   // MessageReceivedEvent -> Sayable
   map(messageId => CQRS.queries.GetSayablePayloadQuery(
     messageReceivedEvent.meta.puppetId,
-    messageId,
+    messageId,Diagrams
   )),
   mergeMap(CQRS.execute$(bus$)),
   // Log `sayable` to console
@@ -104,7 +104,7 @@ Here's a video introduction for CQRS Wechaty with live demo, presented by Huan:
 The getting started [ding-dong-bot.ts](https://github.com/wechaty/getting-started/blob/main/examples/cqrs/ding-dong-bot.ts)
 in the video: <https://github.com/wechaty/getting-started/blob/main/examples/cqrs/ding-dong-bot.ts>
 
-## Diagrams
+## Architecture Diagrams
 
 ![CQRS Events Structure](docs/images/cqrs-events-diagram.svg)
 
@@ -113,7 +113,7 @@ graph LR
   classDef event fill:DarkGoldenRod
   classDef command fill:blue
   classDef query fill:green
-
+Diagrams
   subgraph Command
     C(VerbNounCommand):::command
   end
