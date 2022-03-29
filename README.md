@@ -65,7 +65,7 @@ npm install wechaty-cqrs wechaty
 
 ### Quick start
 
-Here's the CQRS version of the Wechaty ding/dong bot:
+Here's the CQRS version of the Wechaty bot usage:
 
 ```ts
 import * as CQRS    from 'wechaty-cqrs'
@@ -92,6 +92,8 @@ bus$.pipe(
 
 bus$.next(CQRS.commands.StartCommand(wechaty.puppet.id))
 ```
+
+Learn how to build a Ding Dong BOT with CQRS from our [examples/ding-dong-bot.ts](https://github.com/wechaty/cqrs/blob/main/examples/ding-dong-bot.ts)
 
 ## Getting Started
 
