@@ -6,8 +6,10 @@ import * as queries     from '../../duck/actions/queries/mod.js'
  */
 export const {
   GetAuthQrCodeQuery,
+  GetContactPayloadQuery,
   GetCurrentUserIdQuery,
   GetIsLoggedInQuery,
   GetMessagePayloadQuery,
+  GetRoomPayloadQuery,
   GetSayablePayloadQuery,
 } = classifyMap(queries)
