@@ -1,5 +1,7 @@
 export * from './auth-qr-code.js'
+export * from './contact-payload.js'
 export * from './current-user-id.js'
 export * from './is-logged-in.js'
 export * from './message-payload.js'
+export * from './room-payload.js'
 export * from './sayable-payload.js'
