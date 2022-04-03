@@ -1,5 +1,5 @@
-import { classifyMap }  from '../../classify/classify-map.js'
-import * as duckCommands    from '../../duck/actions/commands.js'
+import * as duckCommands    from '../../duck/actions/commands/mod.js'
+import { classifyMap }      from '../../classify/classify-map.js'
 
 /**
  * Selective export `Command` only

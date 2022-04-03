@@ -184,6 +184,21 @@ sequenceDiagram
 
 Read CQRS Wechaty API Reference at: <https://paka.dev/npm/wechaty-cqrs>
 
+## How to contribute
+
+### How to add a new command/query
+
+The following steps need to be followed:
+
+1. Duck
+    1. Add a new [type](src/duck/types/queries.ts) to the `commands` or `queries`
+    1. Add a new [action](src/duck/actions/queries.ts) to the `request` and `response`
+    1. Add a new [epic](src/duck/epics/queries) to call the async API
+1. DTO
+    1. Export new added `Command` / `Query` from [commands](src/dto/actions/commands.ts)] / [queries](src/dto/actions/queries.ts)
+    1. Export new added `Response` from [responses](src/dto/actions/responses.ts)
+1. Writing unit tests.
+
 ## Blogs
 
 - [Refactoring Friday BOT with NestJS, Domain-driven Design (DDD), and CQRS, @huan, Feb 27, 2022](https://wechaty.js.org/2022/02/27/refactoring-friday-bot-with-nestjs-ddd-cqrs/)
