@@ -17,6 +17,9 @@
  *   limitations under the License.
  *
  */
-export * from './commands.js'
-export * from './events.js'
-export * from './queries/mod.js'
+
+export * from './contact.js'
+export * from './message.js'
+export * from './misc.js'
+export * from './room.js'
+export * from './sayable.js'

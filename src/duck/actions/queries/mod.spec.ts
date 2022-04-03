@@ -20,7 +20,7 @@
  */
 import { test } from 'tstest'
 
-import * as queries from './queries.js'
+import * as queries from './mod.js'
 
 test('queries smoke testing', async t => {
   const ID = 'uuidv4'

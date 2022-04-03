@@ -20,5 +20,11 @@
 export const GET_AUTH_QR_CODE_QUERY    = 'cqrs-wechaty/GET_AUTH_QR_CODE_QUERY'     // qrCode
 export const GET_CURRENT_USER_ID_QUERY = 'cqrs-wechaty/GET_CURRENT_USER_ID_QUERY'  // currentUserId
 export const GET_IS_LOGGED_IN_QUERY    = 'cqrs-wechaty/GET_IS_LOGGED_IN_QUERY'     // isLoggedIn
+
+/**
+ * Get Paylaods
+ */
+export const GET_CONTACT_PAYLOAD_QUERY = 'cqrs-wechaty/GET_CONTACT_PAYLOAD_QUERY'  // contactPayload
 export const GET_MESSAGE_PAYLOAD_QUERY = 'cqrs-wechaty/GET_MESSAGE_PAYLOAD_QUERY'  // messagePayload
+export const GET_ROOM_PAYLOAD_QUERY    = 'cqrs-wechaty/GET_ROOM_PAYLOAD_QUERY'     // roomPayload
 export const GET_SAYABLE_PAYLOAD_QUERY = 'cqrs-wechaty/GET_SAYABLE_PAYLOAD_QUERY'  // sayablePayload
