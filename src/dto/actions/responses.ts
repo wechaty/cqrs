@@ -19,9 +19,11 @@ export const {
    * Query Responses
    */
   GetAuthQrCodeQueryResponse,
+  GetContactPayloadQueryResponse,
   GetCurrentUserIdQueryResponse,
   GetIsLoggedInQueryResponse,
   GetMessagePayloadQueryResponse,
+  GetRoomPayloadQueryResponse,
   GetSayablePayloadQueryResponse,
 } = classifyMap({
   ...commands,

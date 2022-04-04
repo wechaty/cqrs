@@ -18,30 +18,19 @@
  *   limitations under the License.
  *
  */
-import {
-  test,
-  AssertEqual,
-}                 from 'tstest'
+import { test, AssertEqual }    from 'tstest'
 
 import * as mod   from './mod.js'
 
-test('mod export packageJson', async t => {
+test('mod.*', async t => {
   t.ok(mod.NAME, 'should export NAME')
   t.ok(mod.VERSION, 'should export VERSION')
+  t.ok(mod.is, 'should export `is` (alias of isActionOf)')
+  t.ok(mod.from, 'should export from')
+  t.ok(mod.execute$, 'should export executed$')
 })
 
-test('mod export Commands, Queries, Responses, and Events', async t => {
-  t.ok(mod.commands, 'should export commands')
-  t.ok(mod.commands.DingCommand, 'should export commands.dingCommand')
-  t.ok(mod.queries, 'should export queries')
-  t.ok(mod.queries.GetIsLoggedInQuery, 'should export queries.getIsLoggedInQuery')
-  t.ok(mod.responses, 'should export responses')
-  t.ok(mod.responses.GetIsLoggedInQueryResponse, 'should export responses.getIsLoggedInQueryResponse')
-  t.ok(mod.events, 'should export event')
-  t.ok(mod.events.StartedEvent, 'should export events.startedEvent')
-})
-
-test('mod export Bus and BusObs', async t => {
+test('mod.* typings', async t => {
   const busOk: AssertEqual<
     mod.Bus,
     mod.Bus
@@ -56,20 +45,35 @@ test('mod export Bus and BusObs', async t => {
   t.ok(busObsOk, 'should export BusObs type')
 })
 
-test('mod export from & execute$', async t => {
-  t.ok(mod.from, 'should export from')
-  t.ok(mod.execute$, 'should export executed$')
-})
-
-test('mod export `is` (alias of isActionOf)', async t => {
-  t.ok(mod.is, 'should export `is`')
-})
-
-test('mod export duck', async t => {
+test('mod.duck.*', async t => {
   t.ok(mod.duck, 'should export duck')
 })
 
-test('mod export uuid', async t => {
+test('mod.uuid.*', async t => {
   t.ok(mod.uuid, 'should export uuid')
   t.ok(mod.uuid.validate(mod.uuid.v4()), 'should validate uuid.v4()')
+})
+
+/**
+ * Command, Query, Responses, Events
+ */
+test('mod.commands.*', async t => {
+  t.ok(mod.commands, 'should export commands')
+  t.ok(mod.commands.DingCommand, 'should export commands.dingCommand')
+})
+
+test('mod.queries.*', async t => {
+  t.ok(mod.queries, 'should export queries')
+  t.ok(mod.queries.GetIsLoggedInQuery, 'should export queries.getIsLoggedInQuery')
+})
+
+test('mod.responses.*', async t => {
+  t.ok(mod.responses, 'should export responses')
+  t.ok(mod.responses.GetIsLoggedInQueryResponse, 'should export responses.getIsLoggedInQueryResponse')
+  t.ok(mod.responses.GetContactPayloadQueryResponse, 'should export responses.GetContactPayloadQueryResponse')
+})
+
+test('mod.events.*', async t => {
+  t.ok(mod.events, 'should export event')
+  t.ok(mod.events.StartedEvent, 'should export events.startedEvent')
 })
