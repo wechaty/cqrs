@@ -195,7 +195,7 @@ const dingCommand = CQRS.dto.commands.DingCommand()
 // ...
 ```
 
-Learn more from the [source code](dto/mod.ts)
+Learn more from the [source code](src/dto/mod.ts)
 
 ## API Reference
 
