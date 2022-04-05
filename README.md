@@ -191,7 +191,7 @@ CQRS Wechaty has encapsulated all the events to DTOs, exported by:
 import * as CQRS from 'wechaty-cqrs'
 
 // You will get DTOs at: CQRS.dto.*
-const dingCommand = CQRS.dto.commands.DingCommand()
+const dingCommand = CQRS.dto.actions.commands.DingCommand()
 // ...
 ```
 
