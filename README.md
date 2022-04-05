@@ -188,14 +188,21 @@ is an object that carries data between processes.
 CQRS Wechaty has encapsulated all the events to DTOs, exported by:
 
 ```ts
+// You will get DTOs from CQRS.{commands,queries} module
 import * as CQRS from 'wechaty-cqrs'
 
-// You will get DTOs at: CQRS.dto.*
-const dingCommand = CQRS.dto.actions.commands.DingCommand()
-// ...
+/**
+ * Examples: building Data Transfer Object for
+ *  - `DingCommand`
+ *  - `GetIsLoggedInQuery
+ */
+const dingCommand         = CQRS.commands.DingCommand(...)
+const getIsLoggedInQuery  = CQRS.queries.GetIsLoggedInQuery(...)
+
+// Use them as you needed
 ```
 
-Learn more from the [source code](src/dto/mod.ts)
+Learn more from the [source code](src/dto/actions/)
 
 ## API Reference
 
