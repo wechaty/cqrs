@@ -180,6 +180,22 @@ sequenceDiagram
     Redux->>Bus: ReceivedEvent
 ```
 
+## Data Transfer Object (DTO)
+
+A [Data Transfer Object (DTO)](https://en.wikipedia.org/wiki/Data_transfer_object) is an object that carries data between processes.
+
+CQRS Wechaty has encapsulated all the events to DTOs, exported by:
+
+```ts
+import * as CQRS from 'wechaty-cqrs'
+
+// You will get DTOs at: CQRS.dto.*
+const dingCommand = CQRS.dto.commands.DingCommand()
+// ...
+```
+
+Learn more from the [source code](dto/mod.ts)
+
 ## API Reference
 
 Read CQRS Wechaty API Reference at: <https://paka.dev/npm/wechaty-cqrs>
