@@ -35,7 +35,7 @@ async function main () {
   bus$.subscribe(e => eventList.push(e))
 
   const future = firstValueFrom(bus$.pipe(
-    filter(CQRS.is(CQRS.events.DongReceivedEvent)),
+    filter(CQRS.is(CQRS.events.DONG_RECEIVED_EVENT)),
     take(1),
   ))
 
