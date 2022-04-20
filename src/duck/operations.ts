@@ -22,16 +22,16 @@ import type * as PUPPET   from 'wechaty-puppet'
 
 import * as actions from './actions/mod.js'
 
-const ding  = (dispatch: Dispatch) => (puppetId: string, data?: string)  => dispatch(actions.dingCommand(puppetId, data))
-const reset = (dispatch: Dispatch) => (puppetId: string, data?: string)  => dispatch(actions.resetCommand(puppetId, data))
+const ding  = (dispatch: Dispatch) => (puppetId: string, data?: string)  => dispatch(actions.DING_COMMAND(puppetId, data))
+const reset = (dispatch: Dispatch) => (puppetId: string, data?: string)  => dispatch(actions.RESET_COMMAND(puppetId, data))
 
 const sendMessage = (dispatch: Dispatch) => (
   puppetId       : string,
   conversationId : string,
   sayable        : PUPPET.payloads.Sayable,
-) => dispatch(actions.sendMessageCommand(puppetId, conversationId, sayable))
+) => dispatch(actions.SEND_MESSAGE_COMMAND(puppetId, conversationId, sayable))
 
-const nop = (dispatch: Dispatch) => (puppetId: string) => dispatch(actions.nopCommand(puppetId))
+const nop = (dispatch: Dispatch) => (puppetId: string) => dispatch(actions.NOP_COMMAND(puppetId))
 
 export {
   ding,

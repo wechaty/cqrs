@@ -34,7 +34,7 @@ import * as CqrsDuck from '../duck/mod.js'
 import { send$ } from './send$.js'
 
 test('send$() EMPTY', testSchedulerRunner(m => {
-  const query   = CqrsDuck.actions.getCurrentUserIdQuery('puppet-id')
+  const query   = CqrsDuck.actions.GET_CURRENT_USER_ID_QUERY('puppet-id')
   const values  = { q: query }
 
   const source    = '-q-|'
@@ -51,7 +51,7 @@ test('send$() EMPTY', testSchedulerRunner(m => {
 }))
 
 test('send$() with bus$', testSchedulerRunner(m => {
-  const query   = CqrsDuck.actions.getCurrentUserIdQuery('puppet-id')
+  const query   = CqrsDuck.actions.GET_CURRENT_USER_ID_QUERY('puppet-id')
   const values  = { q: query }
 
   const source    = '-x'

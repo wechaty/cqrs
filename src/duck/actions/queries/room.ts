@@ -10,5 +10,5 @@ import { metaRequest, metaResponse, MetaResponse }  from '../../../cqr-event/met
 const payloadGetRoomPayloadQuery         = (_puppetId: string, roomId: string)                      => ({ roomId })
 const payloadGetRoomPayloadQueryResponse = (res: MetaResponse & { room?: PUPPET.payloads.Room }) => ({ room: res.room })
 
-export const getRoomPayloadQuery         = createAction(types.GET_ROOM_PAYLOAD_QUERY,           payloadGetRoomPayloadQuery,          metaRequest)()
-export const getRoomPayloadQueryResponse = createAction(types.GET_ROOM_PAYLOAD_QUERY_RESPONSE,  payloadGetRoomPayloadQueryResponse,  metaResponse)()
+export const GET_ROOM_PAYLOAD_QUERY           = createAction(types.GET_ROOM_PAYLOAD_QUERY,           payloadGetRoomPayloadQuery,          metaRequest)()
+export const GET_ROOM_PAYLOAD_QUERY_RESPONSE  = createAction(types.GET_ROOM_PAYLOAD_QUERY_RESPONSE,  payloadGetRoomPayloadQueryResponse,  metaResponse)()

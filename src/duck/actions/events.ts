@@ -17,30 +17,30 @@
  *   limitations under the License.
  *
  */
-import { Duck } from 'wechaty-redux'
+import * as WechatyRedux from 'wechaty-redux'
 
 /**
  * Huan(202203): reuse Events from Wechaty Redux
  */
 export const {
-  stateActivatedEvent,
-  stateInactivatedEvent,
+  STATE_ACTIVATED_EVENT,
+  STATE_INACTIVATED_EVENT,
 
-  startedEvent,
-  stoppedEvent,
+  STARTED_EVENT,
+  STOPPED_EVENT,
 
-  dongReceivedEvent,
-  errorReceivedEvent,
-  friendshipReceivedEvent,
-  heartbeatReceivedEvent,
-  loginReceivedEvent,
-  logoutReceivedEvent,
-  messageReceivedEvent,
-  readyReceivedEvent,
-  resetReceivedEvent,
-  roomInviteReceivedEvent,
-  roomJoinReceivedEvent,
-  roomLeaveReceivedEvent,
-  roomTopicReceivedEvent,
-  scanReceivedEvent,
-}                             = Duck.actions
+  DONG_RECEIVED_EVENT,
+  ERROR_RECEIVED_EVENT,
+  FRIENDSHIP_RECEIVED_EVENT,
+  HEARTBEAT_RECEIVED_EVENT,
+  LOGIN_RECEIVED_EVENT,
+  LOGOUT_RECEIVED_EVENT,
+  MESSAGE_RECEIVED_EVENT,
+  READY_RECEIVED_EVENT,
+  RESET_RECEIVED_EVENT,
+  ROOM_INVITE_RECEIVED_EVENT,
+  ROOM_JOIN_RECEIVED_EVENT,
+  ROOM_LEAVE_RECEIVED_EVENT,
+  ROOM_TOPIC_RECEIVED_EVENT,
+  SCAN_RECEIVED_EVENT,
+}                             = WechatyRedux.Duck.actions

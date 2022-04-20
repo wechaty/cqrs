@@ -30,7 +30,7 @@ import { dtoClass } from './dto-class.js'
 
 test('dtoClass() by type & action', async t => {
   const ByType    = dtoClass(duck.types.SEND_MESSAGE_COMMAND)
-  const ByAction  = dtoClass(duck.actions.sendMessageCommand)
+  const ByAction  = dtoClass(duck.actions.SEND_MESSAGE_COMMAND)
   t.equal(ByType, ByAction, 'should be equal')
 })
 
@@ -42,7 +42,7 @@ test('dtoClass() payload', async t => {
   const SendMessageCommand = dtoClass(duck.types.SEND_MESSAGE_COMMAND)
 
   const object = new SendMessageCommand(PUPPET_ID, CONVERSATION_ID, SAYABLE)
-  const EXPECTED = duck.actions.sendMessageCommand(PUPPET_ID, CONVERSATION_ID, SAYABLE)
+  const EXPECTED = duck.actions.SEND_MESSAGE_COMMAND(PUPPET_ID, CONVERSATION_ID, SAYABLE)
 
   delete (object.meta as any).id
   delete (EXPECTED.meta as any).id
@@ -59,11 +59,11 @@ test('dtoClass() typing', async t => {
 
   const testParameter: AssertEqual<
     ConstructorParameters<typeof SendMessageCommand>,
-    Parameters<typeof duck.actions.sendMessageCommand>
+    Parameters<typeof duck.actions.SEND_MESSAGE_COMMAND>
   > = true
   const testObject: AssertEqual<
     InstanceType<typeof SendMessageCommand>,
-    ReturnType<typeof duck.actions.sendMessageCommand>
+    ReturnType<typeof duck.actions.SEND_MESSAGE_COMMAND>
   > = true
 
   t.ok(testParameter, 'should be same typing for parameters')

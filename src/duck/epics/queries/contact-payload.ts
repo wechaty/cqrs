@@ -34,7 +34,7 @@ import { log }          from 'wechaty-puppet'
 import * as actions from '../../actions/mod.js'
 
 export const contactPayloadEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.getContactPayloadQuery)),
+  filter(isActionOf(actions.GET_CONTACT_PAYLOAD_QUERY)),
   tap(query => log.verbose('WechatyCqrs', 'contactPayloadEpic() %s', JSON.stringify(query))),
   mergeMap(query => of(query.meta.puppetId).pipe(
     map(getPuppet),
@@ -42,13 +42,13 @@ export const contactPayloadEpic: Epic = actions$ => actions$.pipe(
       ? from(puppet.contactPayload(query.payload.contactId))
       : of(undefined),
     ),
-    map(payload => actions.getContactPayloadQueryResponse({
+    map(payload => actions.GET_CONTACT_PAYLOAD_QUERY_RESPONSE({
       contact  : payload,
       id       : query.meta.id,
       puppetId : query.meta.puppetId,
     })),
     catchError(e => of(
-      actions.getContactPayloadQueryResponse({
+      actions.GET_CONTACT_PAYLOAD_QUERY_RESPONSE({
         ...query.meta,
         gerror: GError.stringify(e),
       }),

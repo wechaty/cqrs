@@ -14,8 +14,8 @@ import { execute$ }   from '../execute$/mod.js'
 /**
  * @deprecated use `execute$()` instead
  */
-export const mapMessageReceivedEventToSayable = (bus$: Bus) => (source$: ReturnType<typeof events$.messageReceivedEvent$>) => source$.pipe(
-  map(messageReceivedEvent => actions.getSayablePayloadQuery(
+export const mapMessageReceivedEventToSayable = (bus$: Bus) => (source$: ReturnType<typeof events$.MESSAGE_RECEIVED_EVENT$>) => source$.pipe(
+  map(messageReceivedEvent => actions.GET_SAYABLE_PAYLOAD_QUERY(
     messageReceivedEvent.meta.puppetId,
     messageReceivedEvent.payload.messageId,
   )),

@@ -44,8 +44,8 @@ test('recv() in time', testSchedulerRunner(m => {
   const PUPPET_ID   = 'puppet-id'
   const CONTACT_ID  = 'contact-id'
 
-  const query     = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
-  const response  = dtoResponseFactory(CqrsDuck.actions.getCurrentUserIdQuery)({
+  const query     = CqrsDuck.actions.GET_CURRENT_USER_ID_QUERY(PUPPET_ID)
+  const response  = dtoResponseFactory(CqrsDuck.actions.GET_CURRENT_USER_ID_QUERY)({
     ...query.meta,
     contactId : CONTACT_ID,
   })
@@ -61,7 +61,7 @@ test('recv() in time', testSchedulerRunner(m => {
 
   const bus$ = m.hot(source, values)
 
-  const Response = dtoResponseClass(CqrsDuck.actions.getCurrentUserIdQuery)
+  const Response = dtoResponseClass(CqrsDuck.actions.GET_CURRENT_USER_ID_QUERY)
 
   const result$ = bus$.pipe(
     recv(TIMEOUT_MS)(
@@ -77,9 +77,9 @@ test('recv() timeout', testSchedulerRunner(m => {
   const PUPPET_ID = 'puppet-id'
   const GERROR    = 'Timeout has occurred'
 
-  const Response = dtoResponseClass(CqrsDuck.actions.getCurrentUserIdQuery)
+  const Response = dtoResponseClass(CqrsDuck.actions.GET_CURRENT_USER_ID_QUERY)
 
-  const query     = CqrsDuck.actions.getCurrentUserIdQuery(PUPPET_ID)
+  const query     = CqrsDuck.actions.GET_CURRENT_USER_ID_QUERY(PUPPET_ID)
   const response  = new Response({
     ...query.meta,
     gerror: GERROR,
@@ -106,7 +106,7 @@ test('recv() timeout', testSchedulerRunner(m => {
   })
 
   const result$ = bus$.pipe(
-    filter(isActionOf(CqrsDuck.actions.getCurrentUserIdQuery)),
+    filter(isActionOf(CqrsDuck.actions.GET_CURRENT_USER_ID_QUERY)),
     recv(TIMEOUT_MS)(
       query,
       Response,

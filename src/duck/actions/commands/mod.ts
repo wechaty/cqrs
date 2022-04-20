@@ -36,8 +36,8 @@ import * as types from '../../types/mod.js'
 const payloadNopCommand         = (_puppetId: string)   => ({})
 const payloadNopCommandResponse = (_res: MetaResponse)  => ({})
 
-export const nopCommand         = createAction(types.NOP_COMMAND,           payloadNopCommand,          metaRequest)()
-export const nopCommandResponse = createAction(types.NOP_COMMAND_RESPONSE,  payloadNopCommandResponse,  metaResponse)()
+export const NOP_COMMAND          = createAction(types.NOP_COMMAND,           payloadNopCommand,          metaRequest)()
+export const NOP_COMMAND_RESPONSE = createAction(types.NOP_COMMAND_RESPONSE,  payloadNopCommandResponse,  metaResponse)()
 
 /**
  * puppet.messageSend()
@@ -45,8 +45,8 @@ export const nopCommandResponse = createAction(types.NOP_COMMAND_RESPONSE,  payl
 const payloadSendMessageCommand         = (_puppetId: string, conversationId: string, sayable: PUPPET.payloads.Sayable) => ({ conversationId, sayable })
 const payloadSendMessageCommandResponse = (res: MetaResponse & { messageId?: string })                                  => ({ messageId: res.messageId })
 
-export const sendMessageCommand         = createAction(types.SEND_MESSAGE_COMMAND,          payloadSendMessageCommand,          metaRequest)()
-export const sendMessageCommandResponse = createAction(types.SEND_MESSAGE_COMMAND_RESPONSE, payloadSendMessageCommandResponse,  metaResponse)()
+export const SEND_MESSAGE_COMMAND           = createAction(types.SEND_MESSAGE_COMMAND,          payloadSendMessageCommand,          metaRequest)()
+export const SEND_MESSAGE_COMMAND_RESPONSE  = createAction(types.SEND_MESSAGE_COMMAND_RESPONSE, payloadSendMessageCommandResponse,  metaResponse)()
 
 /**
  * puppet.ding()
@@ -54,8 +54,8 @@ export const sendMessageCommandResponse = createAction(types.SEND_MESSAGE_COMMAN
 const payloadDingCommand          = (_puppetId: string, data?: string)  => ({ data })
 const payloadDingCommandResponse  = (_res: MetaResponse)                => ({})
 
-export const dingCommand          = createAction(types.DING_COMMAND,          payloadDingCommand,         metaRequest)()
-export const dingCommandResponse  = createAction(types.DING_COMMAND_RESPONSE, payloadDingCommandResponse, metaResponse)()
+export const DING_COMMAND           = createAction(types.DING_COMMAND,          payloadDingCommand,         metaRequest)()
+export const DING_COMMAND_RESPONSE  = createAction(types.DING_COMMAND_RESPONSE, payloadDingCommandResponse, metaResponse)()
 
 /**
  * puppet.reset()
@@ -63,8 +63,8 @@ export const dingCommandResponse  = createAction(types.DING_COMMAND_RESPONSE, pa
 const payloadResetCommand         = (_puppetId: string, data?: string)  => ({ data })
 const payloadResetCommandResponse = (_res: MetaResponse)                => ({})
 
-export const resetCommand         = createAction(types.RESET_COMMAND,           payloadResetCommand,          metaRequest)()
-export const resetCommandResponse = createAction(types.RESET_COMMAND_RESPONSE,  payloadResetCommandResponse,  metaResponse)()
+export const RESET_COMMAND          = createAction(types.RESET_COMMAND,           payloadResetCommand,          metaRequest)()
+export const RESET_COMMAND_RESPONSE = createAction(types.RESET_COMMAND_RESPONSE,  payloadResetCommandResponse,  metaResponse)()
 
 /**
  * puppet.start()
@@ -72,8 +72,8 @@ export const resetCommandResponse = createAction(types.RESET_COMMAND_RESPONSE,  
 const payloadStartCommand         = (_puppetId: string)  => ({})
 const payloadStartCommandResponse = (_res: MetaResponse) => ({})
 
-export const startCommand         = createAction(types.START_COMMAND,           payloadStartCommand,          metaRequest)()
-export const startCommandResponse = createAction(types.START_COMMAND_RESPONSE,  payloadStartCommandResponse,  metaResponse)()
+export const START_COMMAND          = createAction(types.START_COMMAND,           payloadStartCommand,          metaRequest)()
+export const START_COMMAND_RESPONSE = createAction(types.START_COMMAND_RESPONSE,  payloadStartCommandResponse,  metaResponse)()
 
 /**
  * puppet.stop()
@@ -81,5 +81,5 @@ export const startCommandResponse = createAction(types.START_COMMAND_RESPONSE,  
 const payloadStopCommand          = (_puppetId: string)   => ({})
 const payloadStopCommandResponse  = (_res: MetaResponse)  => ({})
 
-export const stopCommand          = createAction(types.STOP_COMMAND,          payloadStopCommand,         metaRequest)()
-export const stopCommandResponse  = createAction(types.STOP_COMMAND_RESPONSE, payloadStopCommandResponse, metaResponse)()
+export const STOP_COMMAND           = createAction(types.STOP_COMMAND,          payloadStopCommand,         metaRequest)()
+export const STOP_COMMAND_RESPONSE  = createAction(types.STOP_COMMAND_RESPONSE, payloadStopCommandResponse, metaResponse)()

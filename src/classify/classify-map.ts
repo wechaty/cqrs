@@ -6,6 +6,7 @@ import {
 }                           from './classify.js'
 
 import type { PayloadMetaActionFactory } from '../cqr-event/payload-meta-action-factory.js'
+import { SnakeToUpperCamelCase, snakeToUpperCamelCase } from './snake-to-upper-camel-case.js'
 
 /**
  * Convert an actionMap to a classMap
@@ -17,7 +18,16 @@ export const classifyMap = <
   >
 > (actionMap: T) =>
   Object.entries(actionMap).reduce((acc, [key, creator]) => {
-    acc[_.upperFirst(key)] = classify(creator)
+    /**
+     * DING_COMMAND -> DingCommand
+     */
+    acc[snakeToUpperCamelCase(key)] = classify(creator)
+
+    /**
+     * dingCommand -> DingCommand
+     */
+    // acc[_.upperFirst(key)] = classify(creator)
+
     return acc
   }, {} as any) as {
     /**
@@ -28,5 +38,7 @@ export const classifyMap = <
      *  `sendMessageCommand` to `SendMessageCommand`
      *  by capitalizing the first letter of the first word.
      */
-    [K in keyof T as Capitalize<K & string>]: ClassifiedConstructor<T[K]>
+    [
+      K in keyof T as Capitalize<SnakeToUpperCamelCase<K & string>>
+    ]: ClassifiedConstructor<T[K]>
   }

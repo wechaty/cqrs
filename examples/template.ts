@@ -33,7 +33,7 @@ import {
 
 import * as CQRS    from '../src/mods/mod.js'
 
-const onScan$ = (source$: CQRS.BusObs) => CQRS.events$.scanReceivedEvent$(source$).pipe(
+const onScan$ = (source$: CQRS.BusObs) => CQRS.events$.SCAN_RECEIVED_EVENT$(source$).pipe(
   map(scanReceivedEvent => scanReceivedEvent.payload),
   tap(({ qrcode, status }) => console.info('onScan$: %s(%s) %s', PUPPET.types.ScanStatus[status], status, qrcode
     ? `https://wechaty.js.org/qrcode/${encodeURIComponent(qrcode)}`
@@ -41,7 +41,7 @@ const onScan$ = (source$: CQRS.BusObs) => CQRS.events$.scanReceivedEvent$(source
   )),
 )
 
-const onMessage$ = (bus$: CQRS.Bus) => CQRS.events$.messageReceivedEvent$(bus$).pipe(
+const onMessage$ = (bus$: CQRS.Bus) => CQRS.events$.MESSAGE_RECEIVED_EVENT$(bus$).pipe(
   map(messageReceivedEvent => CQRS.queries.GetSayablePayloadQuery(
     messageReceivedEvent.meta.puppetId,
     messageReceivedEvent.payload.messageId,

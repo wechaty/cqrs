@@ -34,17 +34,17 @@ import type { Epic }    from 'redux-observable'
 import * as actions from '../../actions/mod.js'
 
 export const isLoggedInEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.getIsLoggedInQuery)),
+  filter(isActionOf(actions.GET_IS_LOGGED_IN_QUERY)),
   tap(query => log.verbose('WechatyCqrs', 'isLoggedInEpic() %s', JSON.stringify(query))),
   mergeMap(query => of(query.meta.puppetId).pipe(
     map(getPuppet),
     map(puppet => !!(puppet?.isLoggedIn)),
-    map(isLoggedIn => actions.getIsLoggedInQueryResponse({
+    map(isLoggedIn => actions.GET_IS_LOGGED_IN_QUERY_RESPONSE({
       ...query.meta,
       isLoggedIn,
     })),
     catchError(e => of(
-      actions.getIsLoggedInQueryResponse({
+      actions.GET_IS_LOGGED_IN_QUERY_RESPONSE({
         ...query.meta,
         gerror: GError.stringify(e),
       }),

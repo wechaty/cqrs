@@ -29,7 +29,7 @@ import { dtoResponseFactory } from './dto-response-factory.js'
 
 test('dtoResponseFactory() with type & action', async t => {
   const byType    = dtoResponseFactory(duck.types.SEND_MESSAGE_COMMAND)
-  const byAction  = dtoResponseFactory(duck.actions.sendMessageCommand)
+  const byAction  = dtoResponseFactory(duck.actions.SEND_MESSAGE_COMMAND)
   t.equal(byType, byAction, 'should be equal')
 })
 
@@ -43,7 +43,7 @@ test('dtoResponseFactory() payload', async t => {
     id: ID,
     puppetId: PUPPET_ID,
   })
-  const EXPECTED = duck.actions.sendMessageCommandResponse({ ...object.meta })
+  const EXPECTED = duck.actions.SEND_MESSAGE_COMMAND_RESPONSE({ ...object.meta })
 
   t.same(object, EXPECTED, 'should set same object')
 })
@@ -52,7 +52,7 @@ test('dtoResponseFactory() typing', async t => {
   const responseCreator = dtoResponseFactory(duck.types.SEND_MESSAGE_COMMAND)
 
   type RESULT   = typeof responseCreator
-  type EXPECTED = typeof duck.actions.sendMessageCommandResponse
+  type EXPECTED = typeof duck.actions.SEND_MESSAGE_COMMAND_RESPONSE
 
   const test: AssertEqual<
     RESULT,
@@ -66,7 +66,7 @@ test('dtoResponseFactory() reference compare', async t => {
 
   t.equal(
     responseCreator,
-    duck.actions.sendMessageCommandResponse,
+    duck.actions.SEND_MESSAGE_COMMAND_RESPONSE,
     'should be the same function reference',
   )
 })

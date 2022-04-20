@@ -41,7 +41,7 @@ import { isActionOf }   from 'typesafe-actions'
 import * as actions from '../../actions/mod.js'
 
 export const sayablePayloadEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.getSayablePayloadQuery)),
+  filter(isActionOf(actions.GET_SAYABLE_PAYLOAD_QUERY)),
   tap(query => log.verbose('WechatyCqrs', 'sayablePayloadEpic() %s', JSON.stringify(query))),
   mergeMap(query => of(query.meta.puppetId).pipe(
     map(getPuppet),
@@ -50,12 +50,12 @@ export const sayablePayloadEpic: Epic = actions$ => actions$.pipe(
       : from(
         puppet.sayablePayload(query.payload.sayableId),
       ).pipe(
-        map(sayable => actions.getSayablePayloadQueryResponse({
+        map(sayable => actions.GET_SAYABLE_PAYLOAD_QUERY_RESPONSE({
           ...query.meta,
           sayable,
         })),
         catchError(e => of(
-          actions.getSayablePayloadQueryResponse({
+          actions.GET_SAYABLE_PAYLOAD_QUERY_RESPONSE({
             ...query.meta,
             gerror: GError.stringify(e),
           }),

@@ -1,6 +1,6 @@
 {
   "name": "wechaty-cqrs",
-  "version": "0.13.23",
+  "version": "0.14.0",
   "description": "An event-driven architecture wrapper for Wechaty that applies the CQS principle by using separate Query and Command messages to retrieve and modify the bot state, respectively.",
   "type": "module",
   "exports": {
@@ -87,7 +87,7 @@
     "typesafe-actions": "^5.1.0",
     "utility-types": "^3.10.0",
     "uuid": "^8.3.2",
-    "wechaty-redux": "^1.19.2"
+    "wechaty-redux": "^1.20.2"
   },
   "peerDependencies": {
     "wechaty": "^1.19.10"

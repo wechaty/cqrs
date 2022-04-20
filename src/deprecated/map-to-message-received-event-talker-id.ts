@@ -17,8 +17,8 @@ import {
 /**
  * @deprecated use `execute$()` instead
  */
-export const mapToTalkerId = (bus$: Bus) => (source$: ReturnType<typeof events$.messageReceivedEvent$>) => source$.pipe(
-  map(messageReceivedEvent => actions.getMessagePayloadQuery(messageReceivedEvent.meta.puppetId, messageReceivedEvent.payload.messageId)),
+export const mapToTalkerId = (bus$: Bus) => (source$: ReturnType<typeof events$.MESSAGE_RECEIVED_EVENT$>) => source$.pipe(
+  map(messageReceivedEvent => actions.GET_MESSAGE_PAYLOAD_QUERY(messageReceivedEvent.meta.puppetId, messageReceivedEvent.payload.messageId)),
   mergeMap(execute$(bus$)),
   /**
    * Huan(202203): `.fromId` deprecated, will be removed after v2.0

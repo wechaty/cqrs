@@ -45,7 +45,7 @@ test('mapMessageReceivedEventToSayable()', testSchedulerRunner(m => {
   const MESSAGE_ID  = 'message-id'
   const TEXT        = 'text'
 
-  const event   = CqrsDuck.actions.messageReceivedEvent(PUPPET_ID, { messageId: MESSAGE_ID })
+  const event   = CqrsDuck.actions.MESSAGE_RECEIVED_EVENT(PUPPET_ID, { messageId: MESSAGE_ID })
   const sayable = sayables.text(TEXT)
 
   const values = {
@@ -62,7 +62,7 @@ test('mapMessageReceivedEventToSayable()', testSchedulerRunner(m => {
    * Service Mock: Query -> Message
    */
   bus$.pipe(
-    filter(isActionOf(CqrsDuck.actions.getSayablePayloadQuery)),
+    filter(isActionOf(CqrsDuck.actions.GET_SAYABLE_PAYLOAD_QUERY)),
     /**
      * Huan(202203): important: let the bullet to fly awhile
      *  if no `delay(0)` (next event loop), the event will be fired too fast
@@ -70,7 +70,7 @@ test('mapMessageReceivedEventToSayable()', testSchedulerRunner(m => {
      *  which will caused event lost.
      */
     delay(0),
-    map(query => CqrsDuck.actions.getSayablePayloadQueryResponse({
+    map(query => CqrsDuck.actions.GET_SAYABLE_PAYLOAD_QUERY_RESPONSE({
       ...query.meta,
       sayable,
     })),
@@ -79,7 +79,7 @@ test('mapMessageReceivedEventToSayable()', testSchedulerRunner(m => {
   const source$ = m.hot(source, { e: values.e })
 
   const result$ = source$.pipe(
-    filter(isActionOf(CqrsDuck.actions.messageReceivedEvent)),
+    filter(isActionOf(CqrsDuck.actions.MESSAGE_RECEIVED_EVENT)),
     mapMessageReceivedEventToSayable(bus$),
   )
 

@@ -10,5 +10,5 @@ import { metaRequest, metaResponse, MetaResponse }  from '../../../cqr-event/met
 const payloadGetContactPayloadQuery         = (_puppetId: string, contactId: string)                      => ({ contactId })
 const payloadGetContactPayloadQueryResponse = (res: MetaResponse & { contact?: PUPPET.payloads.Contact }) => ({ contact: res.contact })
 
-export const getContactPayloadQuery         = createAction(types.GET_CONTACT_PAYLOAD_QUERY,           payloadGetContactPayloadQuery,          metaRequest)()
-export const getContactPayloadQueryResponse = createAction(types.GET_CONTACT_PAYLOAD_QUERY_RESPONSE,  payloadGetContactPayloadQueryResponse,  metaResponse)()
+export const GET_CONTACT_PAYLOAD_QUERY          = createAction(types.GET_CONTACT_PAYLOAD_QUERY,           payloadGetContactPayloadQuery,          metaRequest)()
+export const GET_CONTACT_PAYLOAD_QUERY_RESPONSE = createAction(types.GET_CONTACT_PAYLOAD_QUERY_RESPONSE,  payloadGetContactPayloadQueryResponse,  metaResponse)()

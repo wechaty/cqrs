@@ -239,7 +239,12 @@ The following steps need to be followed:
 
 ## History
 
-### main v1.12 (Mar 27, 2022)
+### main v1.14 (Apr 20, 2022)
+
+1. rename all duck events' name from `camelCase` to `SNAKE_CASE`.
+  (i.e. `dingCommand` -> `DING_COMMAMD`)
+
+### v1.12 (Mar 27, 2022)
 
 1. Classify action builders so that they will be compatible with Class events
   with NestJS [#1](https://github.com/wechaty/cqrs/issues/1)

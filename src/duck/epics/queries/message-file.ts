@@ -35,7 +35,7 @@ import { log }          from 'wechaty-puppet'
 import * as actions from '../../actions/mod.js'
 
 export const messageFileEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.getMessageFileQuery)),
+  filter(isActionOf(actions.GET_MESSAGE_FILE_QUERY)),
   tap(query => log.verbose('WechatyCqrs', 'messageFileEpic() %s', JSON.stringify(query))),
   mergeMap(query => of(query.meta.puppetId).pipe(
     map(getPuppet),
@@ -43,13 +43,13 @@ export const messageFileEpic: Epic = actions$ => actions$.pipe(
       ? from(puppet.messageFile(query.payload.messageId))
       : of(undefined),
     ),
-    map(fileBox => actions.getMessageFileQueryResponse({
+    map(fileBox => actions.GET_MESSAGE_FILE_QUERY_RESPONSE({
       id       : query.meta.id,
       puppetId : query.meta.puppetId,
       file     : fileBox && JSON.stringify(fileBox),
     })),
     catchError(e => of(
-      actions.getMessageFileQueryResponse({
+      actions.GET_MESSAGE_FILE_QUERY_RESPONSE({
         ...query.meta,
         gerror: GError.stringify(e),
       }),

@@ -27,10 +27,10 @@ import * as filterActionCreator from './action-creator-filter.js'
 
 test('filter action creator smoke testing', async t => {
   const fixtures = [
-    [Duck.actions.sendMessageCommand,             1,  0,  0,  0],
-    [Duck.actions.startedEvent,                   0,  1,  0,  0],
-    [responseOf(Duck.actions.sendMessageCommand), 0,  0,  1,  0],
-    [Duck.actions.getIsLoggedInQuery,             0,  0,  0,  1],
+    [Duck.actions.SEND_MESSAGE_COMMAND,             1,  0,  0,  0],
+    [Duck.actions.STARTED_EVENT,                    0,  1,  0,  0],
+    [responseOf(Duck.actions.SEND_MESSAGE_COMMAND), 0,  0,  1,  0],
+    [Duck.actions.GET_IS_LOGGED_IN_QUERY,           0,  0,  0,  1],
   ] as const
 
   for (const [creator, ...expected] of fixtures) {

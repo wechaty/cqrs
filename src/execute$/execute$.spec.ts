@@ -129,14 +129,14 @@ test('execute$() query & response timeout', testSchedulerRunner(m => {
 test('execute$() ReturnType typing', async t => {
   const bus$ = new Subject<any>()
 
-  const query = duck.actions.getCurrentUserIdQuery('PUPPET_ID')
+  const query = duck.actions.GET_CURRENT_USER_ID_QUERY('PUPPET_ID')
 
   const stream$ = of(query).pipe(
     mergeMap(action => execute$(bus$)(action)),
   )
 
   type RESULT = typeof stream$
-  type EXPECTED = Observable<ReturnType<ResponseOf<typeof duck.actions.getCurrentUserIdQuery>>>
+  type EXPECTED = Observable<ReturnType<ResponseOf<typeof duck.actions.GET_CURRENT_USER_ID_QUERY>>>
 
   const test: AssertEqual<RESULT, EXPECTED> = true
   t.ok(test, 'should get the right return type of message')

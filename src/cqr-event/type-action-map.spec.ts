@@ -13,14 +13,14 @@ import {
 
 test('typeActionMap smoke testing', async t => {
   const dingCommand = typeActionMap[duck.types.DING_COMMAND]
-  t.equal(dingCommand, duck.actions.dingCommand, 'should get dingCommand')
+  t.equal(dingCommand, duck.actions.DING_COMMAND, 'should get dingCommand')
 })
 
 test('typeActionMap typing', async t => {
   const dingCommand = typeActionMap[duck.types.DING_COMMAND]
 
   type RESULT   = typeof dingCommand
-  type EXPECTED = typeof duck.actions.dingCommand
+  type EXPECTED = typeof duck.actions.DING_COMMAND
 
   const typing: AssertEqual<RESULT, EXPECTED> = true
   t.ok(typing, 'should get correct typing')

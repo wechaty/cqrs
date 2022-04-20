@@ -44,7 +44,7 @@ test('mapToTalkerId()', testSchedulerRunner(m => {
   const MESSAGE_ID  = 'message-id'
   const TALKER_ID   = 'talker-id'
 
-  const messageReceivedEvent = CqrsDuck.actions.messageReceivedEvent(PUPPET_ID, { messageId: MESSAGE_ID })
+  const messageReceivedEvent = CqrsDuck.actions.MESSAGE_RECEIVED_EVENT(PUPPET_ID, { messageId: MESSAGE_ID })
 
   const values = {
     e: messageReceivedEvent,
@@ -60,7 +60,7 @@ test('mapToTalkerId()', testSchedulerRunner(m => {
    * Service Mock: Query -> Message
    */
   const mockService$ = bus$.pipe(
-    filter(isActionOf(CqrsDuck.actions.getMessagePayloadQuery)),
+    filter(isActionOf(CqrsDuck.actions.GET_MESSAGE_PAYLOAD_QUERY)),
     /**
      * Huan(202203): important: let the bullet to fly awhile
      *  if no `delay(0)` (next event loop), the event will be fired too fast
@@ -68,7 +68,7 @@ test('mapToTalkerId()', testSchedulerRunner(m => {
      *  which will caused event lost.
      */
     delay(0),
-    map(query => CqrsDuck.actions.getMessagePayloadQueryResponse({
+    map(query => CqrsDuck.actions.GET_MESSAGE_PAYLOAD_QUERY_RESPONSE({
       ...query.meta,
       message: {
         talkerId: TALKER_ID,
@@ -83,7 +83,7 @@ test('mapToTalkerId()', testSchedulerRunner(m => {
   })
 
   const result$ = source$.pipe(
-    filter(isActionOf(CqrsDuck.actions.messageReceivedEvent)),
+    filter(isActionOf(CqrsDuck.actions.MESSAGE_RECEIVED_EVENT)),
     mapToTalkerId(bus$),
   )
 

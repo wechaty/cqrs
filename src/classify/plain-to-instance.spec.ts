@@ -11,9 +11,9 @@ test('plainToClass smoke testing', async t => {
   const PUPPET_ID = 'puppet-id'
   const DATA = 'data'
 
-  const DingCommand = classify(actions.dingCommand)
+  const DingCommand = classify(actions.DING_COMMAND)
 
-  const plainObject     = actions.dingCommand(PUPPET_ID, DATA)
+  const plainObject     = actions.DING_COMMAND(PUPPET_ID, DATA)
   const instanceObject  = plainToInstance(plainObject)
 
   t.ok(instanceObject instanceof DingCommand, 'should convert to class object')

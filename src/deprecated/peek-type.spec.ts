@@ -10,7 +10,7 @@ import * as duck from '../duck/mod.js'
 import { peekType } from './peek-type.js'
 
 test('peekType smoke testing', async t => {
-  const type = peekType(duck.actions.dingCommand)
+  const type = peekType(duck.actions.DING_COMMAND)
   const test: AssertEqual<
     typeof type,
     typeof duck.types.DING_COMMAND
@@ -20,7 +20,7 @@ test('peekType smoke testing', async t => {
 })
 
 test('peekType for Response', async t => {
-  const type = peekType(duck.actions.getIsLoggedInQueryResponse)
+  const type = peekType(duck.actions.GET_IS_LOGGED_IN_QUERY_RESPONSE)
   const test: AssertEqual<
     typeof type,
     `${typeof duck.types.GET_IS_LOGGED_IN_QUERY}_RESPONSE`

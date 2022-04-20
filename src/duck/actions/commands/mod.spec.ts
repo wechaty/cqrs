@@ -31,12 +31,12 @@ test('commands smoke testing', async t => {
   const MESSAGE_ID = 'message-id'
   const SAYABLE = sayables.text('test')
 
-  const c = mod.sendMessageCommand(PUPPET_ID, CONVERSATION_ID, SAYABLE)
+  const c = mod.SEND_MESSAGE_COMMAND(PUPPET_ID, CONVERSATION_ID, SAYABLE)
   t.ok(c.meta.id, 'should set id to meta')
   t.equal(c.meta.puppetId, PUPPET_ID, 'should set puppetId to meta')
   t.same(c.payload.sayable, SAYABLE, 'should set sayable to payload')
 
-  const messageSentResponse = mod.sendMessageCommandResponse
+  const messageSentResponse = mod.SEND_MESSAGE_COMMAND_RESPONSE
   const e = messageSentResponse({
     id: ID,
     messageId: MESSAGE_ID,

@@ -37,7 +37,7 @@ import { isActionOf } from 'typesafe-actions'
 import * as actions from '../../actions/mod.js'
 
 export const resetEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.resetCommand)),
+  filter(isActionOf(actions.RESET_COMMAND)),
   tap(command => log.verbose('WechatyCqrs', 'resetEpic() %s', JSON.stringify(command))),
   mergeMap(command => of(command.meta.puppetId).pipe(
     map(getPuppet),
@@ -45,12 +45,12 @@ export const resetEpic: Epic = actions$ => actions$.pipe(
       ? of(puppet.reset())
       : EMPTY,
     ),
-    map(() => actions.resetCommandResponse({
+    map(() => actions.RESET_COMMAND_RESPONSE({
       id       : command.meta.id,
       puppetId : command.meta.puppetId,
     })),
     catchError((e: Error) => of(
-      actions.resetCommandResponse({
+      actions.RESET_COMMAND_RESPONSE({
         ...command.meta,
         gerror: GError.stringify(e),
       }),

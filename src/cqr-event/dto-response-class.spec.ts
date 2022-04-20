@@ -30,7 +30,7 @@ import { dtoResponseClass } from './dto-response-class.js'
 
 test('dtoResponseClass() by type, creator, and class', async t => {
   const ByType    = dtoResponseClass(duck.types.GET_IS_LOGGED_IN_QUERY)
-  const ByCreator = dtoResponseClass(duck.actions.getIsLoggedInQuery)
+  const ByCreator = dtoResponseClass(duck.actions.GET_IS_LOGGED_IN_QUERY)
   const byClass   = dtoResponseClass(dtoClass(duck.types.GET_IS_LOGGED_IN_QUERY))
 
   t.equal(ByType, ByCreator, 'should be equal by type & creator')
@@ -48,7 +48,7 @@ test('dtoResponseClass() object payload', async t => {
     isLoggedIn: true,
     puppetId: PUPPET_ID,
   })
-  const EXPECTED  = duck.actions.getIsLoggedInQueryResponse({
+  const EXPECTED  = duck.actions.GET_IS_LOGGED_IN_QUERY_RESPONSE({
     ...object.meta,
     isLoggedIn: object.payload.isLoggedIn,
   })
@@ -64,7 +64,7 @@ test('dtoResponseClass() typing', async t => {
   const GetIsLoggedInQuery = dtoResponseClass(duck.types.GET_IS_LOGGED_IN_QUERY)
 
   type ResultParameter    = ConstructorParameters<typeof GetIsLoggedInQuery>
-  type ExpectedParameter  = Parameters<typeof duck.actions.getIsLoggedInQueryResponse>
+  type ExpectedParameter  = Parameters<typeof duck.actions.GET_IS_LOGGED_IN_QUERY_RESPONSE>
   const testParameter: AssertEqual<
     ResultParameter,
     ExpectedParameter
@@ -72,7 +72,7 @@ test('dtoResponseClass() typing', async t => {
   t.ok(testParameter, 'should be same typing for parameters')
 
   type ResultObject = InstanceType<typeof GetIsLoggedInQuery>
-  type ExpectedObject = ReturnType<typeof duck.actions.getIsLoggedInQueryResponse>
+  type ExpectedObject = ReturnType<typeof duck.actions.GET_IS_LOGGED_IN_QUERY_RESPONSE>
   const testObject: AssertEqual<
     ResultObject,
     ExpectedObject

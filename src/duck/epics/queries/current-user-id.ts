@@ -34,7 +34,7 @@ import { isActionOf }   from 'typesafe-actions'
 import * as actions from '../../actions/mod.js'
 
 export const currentUserIdEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.getCurrentUserIdQuery)),
+  filter(isActionOf(actions.GET_CURRENT_USER_ID_QUERY)),
   tap(query => log.verbose('WechatyCqrs', 'currentUserIdEpic() %s', JSON.stringify(query))),
   mergeMap(query => of(query.meta.puppetId).pipe(
     map(getPuppet),
@@ -42,12 +42,12 @@ export const currentUserIdEpic: Epic = actions$ => actions$.pipe(
       ? puppet.currentUserId
       : undefined,
     ),
-    map(contactId => actions.getCurrentUserIdQueryResponse({
+    map(contactId => actions.GET_CURRENT_USER_ID_QUERY_RESPONSE({
       ...query.meta,
       contactId,
     })),
     catchError(e => of(
-      actions.getCurrentUserIdQueryResponse({
+      actions.GET_CURRENT_USER_ID_QUERY_RESPONSE({
         ...query.meta,
         gerror: GError.stringify(e),
       }),

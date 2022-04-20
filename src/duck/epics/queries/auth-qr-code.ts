@@ -34,17 +34,17 @@ import type { Epic }    from 'redux-observable'
 import * as actions from '../../actions/mod.js'
 
 export const authQrCodeEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.getAuthQrCodeQuery)),
+  filter(isActionOf(actions.GET_AUTH_QR_CODE_QUERY)),
   tap(query => log.verbose('WechatyCqrs', 'authQrCodeEpic() %s', JSON.stringify(query))),
   mergeMap(query => of(query.meta.puppetId).pipe(
     map(getPuppet),
     map(puppet => puppet?.authQrCode),
-    map(qrcode => actions.getAuthQrCodeQueryResponse({
+    map(qrcode => actions.GET_AUTH_QR_CODE_QUERY_RESPONSE({
       ...query.meta,
       qrcode,
     })),
     catchError(e => of(
-      actions.getAuthQrCodeQueryResponse({
+      actions.GET_AUTH_QR_CODE_QUERY_RESPONSE({
         ...query.meta,
         gerror: GError.stringify(e),
       }),

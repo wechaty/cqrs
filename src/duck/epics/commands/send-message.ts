@@ -38,7 +38,7 @@ import { isActionOf } from 'typesafe-actions'
 import * as actions from '../../actions/mod.js'
 
 export const sendMessageEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.sendMessageCommand)),
+  filter(isActionOf(actions.SEND_MESSAGE_COMMAND)),
   tap(command => log.verbose('WechatyCqrs', 'sendMessageEpic() %s', JSON.stringify(command))),
   mergeMap(command => of(command.meta.puppetId).pipe(
     map(getPuppet),
@@ -49,12 +49,12 @@ export const sendMessageEpic: Epic = actions$ => actions$.pipe(
       ))
       : EMPTY,
     ),
-    map(() => actions.sendMessageCommandResponse({
+    map(() => actions.SEND_MESSAGE_COMMAND_RESPONSE({
       id       : command.meta.id,
       puppetId : command.meta.puppetId,
     })),
     catchError(e => of(
-      actions.sendMessageCommandResponse({
+      actions.SEND_MESSAGE_COMMAND_RESPONSE({
         ...command.meta,
         gerror: GError.stringify(e),
       }),

@@ -34,7 +34,7 @@ import { log }          from 'wechaty-puppet'
 import * as actions from '../../actions/mod.js'
 
 export const roomPayloadEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.getRoomPayloadQuery)),
+  filter(isActionOf(actions.GET_ROOM_PAYLOAD_QUERY)),
   tap(query => log.verbose('WechatyCqrs', 'roomPayloadEpic() %s', JSON.stringify(query))),
   mergeMap(query => of(query.meta.puppetId).pipe(
     map(getPuppet),
@@ -42,13 +42,13 @@ export const roomPayloadEpic: Epic = actions$ => actions$.pipe(
       ? from(puppet.roomPayload(query.payload.roomId))
       : of(undefined),
     ),
-    map(payload => actions.getRoomPayloadQueryResponse({
+    map(payload => actions.GET_ROOM_PAYLOAD_QUERY_RESPONSE({
       id       : query.meta.id,
       puppetId : query.meta.puppetId,
       room     : payload,
     })),
     catchError(e => of(
-      actions.getRoomPayloadQueryResponse({
+      actions.GET_ROOM_PAYLOAD_QUERY_RESPONSE({
         ...query.meta,
         gerror: GError.stringify(e),
       }),

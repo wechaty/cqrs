@@ -18,13 +18,13 @@ const eventBus$ = <AC extends ActionCreator>(creator: AC) => (source$: BusObs) =
 /**
  * Commands
  */
-export const startCommand$         = eventBus$(actions.startCommand)
-export const stopCommand$          = eventBus$(actions.stopCommand)
+export const START_COMMAND$ = eventBus$(actions.START_COMMAND)
+export const STOP_COMMAND$  = eventBus$(actions.STOP_COMMAND)
 
 /**
  * Events
  */
-export const startedEvent$         = eventBus$(actions.startedEvent)
-export const stoppedEvent$         = eventBus$(actions.stoppedEvent)
-export const scanReceivedEvent$    = eventBus$(actions.scanReceivedEvent)
-export const messageReceivedEvent$ = eventBus$(actions.messageReceivedEvent)
+export const STARTED_EVENT$          = eventBus$(actions.STARTED_EVENT)
+export const STOPPED_EVENT$          = eventBus$(actions.STOPPED_EVENT)
+export const SCAN_RECEIVED_EVENT$    = eventBus$(actions.SCAN_RECEIVED_EVENT)
+export const MESSAGE_RECEIVED_EVENT$ = eventBus$(actions.MESSAGE_RECEIVED_EVENT)

@@ -34,10 +34,10 @@ test('classify smoke testing', async t => {
   const PUPPET_ID = 'puppet-id'
   const DATA      = 'data'
 
-  const DingCommand = classify(duck.actions.dingCommand)
+  const DingCommand = classify(duck.actions.DING_COMMAND)
 
   const instance = new DingCommand(PUPPET_ID, DATA)
-  const payload = duck.actions.dingCommand(PUPPET_ID, DATA)
+  const payload = duck.actions.DING_COMMAND(PUPPET_ID, DATA)
 
   delete (instance.meta as any).id
   delete (payload.meta as any).id
@@ -48,18 +48,18 @@ test('classify smoke testing', async t => {
 })
 
 test('classify a string type', async t => {
-  const ClassFromCreator  = classify(duck.actions.dingCommand)
+  const ClassFromCreator  = classify(duck.actions.DING_COMMAND)
   const ClassFromType     = classify(duck.types.DING_COMMAND)
 
   t.equal(ClassFromCreator, ClassFromType, 'should be same class either from creator or type')
 })
 
 test('classify Command, Query, Response, and Event testing', async t => {
-  const SendMessageCommand          = classify(duck.actions.sendMessageCommand)
-  const SendMessageCommandResponse  = classify(duck.actions.sendMessageCommandResponse)
-  const GetIsLoggedInQuery          = classify(duck.actions.getIsLoggedInQuery)
-  const GetIsLoggedInQueryResponse  = classify(duck.actions.getIsLoggedInQueryResponse)
-  const DongReceivedEvent           = classify(duck.actions.dongReceivedEvent)
+  const SendMessageCommand          = classify(duck.actions.SEND_MESSAGE_COMMAND)
+  const SendMessageCommandResponse  = classify(duck.actions.SEND_MESSAGE_COMMAND_RESPONSE)
+  const GetIsLoggedInQuery          = classify(duck.actions.GET_IS_LOGGED_IN_QUERY)
+  const GetIsLoggedInQueryResponse  = classify(duck.actions.GET_IS_LOGGED_IN_QUERY_RESPONSE)
+  const DongReceivedEvent           = classify(duck.actions.DONG_RECEIVED_EVENT)
 
   const PUPPET_ID       = 'puppet-id'
   const DATA            = 'data'
@@ -70,23 +70,23 @@ test('classify Command, Query, Response, and Event testing', async t => {
   const fixtures = [
     [
       new SendMessageCommand(PUPPET_ID, CONVERSATION_ID, SAYABLE),
-      duck.actions.sendMessageCommand(PUPPET_ID, CONVERSATION_ID, SAYABLE),
+      duck.actions.SEND_MESSAGE_COMMAND(PUPPET_ID, CONVERSATION_ID, SAYABLE),
     ],
     [
       new SendMessageCommandResponse({ id: ID, puppetId: PUPPET_ID }),
-      duck.actions.sendMessageCommandResponse({ id: ID, puppetId: PUPPET_ID }),
+      duck.actions.SEND_MESSAGE_COMMAND_RESPONSE({ id: ID, puppetId: PUPPET_ID }),
     ],
     [
       new GetIsLoggedInQuery(PUPPET_ID),
-      duck.actions.getIsLoggedInQuery(PUPPET_ID),
+      duck.actions.GET_IS_LOGGED_IN_QUERY(PUPPET_ID),
     ],
     [
       new GetIsLoggedInQueryResponse({ id: ID, puppetId: PUPPET_ID }),
-      duck.actions.getIsLoggedInQueryResponse({ id: ID, puppetId: PUPPET_ID }),
+      duck.actions.GET_IS_LOGGED_IN_QUERY_RESPONSE({ id: ID, puppetId: PUPPET_ID }),
     ],
     [
       new DongReceivedEvent(PUPPET_ID, { data: DATA }),
-      duck.actions.dongReceivedEvent(PUPPET_ID, { data: DATA }),
+      duck.actions.DONG_RECEIVED_EVENT(PUPPET_ID, { data: DATA }),
     ],
   ] as const
 
@@ -100,21 +100,21 @@ test('classify Command, Query, Response, and Event testing', async t => {
 })
 
 test('classify class constructor parameters typing', async t => {
-  const DingCommand = classify(duck.actions.dingCommand)
+  const DingCommand = classify(duck.actions.DING_COMMAND)
 
   const test: AssertEqual<
     ConstructorParameters<typeof DingCommand>,
-    Parameters<typeof duck.actions.dingCommand>
+    Parameters<typeof duck.actions.DING_COMMAND>
   > = true
   t.ok(test, 'should be the same of class constructor parameters & payload creator parameters')
 })
 
 test('classify class instance typing: from an actionCreator', async t => {
-  const DingCommand = classify(duck.actions.dingCommand)
+  const DingCommand = classify(duck.actions.DING_COMMAND)
 
   const test: AssertEqual<
     InstanceType<typeof DingCommand>,
-    ReturnType<typeof duck.actions.dingCommand>
+    ReturnType<typeof duck.actions.DING_COMMAND>
   > = true
   t.ok(test, 'should be the same of class instance interface & payload interface')
 })
@@ -123,7 +123,7 @@ test('classify class instance typing: from a type string', async t => {
   const SendMessageCommand = classify(duck.types.SEND_MESSAGE_COMMAND)!
 
   type RESULT   = InstanceType<typeof SendMessageCommand>
-  type EXPECTED = ReturnType<typeof duck.actions.sendMessageCommand>
+  type EXPECTED = ReturnType<typeof duck.actions.SEND_MESSAGE_COMMAND>
 
   const test: AssertEqual<
     RESULT,
@@ -133,28 +133,28 @@ test('classify class instance typing: from a type string', async t => {
 })
 
 test('actionCreator toString()', async t => {
-  t.equal(duck.actions.dingCommand.toString(), duck.types.DING_COMMAND, 'should toString to type')
+  t.equal(duck.actions.DING_COMMAND.toString(), duck.types.DING_COMMAND, 'should toString to type')
 })
 
 test('class toString()', async t => {
-  const DingCommand = classify(duck.actions.dingCommand)
+  const DingCommand = classify(duck.actions.DING_COMMAND)
   t.equal(DingCommand.toString(), duck.types.DING_COMMAND, 'should toString to type')
 })
 
 test('class getType!()', async t => {
-  const DingCommand = classify(duck.actions.dingCommand)
+  const DingCommand = classify(duck.actions.DING_COMMAND)
   t.equal(DingCommand.getType!(), duck.types.DING_COMMAND, 'should class getType to type')
 })
 
 test('instance toString()', async t => {
-  const DingCommand = classify(duck.actions.dingCommand)
+  const DingCommand = classify(duck.actions.DING_COMMAND)
   const dingCommand = new DingCommand('')
   t.equal(dingCommand.toString(), duck.types.DING_COMMAND, 'should instance toString to type')
 })
 
 test('isActionOf filter', async t => {
-  const DingCommand       = classify(duck.actions.dingCommand)
-  const DongReceivedEvent = classify(duck.actions.dongReceivedEvent)
+  const DingCommand       = classify(duck.actions.DING_COMMAND)
+  const DongReceivedEvent = classify(duck.actions.DONG_RECEIVED_EVENT)
 
   const dingCommand       = new DingCommand('')
   const dongReceivedEvent = new DongReceivedEvent('', {})
@@ -166,8 +166,8 @@ test('isActionOf filter', async t => {
 })
 
 test('classify cache & singleton', async t => {
-  const first   = classify(duck.actions.dingCommand)
-  const second  = classify(duck.actions.dingCommand)
+  const first   = classify(duck.actions.DING_COMMAND)
+  const second  = classify(duck.actions.DING_COMMAND)
 
   t.equal(first, second, 'should be the same of class constructor when we classify multiple times as we are using cache & singleton')
 })
@@ -176,7 +176,7 @@ test('classify class compatible new & call', async t => {
   const PUPPET_ID = 'puppet-id'
   const DATA = 'data'
 
-  const DingCommand = classify(duck.actions.dingCommand)
+  const DingCommand = classify(duck.actions.DING_COMMAND)
   const that = { DingCommand }
 
   const c = DingCommand(PUPPET_ID, DATA)

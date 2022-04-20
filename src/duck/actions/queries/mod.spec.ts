@@ -27,11 +27,11 @@ test('queries smoke testing', async t => {
   const PUPPET_ID = 'puppet-id'
   const CONTACT_ID = 'contact-id'
 
-  const q = queries.getCurrentUserIdQuery(PUPPET_ID)
+  const q = queries.GET_CURRENT_USER_ID_QUERY(PUPPET_ID)
   t.ok(q.meta.id, 'should set id to meta')
   t.equal(q.meta.puppetId, PUPPET_ID, 'should set puppetId to meta')
 
-  const getCurrentUserIdQueryResponse = queries.getCurrentUserIdQueryResponse
+  const getCurrentUserIdQueryResponse = queries.GET_CURRENT_USER_ID_QUERY_RESPONSE
 
   const e = getCurrentUserIdQueryResponse({
     contactId: CONTACT_ID,

@@ -38,7 +38,7 @@ import {
 
 import * as CQRS    from '../src/mods/mod.js'
 
-const onScan$ = (source$: CQRS.BusObs) => CQRS.events$.scanReceivedEvent$(source$).pipe(
+const onScan$ = (source$: CQRS.BusObs) => CQRS.events$.SCAN_RECEIVED_EVENT$(source$).pipe(
   map(scanReceivedEvent => scanReceivedEvent.payload),
   tap(({ qrcode, status }) => {
     const qrStatusList = [
@@ -58,7 +58,7 @@ const onScan$ = (source$: CQRS.BusObs) => CQRS.events$.scanReceivedEvent$(source
   }),
 )
 
-const onMessage$ = (bus$: CQRS.Bus) => CQRS.events$.messageReceivedEvent$(bus$).pipe(
+const onMessage$ = (bus$: CQRS.Bus) => CQRS.events$.MESSAGE_RECEIVED_EVENT$(bus$).pipe(
   tap(messageReceivedEvent => console.info('messageReceivedEvent', messageReceivedEvent)),
   mergeMap(messageReceivedEvent => of(messageReceivedEvent.payload.messageId).pipe(
     /**
@@ -129,12 +129,12 @@ async function cqrsWechaty () {
 async function main () {
   const { bus$, puppetId } = await cqrsWechaty()
 
-  const onStartedEvent$ = (bus$: CQRS.Bus) => CQRS.events$.startedEvent$(bus$).pipe(
+  const onStartedEvent$ = (bus$: CQRS.Bus) => CQRS.events$.STARTED_EVENT$(bus$).pipe(
     switchMap(() => merge(
       onScan$(bus$),
       onMessage$(bus$),
     ).pipe(
-      takeUntil(CQRS.events$.stoppedEvent$(bus$)),
+      takeUntil(CQRS.events$.STOPPED_EVENT$(bus$)),
     )),
   )
 

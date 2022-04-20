@@ -36,7 +36,7 @@ test('dtoFactory() payload', async t => {
   const creator = dtoFactory(duck.types.SEND_MESSAGE_COMMAND)
 
   const object = creator(PUPPET_ID, CONVERSATION_ID, SAYABLE)
-  const EXPECTED = duck.actions.sendMessageCommand(PUPPET_ID, CONVERSATION_ID, SAYABLE)
+  const EXPECTED = duck.actions.SEND_MESSAGE_COMMAND(PUPPET_ID, CONVERSATION_ID, SAYABLE)
 
   delete (object.meta as any).id
   delete (EXPECTED.meta as any).id
@@ -49,7 +49,7 @@ test('dtoFactory() typing', async t => {
 
   const test: AssertEqual<
     typeof creator,
-    typeof duck.actions.sendMessageCommand
+    typeof duck.actions.SEND_MESSAGE_COMMAND
   > = true
   t.ok(test, 'should be same typing')
 })
@@ -57,7 +57,7 @@ test('dtoFactory() typing', async t => {
 test('dtoFactory() reference compare', async t => {
   t.equal(
     dtoFactory(duck.types.SEND_MESSAGE_COMMAND),
-    duck.actions.sendMessageCommand,
+    duck.actions.SEND_MESSAGE_COMMAND,
     'should be the same function reference',
   )
 })

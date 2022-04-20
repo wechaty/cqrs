@@ -30,13 +30,13 @@ test('rx filter action smoke testing', async t => {
   const PUPPET_ID = 'puppet-id'
   const CONVERSATION_ID = 'conversation-id'
 
-  const COMMAND   = Duck.actions.sendMessageCommand(PUPPET_ID, CONVERSATION_ID, {} as any)
-  const EVENT     = Duck.actions.dongReceivedEvent(PUPPET_ID, { data: 'data' })
-  const RESPONSE  = Duck.actions.dingCommandResponse({
+  const COMMAND   = Duck.actions.SEND_MESSAGE_COMMAND(PUPPET_ID, CONVERSATION_ID, {} as any)
+  const EVENT     = Duck.actions.DONG_RECEIVED_EVENT(PUPPET_ID, { data: 'data' })
+  const RESPONSE  = Duck.actions.DING_COMMAND_RESPONSE({
     id: UUID.v4(),
     puppetId: PUPPET_ID,
   })
-  const QUERY   = Duck.actions.getIsLoggedInQuery(PUPPET_ID)
+  const QUERY   = Duck.actions.GET_IS_LOGGED_IN_QUERY(PUPPET_ID)
   const DUMMY   = { type: 'fadsfadsfasdfasd' }
 
   const fixtures = [

@@ -70,14 +70,14 @@ test('smoke testing', async t => {
       // ReduxDuck.actions.registerWechatyCommand(wechaty.id),
       // ReduxDuck.actions.registerPuppetCommand(wechaty.puppet.id),
       // ReduxDuck.actions.bindWechatyPuppetCommand({ puppetId: wechaty.puppet.id, wechatyId: wechaty.id }),
-      CqrsDuck.actions.stateActivatedEvent(wechaty.puppet.id, 'pending'),
-      CqrsDuck.actions.stateActivatedEvent(wechaty.puppet.id, true),
-      CqrsDuck.actions.startedEvent(wechaty.puppet.id),
-      CqrsDuck.actions.loginReceivedEvent(wechaty.puppet.id, { contactId: user.id }),
-      CqrsDuck.actions.logoutReceivedEvent(wechaty.puppet.id, { contactId: user.id, data: 'logout()' }),
-      CqrsDuck.actions.stateInactivatedEvent(wechaty.puppet.id, 'pending'),
-      CqrsDuck.actions.stateInactivatedEvent(wechaty.puppet.id, true),
-      CqrsDuck.actions.stoppedEvent(wechaty.puppet.id),
+      CqrsDuck.actions.STATE_ACTIVATED_EVENT(wechaty.puppet.id, 'pending'),
+      CqrsDuck.actions.STATE_ACTIVATED_EVENT(wechaty.puppet.id, true),
+      CqrsDuck.actions.STARTED_EVENT(wechaty.puppet.id),
+      CqrsDuck.actions.LOGIN_RECEIVED_EVENT(wechaty.puppet.id, { contactId: user.id }),
+      CqrsDuck.actions.LOGOUT_RECEIVED_EVENT(wechaty.puppet.id, { contactId: user.id, data: 'logout()' }),
+      CqrsDuck.actions.STATE_INACTIVATED_EVENT(wechaty.puppet.id, 'pending'),
+      CqrsDuck.actions.STATE_INACTIVATED_EVENT(wechaty.puppet.id, true),
+      CqrsDuck.actions.STOPPED_EVENT(wechaty.puppet.id),
     ])),
     'should get wechaty event list',
   )
@@ -94,13 +94,13 @@ test('bus$.next(e) -> bus$.subscribe(e)', async t => {
   const eventList: any[] = []
   bus$.subscribe(e => eventList.push(e))
 
-  const testCommand = CqrsDuck.actions.dingCommand(puppet.id, 'test')
+  const testCommand = CqrsDuck.actions.DING_COMMAND(puppet.id, 'test')
   bus$.next(testCommand)
 
   t.same(
     JSON.parse(JSON.stringify(
       eventList.filter(
-        isActionOf(CqrsDuck.actions.dingCommand),
+        isActionOf(CqrsDuck.actions.DING_COMMAND),
       ),
     )),
     JSON.parse(JSON.stringify([
@@ -126,10 +126,10 @@ test('Command/Event - ding/dong', async t => {
   bus$.subscribe(e => eventList.push(e))
 
   const futureDong = firstValueFrom(bus$.pipe(
-    filter(isActionOf(CqrsDuck.actions.dongReceivedEvent)),
+    filter(isActionOf(CqrsDuck.actions.DONG_RECEIVED_EVENT)),
   ))
 
-  const dingCommand = CqrsDuck.actions.dingCommand(puppet.id, DING_DATA)
+  const dingCommand = CqrsDuck.actions.DING_COMMAND(puppet.id, DING_DATA)
   bus$.next(dingCommand)
   await futureDong
 
@@ -137,8 +137,8 @@ test('Command/Event - ding/dong', async t => {
     JSON.parse(JSON.stringify(eventList)),
     JSON.parse(JSON.stringify([
       dingCommand,
-      CqrsDuck.actions.dingCommandResponse({ id: dingCommand.meta.id, puppetId: puppet.id }),
-      CqrsDuck.actions.dongReceivedEvent(puppet.id, { data: DING_DATA }),
+      CqrsDuck.actions.DING_COMMAND_RESPONSE({ id: dingCommand.meta.id, puppetId: puppet.id }),
+      CqrsDuck.actions.DONG_RECEIVED_EVENT(puppet.id, { data: DING_DATA }),
     ])),
     'should get dong event with data',
   )
@@ -158,10 +158,10 @@ test('Commands - start/stop', async t => {
   bus$.subscribe(e => eventList.push(e))
 
   const startFuture = firstValueFrom(bus$.pipe(
-    filter(isActionOf(CqrsDuck.actions.startedEvent)),
+    filter(isActionOf(CqrsDuck.actions.STARTED_EVENT)),
   ))
 
-  const startCommand = CqrsDuck.actions.startCommand(puppet.id)
+  const startCommand = CqrsDuck.actions.START_COMMAND(puppet.id)
   bus$.next(startCommand)
 
   await startFuture
@@ -169,18 +169,18 @@ test('Commands - start/stop', async t => {
     JSON.parse(JSON.stringify(eventList)),
     JSON.parse(JSON.stringify([
       startCommand,
-      CqrsDuck.actions.stateActivatedEvent(puppet.id, 'pending'),
-      CqrsDuck.actions.startCommandResponse(startCommand.meta),
-      CqrsDuck.actions.stateActivatedEvent(puppet.id, true),
-      CqrsDuck.actions.startedEvent(puppet.id),
+      CqrsDuck.actions.STATE_ACTIVATED_EVENT(puppet.id, 'pending'),
+      CqrsDuck.actions.START_COMMAND_RESPONSE(startCommand.meta),
+      CqrsDuck.actions.STATE_ACTIVATED_EVENT(puppet.id, true),
+      CqrsDuck.actions.STARTED_EVENT(puppet.id),
     ])),
     'should get start events',
   )
 
   const stopFuture = firstValueFrom(bus$.pipe(
-    filter(isActionOf(CqrsDuck.actions.stoppedEvent)),
+    filter(isActionOf(CqrsDuck.actions.STOPPED_EVENT)),
   ))
-  const stopCommand = CqrsDuck.actions.stopCommand(puppet.id)
+  const stopCommand = CqrsDuck.actions.STOP_COMMAND(puppet.id)
   eventList.length = 0
   bus$.next(stopCommand)
 
@@ -189,10 +189,10 @@ test('Commands - start/stop', async t => {
     JSON.parse(JSON.stringify(eventList)),
     JSON.parse(JSON.stringify([
       stopCommand,
-      CqrsDuck.actions.stateInactivatedEvent(puppet.id, 'pending'),
-      CqrsDuck.actions.stopCommandResponse(stopCommand.meta),
-      CqrsDuck.actions.stateInactivatedEvent(puppet.id, true),
-      CqrsDuck.actions.stoppedEvent(puppet.id),
+      CqrsDuck.actions.STATE_INACTIVATED_EVENT(puppet.id, 'pending'),
+      CqrsDuck.actions.STOP_COMMAND_RESPONSE(stopCommand.meta),
+      CqrsDuck.actions.STATE_INACTIVATED_EVENT(puppet.id, true),
+      CqrsDuck.actions.STOPPED_EVENT(puppet.id),
     ])),
     'should get stop events',
   )
@@ -206,7 +206,7 @@ test('Events - not logged in', async t => {
   await wechaty.init()
   const bus$ = from(wechaty)
 
-  const startCommand = CqrsDuck.actions.startCommand(puppet.id)
+  const startCommand = CqrsDuck.actions.START_COMMAND(puppet.id)
   bus$.next(startCommand)
 
   const eventList: any[] = []
@@ -216,7 +216,7 @@ test('Events - not logged in', async t => {
    * getCurrentUserIdQuery
    */
   const currentUserIdMessage = await firstValueFrom(
-    of(CqrsDuck.actions.getCurrentUserIdQuery(puppet.id)).pipe(
+    of(CqrsDuck.actions.GET_CURRENT_USER_ID_QUERY(puppet.id)).pipe(
       mergeMap(execute$(bus$)),
     ),
   )
@@ -226,7 +226,7 @@ test('Events - not logged in', async t => {
    * getIsLoggedInQuery
    */
   const isLoggedIn = await firstValueFrom(
-    of(CqrsDuck.actions.getIsLoggedInQuery(puppet.id)).pipe(
+    of(CqrsDuck.actions.GET_IS_LOGGED_IN_QUERY(puppet.id)).pipe(
       mergeMap(execute$(bus$)),
     ),
   )
@@ -237,14 +237,14 @@ test('Events - not logged in', async t => {
    */
   const qrCodeMessage = await firstValueFrom(
     of(
-      CqrsDuck.actions.getAuthQrCodeQuery(puppet.id),
+      CqrsDuck.actions.GET_AUTH_QR_CODE_QUERY(puppet.id),
     ).pipe(
       mergeMap(execute$(bus$)),
     ),
   )
   t.notOk(qrCodeMessage.payload.qrcode, 'should have no qrcode right after start')
 
-  const stopCommand = CqrsDuck.actions.stopCommand(puppet.id)
+  const stopCommand = CqrsDuck.actions.STOP_COMMAND(puppet.id)
   bus$.next(stopCommand)
 })
 
@@ -256,7 +256,7 @@ test('Events - logged in', async t => {
   await wechaty.init()
   const bus$ = from(wechaty)
 
-  const startCommand = CqrsDuck.actions.startCommand(puppet.id)
+  const startCommand = CqrsDuck.actions.START_COMMAND(puppet.id)
   bus$.next(startCommand)
 
   const eventList: any[] = []
@@ -264,7 +264,7 @@ test('Events - logged in', async t => {
 
   const authQrCodeGotMessage0 = await firstValueFrom(
     of(
-      CqrsDuck.actions.getAuthQrCodeQuery(puppet.id),
+      CqrsDuck.actions.GET_AUTH_QR_CODE_QUERY(puppet.id),
     ).pipe(
       mergeMap(execute$(bus$)),
     ),
@@ -279,7 +279,7 @@ test('Events - logged in', async t => {
 
   const authQrCodeGotMessage = await firstValueFrom(
     of(
-      CqrsDuck.actions.getAuthQrCodeQuery(puppet.id),
+      CqrsDuck.actions.GET_AUTH_QR_CODE_QUERY(puppet.id),
     ).pipe(
       mergeMap(execute$(bus$)),
     ),
@@ -297,7 +297,7 @@ test('Events - logged in', async t => {
 
   const currentUserIdMessage = await firstValueFrom(
     of(
-      CqrsDuck.actions.getCurrentUserIdQuery(puppet.id),
+      CqrsDuck.actions.GET_CURRENT_USER_ID_QUERY(puppet.id),
     ).pipe(
       mergeMap(execute$(bus$)),
     ),
@@ -309,7 +309,7 @@ test('Events - logged in', async t => {
    */
   const isLoggedIn = await firstValueFrom(
     of(
-      CqrsDuck.actions.getIsLoggedInQuery(puppet.id),
+      CqrsDuck.actions.GET_IS_LOGGED_IN_QUERY(puppet.id),
     ).pipe(
       mergeMap(execute$(bus$)),
     ),
@@ -321,14 +321,14 @@ test('Events - logged in', async t => {
    */
   const authQrCodeGotMessage2 = await firstValueFrom(
     of(
-      CqrsDuck.actions.getAuthQrCodeQuery(puppet.id),
+      CqrsDuck.actions.GET_AUTH_QR_CODE_QUERY(puppet.id),
     ).pipe(
       mergeMap(execute$(bus$)),
     ),
   )
   t.notOk(authQrCodeGotMessage2.payload.qrcode, 'should clean qrcode after logged in')
 
-  const stopCommand = CqrsDuck.actions.stopCommand(puppet.id)
+  const stopCommand = CqrsDuck.actions.STOP_COMMAND(puppet.id)
   bus$.next(stopCommand)
 })
 
@@ -341,9 +341,9 @@ test('sendMessageCommand', async t => {
   const bus$ = from(wechaty)
 
   const startedEventFuture = firstValueFrom(bus$.pipe(
-    filter(isActionOf(CqrsDuck.actions.startedEvent)),
+    filter(isActionOf(CqrsDuck.actions.STARTED_EVENT)),
   ))
-  bus$.next(CqrsDuck.actions.startCommand(puppet.id))
+  bus$.next(CqrsDuck.actions.START_COMMAND(puppet.id))
   await startedEventFuture
 
   const eventList: any[] = []
@@ -364,7 +364,7 @@ test('sendMessageCommand', async t => {
 
   const message = await firstValueFrom(
     of(
-      CqrsDuck.actions.sendMessageCommand(puppet.id, mary.id, sayables.text(TEXT)),
+      CqrsDuck.actions.SEND_MESSAGE_COMMAND(puppet.id, mary.id, sayables.text(TEXT)),
     ).pipe(
       mergeMap(execute$(bus$)),
     ),
@@ -374,7 +374,7 @@ test('sendMessageCommand', async t => {
   t.ok(spy.calledOnce, 'should call messageSentText()')
   t.ok(spy.calledWith(...EXPECTED_ARGS), 'should call messageSentText() with expected args')
 
-  const stopCommand = CqrsDuck.actions.stopCommand(puppet.id)
+  const stopCommand = CqrsDuck.actions.STOP_COMMAND(puppet.id)
   bus$.next(stopCommand)
 })
 
@@ -387,9 +387,9 @@ test('MessageReceivedEvent', async t => {
   const bus$ = from(wechaty)
 
   const startedEventFuture = firstValueFrom(bus$.pipe(
-    filter(isActionOf(CqrsDuck.actions.startedEvent)),
+    filter(isActionOf(CqrsDuck.actions.STARTED_EVENT)),
   ))
-  bus$.next(CqrsDuck.actions.startCommand(puppet.id))
+  bus$.next(CqrsDuck.actions.START_COMMAND(puppet.id))
   await startedEventFuture
 
   const eventList: any[] = []
@@ -401,7 +401,7 @@ test('MessageReceivedEvent', async t => {
   mocker.login(user)
 
   const messageReceivedEventFuture = firstValueFrom(bus$.pipe(
-    filter(isActionOf(CqrsDuck.actions.messageReceivedEvent)),
+    filter(isActionOf(CqrsDuck.actions.MESSAGE_RECEIVED_EVENT)),
   ))
 
   mary.say(TEXT).to(user)
@@ -411,7 +411,7 @@ test('MessageReceivedEvent', async t => {
 
   const messagePayloadMessage = await firstValueFrom(
     of(
-      CqrsDuck.actions.getMessagePayloadQuery(puppet.id, messageReceivedEvent.payload.messageId),
+      CqrsDuck.actions.GET_MESSAGE_PAYLOAD_QUERY(puppet.id, messageReceivedEvent.payload.messageId),
     ).pipe(
       mergeMap(execute$(bus$)),
     ),

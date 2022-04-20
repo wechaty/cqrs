@@ -29,14 +29,14 @@ import { responseOf } from './response-of.js'
 
 test('responseOf() object', async t => {
   const responseCreator = responseOf(duck.types.SEND_MESSAGE_COMMAND)
-  t.equal(responseCreator, duck.actions.sendMessageCommandResponse, 'should get responseOf sendMessageCommand')
+  t.equal(responseCreator, duck.actions.SEND_MESSAGE_COMMAND_RESPONSE, 'should get responseOf sendMessageCommand')
 })
 
 test('responseOf() typing', async t => {
   const responseCreator = responseOf(duck.types.SEND_MESSAGE_COMMAND)
 
   type RESULT   = typeof responseCreator
-  type EXPECTED = typeof duck.actions.sendMessageCommandResponse
+  type EXPECTED = typeof duck.actions.SEND_MESSAGE_COMMAND_RESPONSE
 
   const typingTest: AssertEqual<RESULT, EXPECTED> = true
   t.ok(typingTest, 'should typed response creator correctly')
@@ -55,13 +55,13 @@ test('responseOf() typing', async t => {
 
 test('responseOf() args with type & creator', async t => {
   const byType    = responseOf(duck.types.SEND_MESSAGE_COMMAND)
-  const byCreator = responseOf(duck.actions.sendMessageCommand)
+  const byCreator = responseOf(duck.actions.SEND_MESSAGE_COMMAND)
   t.equal(byType, byCreator, 'should be equal by type & creator')
 })
 
 test('responseOf() typing: args with type & creator', async t => {
   const byType    = responseOf(duck.types.GET_MESSAGE_PAYLOAD_QUERY)
-  const byCreator = responseOf(duck.actions.getMessagePayloadQuery)
+  const byCreator = responseOf(duck.actions.GET_MESSAGE_PAYLOAD_QUERY)
 
   const typingTest: AssertEqual<typeof byType, typeof byCreator> = true
   t.ok(typingTest, 'should be equal typing by type & creator')

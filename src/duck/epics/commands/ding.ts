@@ -37,7 +37,7 @@ import { isActionOf } from 'typesafe-actions'
 import * as actions from '../../actions/mod.js'
 
 export const dingEpic: Epic = actions$ => actions$.pipe(
-  filter(isActionOf(actions.dingCommand)),
+  filter(isActionOf(actions.DING_COMMAND)),
   tap(command => log.verbose('WechatyCqrs', 'dingEpic() %s', JSON.stringify(command))),
   mergeMap(command => of(command.meta.puppetId).pipe(
     map(getPuppet),
@@ -45,12 +45,12 @@ export const dingEpic: Epic = actions$ => actions$.pipe(
       ? of(puppet.ding(command.payload.data))
       : EMPTY,
     ),
-    map(() => actions.dingCommandResponse({
+    map(() => actions.DING_COMMAND_RESPONSE({
       id       : command.meta.id,
       puppetId : command.meta.puppetId,
     })),
     catchError(e => of(
-      actions.dingCommandResponse({
+      actions.DING_COMMAND_RESPONSE({
         ...command.meta,
         gerror: GError.stringify(e),
       }),

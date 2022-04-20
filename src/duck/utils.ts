@@ -57,7 +57,7 @@ const extendPayloadWithPuppetId = (puppetId: string) => <T> (payload: T): T & { 
 /**
  * Example: `pipe(mergeMap(toMessage$))`
  */
-const toMessage$ = (action: ReturnType<typeof actions.messageReceivedEvent>) => from(
+const toMessage$ = (action: ReturnType<typeof actions.MESSAGE_RECEIVED_EVENT>) => from(
   getPuppet(action.meta.puppetId)
     ?.messagePayload(action.payload.messageId) || EMPTY,
 ).pipe(
@@ -65,7 +65,7 @@ const toMessage$ = (action: ReturnType<typeof actions.messageReceivedEvent>) => 
   map(extendPayloadWithPuppetId(action.meta.puppetId)),
 )
 
-const toContact$ = (action: ReturnType<typeof actions.loginReceivedEvent>) => from(
+const toContact$ = (action: ReturnType<typeof actions.LOGIN_RECEIVED_EVENT>) => from(
   getPuppet(action.meta.puppetId)
     ?.contactPayload(action.payload.contactId) || EMPTY,
 ).pipe(
@@ -80,7 +80,7 @@ const isTextMessage = (text?: string) => (message: PUPPET.payloads.Message) => (
     ? text === message.text
     : true
 )
-const isWechaty = (puppetId: string) => (action: ReturnType<typeof actions.messageReceivedEvent>) => action.meta.puppetId === puppetId
+const isWechaty = (puppetId: string) => (action: ReturnType<typeof actions.MESSAGE_RECEIVED_EVENT>) => action.meta.puppetId === puppetId
 
 const isSelfMessage = (puppet: PUPPET.impls.PuppetInterface) =>
   (message: PUPPET.payloads.Message) =>
@@ -100,7 +100,7 @@ const isNotSelfMessage = (puppet: PUPPET.impls.PuppetInterface) =>
     ? (message.talkerId || message.fromId) !== puppet.currentUserId
     : true
 
-const skipSelfMessage$ = (action: ReturnType<typeof actions.messageReceivedEvent>) => of(
+const skipSelfMessage$ = (action: ReturnType<typeof actions.MESSAGE_RECEIVED_EVENT>) => of(
   getPuppet(action.meta.puppetId),
 ).pipe(
   mergeMap(puppet => puppet

@@ -12,15 +12,15 @@ import { classifyMap }  from './classify-map.js'
 
 test('classify smoke testing', async t => {
   const actionMap = {
-    dongReceivedEvent:          duck.actions.dongReceivedEvent,
-    sendMessageCommand:         duck.actions.sendMessageCommand,
-    sendMessageCommandResponse: duck.actions.sendMessageCommandResponse,
+    DONG_RECEIVED_EVENT:            duck.actions.DONG_RECEIVED_EVENT,
+    SEND_MESSAGE_COMMAND:           duck.actions.SEND_MESSAGE_COMMAND,
+    SEND_MESSAGE_COMMAND_RESPONSE:  duck.actions.SEND_MESSAGE_COMMAND_RESPONSE,
   }
 
   const EXPECTED = {
-    DongReceivedEvent:          classify(duck.actions.dongReceivedEvent),
-    SendMessageCommand:         classify(duck.actions.sendMessageCommand),
-    SendMessageCommandResponse: classify(duck.actions.sendMessageCommandResponse),
+    DongReceivedEvent:          classify(duck.actions.DONG_RECEIVED_EVENT),
+    SendMessageCommand:         classify(duck.actions.SEND_MESSAGE_COMMAND),
+    SendMessageCommandResponse: classify(duck.actions.SEND_MESSAGE_COMMAND_RESPONSE),
   }
 
   const classMap = classifyMap(actionMap)
