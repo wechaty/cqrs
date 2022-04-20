@@ -22,6 +22,7 @@ export const {
   GetContactPayloadQueryResponse,
   GetCurrentUserIdQueryResponse,
   GetIsLoggedInQueryResponse,
+  GetMessageFileQueryResponse,
   GetMessagePayloadQueryResponse,
   GetRoomPayloadQueryResponse,
   GetSayablePayloadQueryResponse,

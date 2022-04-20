@@ -10,6 +10,7 @@ export const {
   GetCurrentUserIdQuery,
   GetIsLoggedInQuery,
   GetMessagePayloadQuery,
+  GetMessageFileQuery,
   GetRoomPayloadQuery,
   GetSayablePayloadQuery,
 } = classifyMap(queries)
