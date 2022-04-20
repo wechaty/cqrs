@@ -26,5 +26,6 @@ export const GET_IS_LOGGED_IN_QUERY    = 'cqrs-wechaty/GET_IS_LOGGED_IN_QUERY'  
  */
 export const GET_CONTACT_PAYLOAD_QUERY = 'cqrs-wechaty/GET_CONTACT_PAYLOAD_QUERY'  // contactPayload
 export const GET_MESSAGE_PAYLOAD_QUERY = 'cqrs-wechaty/GET_MESSAGE_PAYLOAD_QUERY'  // messagePayload
+export const GET_MESSAGE_FILE_QUERY    = 'cqrs-wechaty/GET_MESSAGE_FILE_QUERY'     // fileBox JSON string
 export const GET_ROOM_PAYLOAD_QUERY    = 'cqrs-wechaty/GET_ROOM_PAYLOAD_QUERY'     // roomPayload
 export const GET_SAYABLE_PAYLOAD_QUERY = 'cqrs-wechaty/GET_SAYABLE_PAYLOAD_QUERY'  // sayablePayload

@@ -12,3 +12,12 @@ const payloadGetMessagePayloadQueryResponse = (res: MetaResponse & { message?: P
 
 export const getMessagePayloadQuery         = createAction(types.GET_MESSAGE_PAYLOAD_QUERY,           payloadGetMessagePayloadQuery,          metaRequest)()
 export const getMessagePayloadQueryResponse = createAction(types.GET_MESSAGE_PAYLOAD_QUERY_RESPONSE,  payloadGetMessagePayloadQueryResponse,  metaResponse)()
+
+/**
+ * puppet.messageFile()
+ */
+const payloadGetMessageFileQuery         = (_puppetId: string, messageId: string)   => ({ messageId })
+const payloadGetMessageFileQueryResponse = (res: MetaResponse & { file?: string })  => ({ file: res.file })
+
+export const getMessageFileQuery         = createAction(types.GET_MESSAGE_FILE_QUERY,           payloadGetMessageFileQuery,          metaRequest)()
+export const getMessageFileQueryResponse = createAction(types.GET_MESSAGE_FILE_QUERY_RESPONSE,  payloadGetMessageFileQueryResponse,  metaResponse)()
