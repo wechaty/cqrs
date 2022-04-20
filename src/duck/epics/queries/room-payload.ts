@@ -18,17 +18,13 @@
  *
  */
 import {
-  EMPTY,
-  of,
-  from,
-}                       from 'rxjs'
-import {
   catchError,
   mergeMap,
   map,
   filter,
   tap,
 }                       from 'rxjs/operators'
+import { of, from }     from 'rxjs'
 import { GError }       from 'gerror'
 import { getPuppet }    from 'wechaty-redux'
 import type { Epic }    from 'redux-observable'
@@ -44,7 +40,7 @@ export const roomPayloadEpic: Epic = actions$ => actions$.pipe(
     map(getPuppet),
     mergeMap(puppet => puppet
       ? from(puppet.roomPayload(query.payload.roomId))
-      : EMPTY,
+      : of(undefined),
     ),
     map(payload => actions.getRoomPayloadQueryResponse({
       id       : query.meta.id,

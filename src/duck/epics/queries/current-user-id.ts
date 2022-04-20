@@ -18,26 +18,18 @@
  *
  */
 import {
-  of,
-}                 from 'rxjs'
-import {
   catchError,
   mergeMap,
   map,
   tap,
   filter,
-}                 from 'rxjs/operators'
-import { GError } from 'gerror'
-import type {
-  Epic,
-}                 from 'redux-observable'
-import {
-  getPuppet,
-}                 from 'wechaty-redux'
-import { log }    from 'wechaty-puppet'
-import {
-  isActionOf,
-}                 from 'typesafe-actions'
+}                       from 'rxjs/operators'
+import { of }           from 'rxjs'
+import { GError }       from 'gerror'
+import type { Epic }    from 'redux-observable'
+import { getPuppet }    from 'wechaty-redux'
+import { log }          from 'wechaty-puppet'
+import { isActionOf }   from 'typesafe-actions'
 
 import * as actions from '../../actions/mod.js'
 

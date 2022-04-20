@@ -35,10 +35,8 @@ import type {
 import {
   getPuppet,
 }                 from 'wechaty-redux'
-import { log }    from 'wechaty-puppet'
-import {
-  isActionOf,
-}                 from 'typesafe-actions'
+import { log }          from 'wechaty-puppet'
+import { isActionOf }   from 'typesafe-actions'
 
 import * as actions from '../../actions/mod.js'
 
