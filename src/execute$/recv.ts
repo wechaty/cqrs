@@ -54,7 +54,8 @@ export const recv = (timeoutMilliseconds: number) =>
     ResponseClass : ClassifiedConstructor<PayloadMetaActionFactory<TResType, TResPayload, MetaResponse, [TResArg]>>,
   ) => (source$: BusObs) => source$.pipe(
     filter(isActionOf(ResponseClass)),
-    tap(message => log.verbose('WechatyCqrs', 'execute$ recv() %s', JSON.stringify(message))),
+    tap(message => log.verbose('WechatyCqrs', 'execute$ recv() [%s]', message.type)),
+    tap(message => log.silly('WechatyCqrs', 'execute$ recv() %s', JSON.stringify(message))),
     filter(message => message.meta.id === commandQuery.meta.id),
     timeout(timeoutMilliseconds),
     catchError(err =>
