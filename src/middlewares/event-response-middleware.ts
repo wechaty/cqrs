@@ -30,7 +30,8 @@ export const eventResponseMiddleware: (erBus$: Bus) => Middleware = erBus$ =>
   _store =>
     next =>
       action => {
-        log.verbose('WechatyCqrs', 'eventResponseMiddleware() erBus$.next(%s)', JSON.stringify(action))
+        log.verbose('WechatyCqrs', 'eventResponseMiddleware() erBus$.next([%s])', action.type)
+        log.silly('WechatyCqrs', 'eventResponseMiddleware() erBus$.next(%s)', JSON.stringify(action))
 
         /**
          * Data Transfer Object (DTO) transision:
