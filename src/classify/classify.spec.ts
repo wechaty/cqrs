@@ -90,7 +90,7 @@ test('classify Command, Query, Response, and Event testing', async t => {
     ],
   ] as const
 
-  for (const [instance, payload] of fixtures) {
+  for (const [ instance, payload ] of fixtures) {
     delete (instance.meta as any).id
     delete (payload.meta as any).id
     delete (instance as any).toString

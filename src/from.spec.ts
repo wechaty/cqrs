@@ -351,7 +351,7 @@ test('sendMessageCommand', async t => {
 
   const TEXT = 'Hello, world.'
 
-  const [user, mary] = mocker.createContacts(2) as [mock.ContactMock, mock.ContactMock]
+  const [ user, mary ] = mocker.createContacts(2) as [mock.ContactMock, mock.ContactMock]
   mocker.login(user)
 
   const sandbox = sinon.createSandbox()
@@ -397,7 +397,7 @@ test('MessageReceivedEvent', async t => {
 
   const TEXT = 'Hello, world.'
 
-  const [user, mary] = mocker.createContacts(2) as [mock.ContactMock, mock.ContactMock]
+  const [ user, mary ] = mocker.createContacts(2) as [mock.ContactMock, mock.ContactMock]
   mocker.login(user)
 
   const messageReceivedEventFuture = firstValueFrom(bus$.pipe(

@@ -22,7 +22,7 @@ export type TypeActionMap = {
  *
  * Table for the `type` -> `creator` mapping
  */
-export const typeActionMap: TypeActionMap = Object.entries(duck.actions).reduce((acc, [_, action]) => ({
+export const typeActionMap: TypeActionMap = Object.entries(duck.actions).reduce((acc, [ _, action ]) => ({
   ...acc,
   [getType(action)]: action,
 }), {} as any) as TypeActionMap

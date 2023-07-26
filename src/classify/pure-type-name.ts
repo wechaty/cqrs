@@ -1,4 +1,3 @@
-
 export type PureTypeName<T extends string> = T extends `${string}/${infer P}` ? P : T
 
 /**

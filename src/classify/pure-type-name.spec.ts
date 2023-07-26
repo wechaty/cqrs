@@ -31,13 +31,13 @@ test('pureTypeName() smoke testing', async t => {
 
 test('pureTypeName() fixture testing', async t => {
   const fixtures = [
-    ['cqrs-wechaty/SNAKE_CASE',           'SNAKE_CASE'],
-    ['cqrs-wechaty/CAMEL_CASE',           'CAMEL_CASE'],
-    ['cqrs-wechaty/UPPER',                'UPPER'],
-    ['cqrs-wechaty/THIS_IS_A_SNAKE_CASE', 'THIS_IS_A_SNAKE_CASE'],
+    [ 'cqrs-wechaty/SNAKE_CASE',           'SNAKE_CASE' ],
+    [ 'cqrs-wechaty/CAMEL_CASE',           'CAMEL_CASE' ],
+    [ 'cqrs-wechaty/UPPER',                'UPPER' ],
+    [ 'cqrs-wechaty/THIS_IS_A_SNAKE_CASE', 'THIS_IS_A_SNAKE_CASE' ],
   ] as const
 
-  for (const [typeName, expectedPureName] of fixtures) {
+  for (const [ typeName, expectedPureName ] of fixtures) {
     const result = pureTypeName(typeName)
     const test: AssertEqual<
       typeof result,

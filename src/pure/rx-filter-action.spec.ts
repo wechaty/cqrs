@@ -40,14 +40,14 @@ test('rx filter action smoke testing', async t => {
   const DUMMY   = { type: 'fadsfadsfasdfasd' }
 
   const fixtures = [
-    [COMMAND, 1, 0, 0, 0],
-    [EVENT,   0, 1, 0, 0],
-    [RESPONSE, 0, 0, 1, 0],
-    [QUERY,   0, 0, 0, 1],
-    [DUMMY,   0, 0, 0, 0],
+    [ COMMAND, 1, 0, 0, 0 ],
+    [ EVENT,   0, 1, 0, 0 ],
+    [ RESPONSE, 0, 0, 1, 0 ],
+    [ QUERY,   0, 0, 0, 1 ],
+    [ DUMMY,   0, 0, 0, 0 ],
   ] as const
 
-  for (const [e, ...expected] of fixtures) {
+  for (const [ e, ...expected ] of fixtures) {
     const $ = of(e)
 
     const isCommand   = await firstValueFrom($.pipe(rxFilterAction.filterCommand(),   count()))
@@ -55,6 +55,6 @@ test('rx filter action smoke testing', async t => {
     const isResponse  = await firstValueFrom($.pipe(rxFilterAction.filterResponse(),  count()))
     const isQuery     = await firstValueFrom($.pipe(rxFilterAction.filterQuery(),     count()))
 
-    t.same([isCommand, isEvent, isResponse, isQuery], expected, `should match ${e.type} to ${expected}`)
+    t.same([ isCommand, isEvent, isResponse, isQuery ], expected, `should match ${e.type} to ${expected}`)
   }
 })

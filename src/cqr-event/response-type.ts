@@ -31,7 +31,7 @@ export type ResponseTypeMap<T extends { [key: string]: string }> = {
   [K in keyof T as ResponseType<string & K>]: ResponseType<T[K]>
 }
 export const responseTypeMap = <T extends { [key: string]: string }> (o: T) =>
-  Object.entries(o).reduce((acc, [key, val]) => {
+  Object.entries(o).reduce((acc, [ key, val ]) => {
     const k = responseType(key)
     const v = responseType(val)
     acc[k] = v
