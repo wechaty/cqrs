@@ -17,7 +17,7 @@ export const classifyMap = <
     PayloadMetaActionFactory<string>
   >
 > (actionMap: T) =>
-  Object.entries(actionMap).reduce((acc, [key, creator]) => {
+  Object.entries(actionMap).reduce((acc, [ key, creator ]) => {
     /**
      * DING_COMMAND -> DingCommand
      */

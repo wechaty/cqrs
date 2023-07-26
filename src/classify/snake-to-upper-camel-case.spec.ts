@@ -49,13 +49,13 @@ test('snakeToCamelCase() FIXME: non-letter characters typing is incorrect', asyn
 
 test('snakeToCamelCase() fixture testing', async t => {
   const fixtures = [
-    ['SNAKE_CASE', 'SnakeCase'],
-    ['CAMEL_CASE', 'CamelCase'],
-    ['UPPER', 'Upper'],
-    ['THIS_IS_A_SNAKE_CASE', 'ThisIsASnakeCase'],
+    [ 'SNAKE_CASE', 'SnakeCase' ],
+    [ 'CAMEL_CASE', 'CamelCase' ],
+    [ 'UPPER', 'Upper' ],
+    [ 'THIS_IS_A_SNAKE_CASE', 'ThisIsASnakeCase' ],
   ] as const
 
-  for (const [snakeCase, expectedCamelCase] of fixtures) {
+  for (const [ snakeCase, expectedCamelCase ] of fixtures) {
     const result = snakeToUpperCamelCase(snakeCase)
 
     type RESULT   = typeof result

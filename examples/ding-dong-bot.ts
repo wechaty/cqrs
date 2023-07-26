@@ -38,6 +38,9 @@ import {
 
 import * as CQRS    from '../src/mods/mod.js'
 
+// @ts-ignore
+import qrcodeTerminal from 'qrcode-terminal'
+
 const onScan$ = (source$: CQRS.BusObs) => CQRS.events$.SCAN_RECEIVED_EVENT$(source$).pipe(
   map(scanReceivedEvent => scanReceivedEvent.payload),
   tap(({ qrcode, status }) => {
@@ -52,6 +55,7 @@ const onScan$ = (source$: CQRS.BusObs) => CQRS.events$.SCAN_RECEIVED_EVENT$(sour
       ].join('')
 
       console.info('onScan: %s(%s) - %s', PUPPET.types.ScanStatus[status], status, qrcodeImageUrl)
+      qrcodeTerminal.generate(qrcode, { small: true })  // show qrcode on console
     } else {
       console.info('onScan: %s(%s)', PUPPET.types.ScanStatus[status], status)
     }
