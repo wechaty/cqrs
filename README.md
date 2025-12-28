@@ -204,10 +204,6 @@ const getIsLoggedInQuery  = CQRS.queries.GetIsLoggedInQuery(...)
 
 Learn more from the [source code](src/dto/actions/)
 
-## API Reference
-
-Read CQRS Wechaty API Reference at: <https://paka.dev/npm/wechaty-cqrs>
-
 ## How to contribute
 
 ### How to add a new command/query
